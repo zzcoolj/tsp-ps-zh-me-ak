@@ -59,6 +59,7 @@ public class Maths {
 		
 		for(int i=0;i<taille;i++)
 		{
+			//TODO xi[] => prendre toute les arretes sauf celle fixe
 			pi[i] = ps;
 		}
 		
