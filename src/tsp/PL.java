@@ -30,5 +30,25 @@ public class PL {
 		return null;
 		
 	}
+	
+	public Double generateRho()
+	{
+		return null;
+	}
+	
+	public Double generateLambda()
+	{
+		return null;
+	}
+	
+	public void initScenario(ArrayList<Scenario> s)
+	{
+		
+	}
+	
+	public Graph generateSolutionReference(Graph g)
+	{
+		return null;
+	}
 
 }
