@@ -1,6 +1,8 @@
 import java.util.ArrayList;
 import java.util.Random;
 
+import tsp.TSP;
+
 
 public class Maths {
 
@@ -33,7 +35,6 @@ public class Maths {
 	}*/
 	
 	
-	
 	/**
 	 * calcul l'ecart type
 	 * @param variance
@@ -49,7 +50,7 @@ public class Maths {
 	 * calcul la variance
 	 * @return
 	 */
-	public static Double calculVariance()
+	public static Double calculVariance(TSP tsp)
 	{
 		
 		//TODO return 3*variance ici ou plus tard ?
