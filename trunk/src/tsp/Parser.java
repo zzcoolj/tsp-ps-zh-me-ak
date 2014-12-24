@@ -88,7 +88,7 @@ public class Parser {
 	                	
 	                	//System.out.println("Values +///// "+values);
 	                	
-	                	d.getCouts().put(new Vertex(cptVilles), values);
+	                	g.getCouts().put(new Vertex(cptVilles), values);
 	                	
 	                	values = new ArrayList<Double>();
 	                	//System.out.println("cptvilles = "+cptVilles);
@@ -98,7 +98,7 @@ public class Parser {
 	                else if(reader.getLocalName().equals("graph"))
 	                {
 	                	state = false;
-	                	d.getCouts().get(new Vertex(cptVilles-1)).add(Double.MAX_VALUE);
+	                	g.getCouts().get(new Vertex(cptVilles-1)).add(Double.MAX_VALUE);
 	                }
 	                else if(reader.getLocalName().equals("edge"))
 	                {
