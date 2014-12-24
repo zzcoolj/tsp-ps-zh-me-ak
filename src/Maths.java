@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Random;
 
 
 public class Maths {
@@ -9,7 +10,7 @@ public class Maths {
 	 * @param n : nombre de valeur retourne = nombre de scenario
 	 * @return
 	 */
-	public static ArrayList<Double> generateRandomCosts(int initial, int n)
+	public static ArrayList<Double> generateRandomCosts(Double initial, int n, Double min, Double max)
 	{
 		
 		ArrayList<Double> values = new ArrayList<Double>();
@@ -17,11 +18,21 @@ public class Maths {
 		for(int i=0; i<n; i++)
 		{
 			//TODO a changer
-			values.add(Math.random());
+			Random rand = new Random();
+			values.add(min + (max - min) * rand.nextDouble());
 		}
 		
 		return values;
 	}
+	
+	/*public static void main(String[] args) {
+		
+		Double min = 15-5.16;
+		Double max = 15+5.16;
+		System.out.println(Maths.generateRandomCosts(15.0, 5, min, max));
+	}*/
+	
+	
 	
 	/**
 	 * calcul l'ecart type
