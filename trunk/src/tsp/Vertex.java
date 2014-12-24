@@ -36,11 +36,18 @@ public class Vertex {
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
+		
+		try {
+			
+			Vertex other = (Vertex) obj;
+			if (numero != other.numero)
+				return false;
+			
+		} catch (ClassCastException e) {
 			return false;
-		Vertex other = (Vertex) obj;
-		if (numero != other.numero)
-			return false;
+		}
+		
+		
 		return true;
 	}
 	

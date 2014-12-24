@@ -1,7 +1,8 @@
 package tsp;
 
-import java.io.IOException;
+import java.util.ArrayList;
 
+import CustomClass.PaireVertex;
 import mvc.GraphOpt;
 
 public class TSP {
@@ -9,12 +10,19 @@ public class TSP {
 	private PL pl;
 	private Graph g;
 	private Parser p;
+	private ArrayList<Scenario> s;
+	private ArrayList<PaireVertex> determinists;
+	private float pourcentageDeterminist;
+	protected static Integer n_opt;
 	
 	public TSP(String nameXml) {
-		// TODO Auto-generated constructor stub
 		p = new Parser(nameXml,"");
 		g = new Graph(null);
 		p.parse(g);
+		s = new ArrayList<Scenario>();
+		
+		//TODO Ici ou plus tard
+		pl.initScenario(s);
 
 	}
 	
@@ -33,6 +41,11 @@ public class TSP {
 
 		return result;
 		
+	}
+	
+	public GraphOpt findBestSolution()
+	{
+		return null;
 	}
 	
 	
