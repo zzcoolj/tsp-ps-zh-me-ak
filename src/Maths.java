@@ -36,24 +36,53 @@ public class Maths {
 	
 	
 	/**
-	 * calcul l'ecart type
+	 * calcul l'ecart type : Ecart-Type = sqrt(variance)
 	 * @param variance
 	 * @return
 	 */
 	public static Double calculEcartType(Double variance)
 	{
-		
-		return null;
+		return Math.sqrt(variance);
 	}
 	
 	/**
-	 * calcul la variance
+	 * calcul la variance : Variance = E(X^2)-E(X)^2
 	 * @return
 	 */
 	public static Double calculVariance(TSP tsp)
 	{
+		int taille = tsp.getG().getNbVilles();
+		double xi[] = new double[taille];
+		float pi[] = new float[taille];
+		
+		float ps = 1/(tsp.getS().size());
+		
+		for(int i=0;i<taille;i++)
+		{
+			pi[i] = ps;
+		}
+		
+		Double sum = 0.0;
+		
+		//E(X)
+		Double esperance = 0.0;
+		for(int i=0;i<taille;i++)
+		{
+			sum += xi[i];
+		}
+		
+		//E(X^2)
+		sum = 0.0;
+		for(int i=0;i<taille;i++)
+		{
+			sum += Math.pow(xi[i], 2);
+		}
+		Double esperance1 = sum*ps;
+		
+		//E(X)^2
+		Double esperance2 = Math.pow(esperance, 2);
 		
 		//TODO return 3*variance ici ou plus tard ?
-		return null;
+		return esperance1-esperance2;
 	}
 }

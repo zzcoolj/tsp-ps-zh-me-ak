@@ -13,14 +13,15 @@ public class TSP {
 	private ArrayList<Scenario> s;
 	private ArrayList<PaireVertex> determinists;
 	private float pourcentageDeterminist;
-	protected static Integer n_opt;
+	protected static Integer n_opt = 2;
 	
 	public TSP(String nameXml) {
 		p = new Parser(nameXml,"");
 		g = new Graph(null);
 		p.parse(g);
 		s = new ArrayList<Scenario>();
-		
+		determinists = new ArrayList<PaireVertex>();
+
 		//TODO Ici ou plus tard
 		pl.initScenario(s);
 
@@ -61,6 +62,27 @@ public class TSP {
 		return p;
 	}
 
+	public Parser getP() {
+		return p;
+	}
+
+	public ArrayList<Scenario> getS() {
+		return s;
+	}
+
+	public ArrayList<PaireVertex> getDeterminists() {
+		return determinists;
+	}
+
+	public float getPourcentageDeterminist() {
+		return pourcentageDeterminist;
+	}
+
+	public static Integer getN_opt() {
+		return n_opt;
+	}
+
+	
 
 
 }
