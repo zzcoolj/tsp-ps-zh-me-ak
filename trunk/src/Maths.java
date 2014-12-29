@@ -1,7 +1,10 @@
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Map.Entry;
 
+import CustomClass.PaireVertex;
 import tsp.TSP;
+import tsp.Vertex;
 
 
 public class Maths {
@@ -59,13 +62,16 @@ public class Maths {
 		float pi[] = new float[taille];
 		
 		float ps = 1/(tsp.getS().size());
+		int j=0;
 		
-		for(int i=0;i<taille;i++)
-		{
-			//TODO xi[] => prendre toute les arretes sauf celle fixe
-			pi[i] = ps;
-		}
-		
+		for(Entry<PaireVertex, Double> entry : tsp.getG().getCouts().entrySet()) {
+		    PaireVertex key = entry.getKey();
+		    if(!(tsp.getDeterminists().contains(key) && key.hasSameVertex())){
+		    	Double value = entry.getValue();
+		    	xi[j]= value;
+		    	pi[j]=ps;		
+		    }
+
 		Double sum = 0.0;
 		
 		//E(X)
