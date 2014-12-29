@@ -15,11 +15,17 @@ public class Maths {
 	 * @param n : nombre de valeur retourne = nombre de scenario
 	 * @return
 	 */
-	public static ArrayList<Double> generateRandomCosts(Double initial, int n, Double min, Double max)
+	public static ArrayList<Double> generateRandomCosts(Double initial, int n, Double min, Double max) throws ExceptionMaths
 	{
 		
 		ArrayList<Double> values = new ArrayList<Double>();
-		
+		if(min<0)
+			min = 0.0;
+		if(max<0)
+		{
+			throw new ExceptionMaths("Le maximum de l'intervalle choisi est negatif");
+		}
+			
 		for(int i=0; i<n; i++)
 		{
 			//TODO a changer
@@ -34,10 +40,16 @@ public class Maths {
 		
 		Double valeurXml = 18.0;
 		Double ecartype = 8.41;
+		int nbvaleur = 3;
 		
 		Double min = valeurXml-ecartype;
 		Double max = valeurXml+ecartype;
-		System.out.println(Maths.generateRandomCosts(valeurXml, 3, min, max));
+		try {
+			System.out.println(Maths.generateRandomCosts(valeurXml, nbvaleur, min, max));
+		} catch (ExceptionMaths e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	
@@ -46,16 +58,16 @@ public class Maths {
 	 * @param variance
 	 * @return
 	 */
-	public static Double calculEcartType(Double variance)
+	public static Double calculEcartType(TSP tsp)
 	{
-		return Math.sqrt(variance);
+		return Math.sqrt(calculVariance(tsp));
 	}
 	
 	/**
 	 * calcul la variance : Variance = E(X^2)-E(X)^2
 	 * @return
 	 */
-	public static Double calculVariance(TSP tsp)
+	private static Double calculVariance(TSP tsp)
 	{
 		int taille = tsp.getG().getNbVilles();
 		double xi[] = new double[taille];
@@ -81,6 +93,7 @@ public class Maths {
 		{
 			sum += xi[i];
 		}
+		esperance = sum*ps;
 		
 		//E(X^2)
 		sum = 0.0;
