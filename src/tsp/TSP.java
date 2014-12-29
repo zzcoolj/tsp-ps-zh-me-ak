@@ -11,7 +11,7 @@ public class TSP {
 	private Graph g;
 	private Parser p;
 	private ArrayList<Scenario> s;
-	private ArrayList<PaireVertex> determinists;
+	
 	private float pourcentageDeterminist;
 	protected static Integer n_opt = 2;
 	
@@ -20,7 +20,6 @@ public class TSP {
 		g = new Graph(null);
 		p.parse(g);
 		s = new ArrayList<Scenario>();
-		determinists = new ArrayList<PaireVertex>();
 		
 		//System.out.println("Contains = "+g.getCouts().containsKey(new PaireVertex(new Vertex(17), new Vertex(17))));
 		
@@ -73,7 +72,7 @@ public class TSP {
 	}
 
 	public ArrayList<PaireVertex> getDeterminists() {
-		return determinists;
+		return this.g.getDeterminists();
 	}
 
 	public float getPourcentageDeterminist() {

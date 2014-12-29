@@ -1,3 +1,4 @@
+package Math;
 
 public class ExceptionMaths extends Exception{
 

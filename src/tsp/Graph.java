@@ -9,12 +9,22 @@ public class Graph {
 
 		private ArrayList<Vertex> villes;
 		private LinkedHashMap<PaireVertex, Double> couts;
+		private ArrayList<PaireVertex> determinists;
 		
 		public Graph(ArrayList<Vertex> cities){
 			this.couts = new LinkedHashMap<PaireVertex, Double>();
 			this.villes = cities;
+			this.determinists = new ArrayList<PaireVertex>();
 		}
 		
+		public ArrayList<PaireVertex> getDeterminists() {
+			return determinists;
+		}
+
+		public void setDeterminists(ArrayList<PaireVertex> determinists) {
+			this.determinists = determinists;
+		}
+
 		public LinkedHashMap<PaireVertex, Double> getCouts() {
 			// TODO Auto-generated method stub
 			return this.couts;
@@ -40,6 +50,10 @@ public class Graph {
 			return villes.size();
 		}
 		
+		public void setCouts(LinkedHashMap<PaireVertex, Double> couts) {
+			this.couts = couts;
+		}
+
 		public Double[][] toTab()
 		{
 			

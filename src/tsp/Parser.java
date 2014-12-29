@@ -14,8 +14,6 @@ import javax.xml.stream.XMLStreamReader;
 import CustomClass.PaireVertex;
 
 
-
-
 public class Parser {
 
 	
