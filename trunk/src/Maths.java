@@ -27,12 +27,15 @@ public class Maths {
 		return values;
 	}
 	
-	/*public static void main(String[] args) {
+	public static void main(String[] args) {
 		
-		Double min = 15-5.16;
-		Double max = 15+5.16;
-		System.out.println(Maths.generateRandomCosts(15.0, 5, min, max));
-	}*/
+		Double valeurXml = 18.0;
+		Double ecartype = 8.41;
+		
+		Double min = valeurXml-ecartype;
+		Double max = valeurXml+ecartype;
+		System.out.println(Maths.generateRandomCosts(valeurXml, 3, min, max));
+	}
 	
 	
 	/**

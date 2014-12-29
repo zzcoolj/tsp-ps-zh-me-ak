@@ -4,11 +4,7 @@ import java.awt.Color;
 import java.awt.Point;
 import java.awt.Rectangle;
 
-/**
- * 
- * @author aminmessaoudi & erickopel
- *
- */
+
 public class RectangleItem extends Forme{
 	
 	public Rectangle r;
