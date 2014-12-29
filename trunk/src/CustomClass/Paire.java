@@ -63,4 +63,9 @@ public class Paire<T1,T2> {
 		
 	}
 
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return "("+first.toString()+","+second.toString()+")";
+	}
 }
