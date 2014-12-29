@@ -28,6 +28,12 @@ public class Paire<T1,T2> {
 	}
 	
 	@Override
+	public int hashCode() {
+		// TODO Auto-generated method stub
+		return first.hashCode()+second.hashCode();
+	}
+	
+	@Override
 	public boolean equals(Object obj) {
 		// TODO Auto-generated method stub
 		
@@ -41,8 +47,8 @@ public class Paire<T1,T2> {
 			
 			Paire<T1,T2> other = (Paire<T1,T2>)obj;
 			
-			boolean b1 = this.getFirst().equals(other.getFirst()) || this.getFirst().equals(other.getSecond());
-			boolean b2 = this.getSecond().equals(other.getSecond()) || this.getSecond().equals(other.getFirst());
+			boolean b1 = this.getFirst().equals(other.getFirst());
+			boolean b2 = this.getSecond().equals(other.getSecond());
 			
 			if(b1&&b2)
 				return true;
