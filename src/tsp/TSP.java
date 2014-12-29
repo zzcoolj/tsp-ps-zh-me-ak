@@ -23,7 +23,7 @@ public class TSP {
 		determinists = new ArrayList<PaireVertex>();
 
 		//TODO Ici ou plus tard
-		pl.initScenario(s);
+		//pl.initScenario(s);
 
 	}
 	
