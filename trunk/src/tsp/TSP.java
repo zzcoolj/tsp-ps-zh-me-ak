@@ -21,7 +21,7 @@ public class TSP {
 		p.parse(g);
 		s = new ArrayList<Scenario>();
 		determinists = new ArrayList<PaireVertex>();
-
+		
 		//TODO Ici ou plus tard
 		//pl.initScenario(s);
 

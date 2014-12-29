@@ -6,9 +6,12 @@ import java.util.ArrayList;
 
 
 
+
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+
+import CustomClass.PaireVertex;
 
 
 
@@ -50,9 +53,7 @@ public class Parser {
 			ArrayList<Double> values = new ArrayList<Double>();
 			
 			while (reader.hasNext() && state) 
-			{
-				
-				
+			{	
 		        int type = reader.next();
 		        
 		        switch (type) {
@@ -88,7 +89,14 @@ public class Parser {
 	                	
 	                	//System.out.println("Values +///// "+values);
 	                	
-	                	g.getCouts().put(new Vertex(cptVilles), values);
+	                	//g.getCouts().put(new Vertex(cptVilles), values);
+	                	int cptDest = 0;
+	                	Vertex courant = new Vertex(cptVilles);
+	                	for(Double value : values)
+	                	{
+	                		g.getCouts().put(new PaireVertex(courant, new Vertex(cptDest)), value);
+	                		cptDest++;
+	                	}
 	                	
 	                	values = new ArrayList<Double>();
 	                	//System.out.println("cptvilles = "+cptVilles);
@@ -98,7 +106,8 @@ public class Parser {
 	                else if(reader.getLocalName().equals("graph"))
 	                {
 	                	state = false;
-	                	g.getCouts().get(new Vertex(cptVilles-1)).add(Double.MAX_VALUE);
+	                	//g.getCouts().get(new Vertex(cptVilles-1)).add(Double.MAX_VALUE);
+	                	g.getCouts().put(new PaireVertex(new Vertex(cptVilles-1), new Vertex(cptVilles-1)), Double.MAX_VALUE);
 	                }
 	                else if(reader.getLocalName().equals("edge"))
 	                {

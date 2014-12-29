@@ -3,17 +3,19 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 
+import CustomClass.PaireVertex;
+
 public class Graph {
 
 		private ArrayList<Vertex> villes;
-		private LinkedHashMap<Vertex, ArrayList<Double>> couts;
+		private LinkedHashMap<PaireVertex, Double> couts;
 		
 		public Graph(ArrayList<Vertex> cities){
-			this.couts = new LinkedHashMap<Vertex, ArrayList<Double>>(); 
+			this.couts = new LinkedHashMap<PaireVertex, Double>();
 			this.villes = cities;
 		}
 		
-		public LinkedHashMap<Vertex, ArrayList<Double>> getCouts() {
+		public LinkedHashMap<PaireVertex, Double> getCouts() {
 			// TODO Auto-generated method stub
 			return this.couts;
 		}
@@ -43,18 +45,12 @@ public class Graph {
 			
 			Double[][] tab = new Double[couts.size()][couts.size()];
 			
-			for(Entry<Vertex, ArrayList<Double>> entry : couts.entrySet()) {
-			    Vertex key = entry.getKey();
-			    ArrayList<Double> values = entry.getValue();
-			    
-			    int j = 0;
-			    for(Double d : values)
-			    {
-			    	tab[key.getNumero()][j] = d;
-			    	j++;
-			    }
-			    // do what you have to do here
-			    // In your case, an other loop.
+			for(Entry<PaireVertex, Double> entry : couts.entrySet())
+			{
+				PaireVertex key = entry.getKey();
+				Double value = entry.getValue();
+				
+				tab[key.getFirst().getNumero()][key.getSecond().getNumero()] = value;
 			}
 			
 			return tab;
