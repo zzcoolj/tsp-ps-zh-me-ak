@@ -4,10 +4,10 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.PrintWriter;
 
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 
 import ui.MenuBasCanvas;
 
@@ -32,7 +32,11 @@ public class Controleur implements MouseListener{
 		if(menu.getR().getR().contains(new Point(e.getX() - decalageScreen, e.getY())))
 		{
 			//System.out.println("Appuie sur open solve => appel de model.getTSP().getPL().solve()");
-			model.tspSolve();
+			
+			if(verification())
+				model.tspSolve();
+			else
+				lanceAlerte();
 			
 		}
 		else if(menu.getOpen().getR().contains(new Point(e.getX() - decalageScreen, e.getY())))
@@ -96,6 +100,72 @@ public class Controleur implements MouseListener{
 	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public boolean verification()
+	{
+		if(vue.sliderDeterminist.getValue()==0 || vue.sliderDeterminist.getValue()==100)
+			return false;
+		if(vue.kmaxTxtField.getText().isEmpty())
+			return false;
+		if(!isNumeric(vue.kmaxTxtField.getText()) || Integer.parseInt(vue.kmaxTxtField.getText())<2)
+			return false;
+		if(vue.nbscenarioTxtField.getText().isEmpty())
+			return false;
+		if(!isNumeric(vue.nbscenarioTxtField.getText()) || Integer.parseInt(vue.nbscenarioTxtField.getText())<10)
+			return false;
+		
+		return true;
+	}
+	
+	public boolean isNumeric(String input) {
+		  try {
+		    Integer.parseInt(input);
+		    return true;
+		  }
+		  catch (NumberFormatException e) {
+		    // s is not numeric
+		    return false;
+		  }
+		}
+	
+	public void lanceAlerte()
+	{
+		String alert = "";
+		
+		if(vue.sliderDeterminist.getValue()==0 || vue.sliderDeterminist.getValue()==100)
+		{
+			if(vue.sliderDeterminist.getValue()==0)
+			{
+				alert+="0% d'arêtes deterministe veuillez choisir entre 1 et 99%\n";
+			}
+			else
+			{
+				alert+="Utilisez le programme TSP_PNE pour une résolution optimale\n";
+			}
+		}
+		if(vue.kmaxTxtField.getText().isEmpty())
+		{
+			alert+="kmax champs vide\n";
+		}
+		else if(!isNumeric(vue.kmaxTxtField.getText()) || Integer.parseInt(vue.kmaxTxtField.getText())<2)
+		{
+			alert+="Veuillez saisir un kmax correct (nombre >= 2)\n";
+		}
+		
+		if(vue.nbscenarioTxtField.getText().isEmpty())
+		{
+			alert+="Nb scénario champs vide\n";
+		}
+		else if(!isNumeric(vue.nbscenarioTxtField.getText()) || Integer.parseInt(vue.nbscenarioTxtField.getText())<10)
+		{
+			alert+="Veuillez saisir un nombre de scénarios correct (nombre >= 10)\n";
+		}
+		
+		JOptionPane.showMessageDialog(vue,
+			    alert,
+			    "Parametre(s) incomplet(s)/incorrect(s)",
+			    JOptionPane.WARNING_MESSAGE);
 	}
 
 }

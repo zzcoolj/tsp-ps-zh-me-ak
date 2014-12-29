@@ -35,6 +35,9 @@ public class Vue extends JFrame implements Observer {
 	InterfaceGraphique grapheInterface;
 	MenuBasCanvas bas;
 	JList list;//Liste de noeuds
+	JSlider sliderDeterminist;
+	JTextField kmaxTxtField;
+	JTextField nbscenarioTxtField ;
 	
 	public Vue() {
 		// TODO Auto-generated constructor stub
@@ -125,7 +128,7 @@ public class Vue extends JFrame implements Observer {
 		newmenu.setLayout(new GridLayout(1, 3));
 		
 		JPanel gaucheMenu = new JPanel(); gaucheMenu.setBackground(Color.decode("#bdc3c7")); 
-		JSlider sliderDeterminist = new JSlider(0, 100);
+		sliderDeterminist = new JSlider(0, 100);
 		sliderDeterminist.setPreferredSize(new Dimension(320, 20));
 		sliderDeterminist.setValue(0);
 		//sliderDeterminist.locate(10, 10);
@@ -135,14 +138,14 @@ public class Vue extends JFrame implements Observer {
 		
 		JPanel milieuMenu = new JPanel();milieuMenu.setBackground(Color.decode("#bdc3c7")); 
 		JLabel labelKmax = new JLabel("kmax");
-		JTextField kmaxTxtField = new JTextField(3);
+		kmaxTxtField = new JTextField(3);
 		kmaxTxtField.setBackground(Color.decode("#cccccc"));
 		milieuMenu.add(labelKmax);
 		milieuMenu.add(kmaxTxtField);
 		
 		JPanel droitMenu = new JPanel();droitMenu.setBackground(Color.decode("#bdc3c7")); 
 		JLabel labelScenario = new JLabel("Nb scenarios");
-		JTextField nbscenarioTxtField = new JTextField(3);
+		nbscenarioTxtField = new JTextField(3);
 		nbscenarioTxtField.setBackground(Color.decode("#cccccc"));
 		droitMenu.add(labelScenario);
 		droitMenu.add(nbscenarioTxtField);
