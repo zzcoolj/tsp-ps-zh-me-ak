@@ -71,6 +71,7 @@ public class Maths {
 		    	xi[j]= value;
 		    	pi[j]=ps;		
 		    }
+		}    
 
 		Double sum = 0.0;
 		
