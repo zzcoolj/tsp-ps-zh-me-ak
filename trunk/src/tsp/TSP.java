@@ -20,7 +20,10 @@ public class TSP {
 		g = new Graph(null);
 		p.parse(g);
 		s = new ArrayList<Scenario>();
-		
+
+		pl = new PL();
+
+		pl.glouton(g);
 		//System.out.println("Contains = "+g.getCouts().containsKey(new PaireVertex(new Vertex(17), new Vertex(17))));
 		
 		//TODO Ici ou plus tard
