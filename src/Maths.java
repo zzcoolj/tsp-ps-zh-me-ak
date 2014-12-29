@@ -66,7 +66,7 @@ public class Maths {
 		
 		for(Entry<PaireVertex, Double> entry : tsp.getG().getCouts().entrySet()) {
 		    PaireVertex key = entry.getKey();
-		    if(!(tsp.getDeterminists().contains(key) && key.hasSameVertex())){
+		    if(!(tsp.getDeterminists().contains(key)) && !(key.hasSameVertex())){
 		    	Double value = entry.getValue();
 		    	xi[j]= value;
 		    	pi[j]=ps;		
