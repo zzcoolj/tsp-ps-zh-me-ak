@@ -22,6 +22,8 @@ public class TSP {
 		s = new ArrayList<Scenario>();
 		determinists = new ArrayList<PaireVertex>();
 		
+		//System.out.println("Contains = "+g.getCouts().containsKey(new PaireVertex(new Vertex(17), new Vertex(17))));
+		
 		//TODO Ici ou plus tard
 		//pl.initScenario(s);
 

@@ -50,5 +50,10 @@ public class PL {
 	{
 		return null;
 	}
+	
+	public Graph glouton()
+	{
+		return null;
+	}
 
 }
