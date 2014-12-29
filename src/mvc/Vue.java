@@ -21,6 +21,7 @@ import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
+import CustomClass.PaireVertex;
 import tsp.Scenario;
 import tsp.TSP;
 import tsp.Vertex;
@@ -90,7 +91,7 @@ public class Vue extends JFrame implements Observer {
 		
 			//Noeud
 		noeud = new JPanel(); noeud.setBackground(Color.decode("#27ae60"));
-		noeud.setPreferredSize(new Dimension(sizeOfNoeud, getHeight()-180));
+		noeud.setPreferredSize(new Dimension(sizeOfNoeud, getHeight()-240));
 		noeudetScenario.add(scenario, BorderLayout.CENTER);
 		noeudetScenario.add(noeud, BorderLayout.LINE_END);
 		
@@ -160,38 +161,30 @@ public class Vue extends JFrame implements Observer {
 		newmenu.add(droitMenu);
 	}
 	
-	public void addJList(LinkedHashMap<Vertex, ArrayList<Double>> couts)
+	public void addJList(LinkedHashMap<PaireVertex, Double> linkedHashMap)
 	{
 		ArrayList<String> data = new ArrayList<String>();
 		data.add("Chemins");
 		
 		int height = 1;
 		
-		for(Entry<Vertex, ArrayList<Double>> entry : couts.entrySet())
+		for(Entry<PaireVertex, Double> entry : linkedHashMap.entrySet())
 		{
-			Vertex key = entry.getKey();
-			ArrayList<Double> values = entry.getValue();
+			PaireVertex key = entry.getKey();
+			Double value = entry.getValue();
 			
-			int cpt = 0;
-			for(Double d : values)
-			{
-				if(key.getNumero()==cpt)
-					data.add(key.getNumero()+" -> " + cpt + " cout = Inf.");
-				else
-					data.add(key.getNumero()+" -> " + cpt + " cout = " + d);
-				cpt++;	
-			}
-			data.add("--------");
+			if(key.hasSameVertex())
+				data.add(key.getFirst().getNumero()+" -> " + key.getSecond().getNumero() + " cout = Inf.");
+			else
+				data.add(key.getFirst().getNumero()+" -> " + key.getSecond().getNumero() + " cout = "+value);	
 			
 			height = height*data.size();
 			
-			if(key.getNumero()==couts.size()-1)
+			/*if(key.getNumero()==linkedHashMap.size()-1)
 			{
 				data.remove(data.size()-1);
 				break;
-			}
-			
-			
+			}*/
 		}
 		
 		//System.out.println("Data = ==== "+data);

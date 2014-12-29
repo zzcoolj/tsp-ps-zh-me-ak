@@ -9,6 +9,11 @@ public class PaireVertex extends Paire<Vertex, Vertex>{
 		// TODO Auto-generated constructor stub
 	}
 	
+	public boolean hasSameVertex()
+	{
+		return this.first.getNumero()==this.second.getNumero();
+	}
+	
 	/*public static void main(String[] args) {
 		Vertex v1 = new Vertex(1);
 		Vertex v2 = new Vertex(2);
