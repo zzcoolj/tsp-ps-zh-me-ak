@@ -1,14 +1,17 @@
 package tsp;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.swing.text.StyledEditorKit.BoldAction;
-
+import CustomClass.PaireVertex;
+import CustomClass.PaireVertex;
+import Math.ExceptionMaths;
+import Math.Maths;
 import CustomClass.PaireVertex;
 import Math.ExceptionMaths;
 import Math.Maths;
@@ -79,12 +82,42 @@ public class PL {
 	
 	public Graph generateSolutionReference(Graph g)
 	{
+		
 		return null;
 	}
 	
-	public Graph glouton()
+	public Graph glouton(Graph g)
 	{
+		List<Map.Entry<PaireVertex, Double>> entries = new ArrayList<Map.Entry<PaireVertex, Double>>(g.getCouts().entrySet());
+		
+		Map<PaireVertex, Double> sortedMap = sort(entries);
+		
+		ArrayList<PaireVertex> aretesChemin = new ArrayList<PaireVertex>();
+		
+
 		return null;
+	}
+	
+	private Map<PaireVertex, Double> sort(List<Map.Entry<PaireVertex, Double>> entries)
+	{
+		Collections.sort(entries, new Comparator<Map.Entry<PaireVertex, Double>>() {
+
+			@Override
+			public int compare(Entry<PaireVertex, Double> o1, Entry<PaireVertex, Double> o2) {
+				if(o1.getValue()<=o2.getValue())
+					return -1;
+				else
+					return 1;
+			}
+			
+		});
+		
+		Map<PaireVertex, Double> sortedMap = new LinkedHashMap<PaireVertex, Double>();
+		for (Map.Entry<PaireVertex, Double> entry : entries) {
+			sortedMap.put(entry.getKey(), entry.getValue());
+			//System.out.println("Paire = "+entry.getKey()+" value = "+entry.getValue());
+		}
+		return sortedMap;
 	}
 
 }
