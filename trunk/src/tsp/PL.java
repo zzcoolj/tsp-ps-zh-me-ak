@@ -96,6 +96,7 @@ public class PL {
 		g.getDeterminists().add(new PaireVertex(new Vertex(16), new Vertex(1)));
 		g.getDeterminists().add(new PaireVertex(new Vertex(13), new Vertex(14)));
 		g.getDeterminists().add(new PaireVertex(new Vertex(1), new Vertex(4)));
+		g.getDeterminists().add(new PaireVertex(new Vertex(0), new Vertex(5)));
 		
 		Vertex sortante = g.getDeterminists().get(0).getSecond();
 		ArrayList<PaireVertex> paireDansGlouton = new ArrayList<PaireVertex>();
@@ -148,11 +149,14 @@ public class PL {
 				e.printStackTrace();
 			}
 			System.out.println("Liste a ajouter  = "+listeaAjouter);
+		
 			
-			for(int i=listeaAjouter.size()-1;i>=0;i--)
+			Collections.reverse(listeaAjouter);
+			
+			paireDansGlouton.add(new PaireVertex(sauvegarde.getSecond(), listeaAjouter.get(0).getFirst()));
+			for(PaireVertex paire : listeaAjouter)
 			{
-				paireDansGlouton.add(new PaireVertex(sauvegarde.getSecond(), listeaAjouter.get(i).getFirst()));
-				paireDansGlouton.add(listeaAjouter.get(i));
+				paireDansGlouton.add(paire);
 			}
 			
 			if(listeaAjouter.size()==0)
