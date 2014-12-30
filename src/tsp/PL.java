@@ -123,16 +123,16 @@ public class PL {
 
 		PaireVertex tmp = cherche(sortante,paireDansGlouton,g,null,vertexInterditSortant);
 		paireDansGlouton.add(tmp);
-		System.out.println("tmp = "+tmp);
+		//System.out.println("tmp = "+tmp);
 		PaireVertex sauvegarde = null;
-		System.out.println("nb villes ="+g.getNbVilles());
+		//System.out.println("nb villes ="+g.getNbVilles());
 		while(paireDansGlouton.size()<g.getNbVilles())
 		{
 			if(tmp!=null)
 			{
 				sauvegarde = tmp;
 				tmp = cherche(tmp.getSecond(),paireDansGlouton,g,g.getDeterminists().get(0).getFirst(),vertexInterditSortant);
-				System.out.println("Sauvegarde"+sauvegarde);
+				//System.out.println("Sauvegarde"+sauvegarde);
 				if(tmp!=null)
 					paireDansGlouton.add(tmp);
 				else
@@ -141,12 +141,12 @@ public class PL {
 			
 		}
 		
-		System.out.println("paireDansGlouton.size()<g.getNbVilles() = "+(paireDansGlouton.size()<g.getNbVilles()));
+		
 		
 		if(sauvegarde!=null)
 		{
 			paireDansGlouton.remove(null);
-			System.out.println("Sav = "+sauvegarde);
+			//System.out.println("Sav = "+sauvegarde);
 			
 			ArrayList<PaireVertex> listeaAjouter = new ArrayList<PaireVertex>();
 			try {
@@ -242,13 +242,13 @@ public class PL {
 	//Supposon villesortantes = 2
 	public PaireVertex cherche(Vertex villesSortante,ArrayList<PaireVertex> paireDansGlouton,Graph g, Vertex villeInterdit, Vertex villeSortantInterdit)
 	{
-		System.out.println("Je cherche plus proche voisin de "+villesSortante);
+		//System.out.println("Je cherche plus proche voisin de "+villesSortante);
 		for(PaireVertex det : g.getDeterminists())
 		{
 			//Par exemple on trouve une paire (2,8) bah c'est okay
 			if(det.getFirst().equals(villesSortante) && !paireDansGlouton.contains(det) && !det.getSecond().equals(villeInterdit))
 			{
-				System.out.println("Det : "+det);
+				//System.out.println("Det : "+det);
 				return det;
 			}
 			
@@ -257,47 +257,47 @@ public class PL {
 
 		for(Entry<PaireVertex,Double> entry : g.getCouts().entrySet())
 		{
-			if(entry.getKey().getFirst().equals(new Vertex(100)) && villesSortante.equals(new Vertex(100)))
+			/*if(entry.getKey().getFirst().equals(new Vertex(100)) && villesSortante.equals(new Vertex(100)))
 			{
 				System.out.println("Je suis au couple = "+entry.getKey());
 				System.out.println("arcExisteDeja = "+arcExisteDeja(entry.getKey().getFirst(), entry.getKey().getSecond(), paireDansGlouton));
 				System.out.println("estdansGlouton = "+paireDansGlouton.contains(entry.getKey()));
 				System.out.println("first = villesortante = "+entry.getKey().getFirst().equals(villesSortante));
 				System.out.println("second = villeinterdi 4 = "+entry.getKey().getSecond().equals(villeInterdit));
+			}*/
+			
+			if(villeSortantInterdit!=null && !entry.getKey().getSecond().equals(villeSortantInterdit) && !arcExisteDeja(entry.getKey().getFirst(), entry.getKey().getSecond(), paireDansGlouton) && !paireDansGlouton.contains(entry.getKey()) && entry.getKey().getFirst().equals(villesSortante) && villeInterdit!=null && !entry.getKey().getSecond().equals(villeInterdit))
+			{
+				//System.out.println("Affiche = "+dejaDansDeterministe(entry.getKey().getFirst(), entry.getKey().getSecond(), g.getDeterminists(),paireDansGlouton));
+				if(!dejaDansDeterministe(entry.getKey().getFirst(), entry.getKey().getSecond(), g.getDeterminists(),paireDansGlouton))
+				{
+					if(plusprocheVoisin==null)
+					{
+						plusprocheVoisin = entry.getKey();
+					}
+					else if(entry.getValue()<g.getCouts().get(plusprocheVoisin))
+					{
+						plusprocheVoisin = entry.getKey();
+					}
+				}
 			}
-				
-				if(villeSortantInterdit!=null && !entry.getKey().getSecond().equals(villeSortantInterdit) && !arcExisteDeja(entry.getKey().getFirst(), entry.getKey().getSecond(), paireDansGlouton) && !paireDansGlouton.contains(entry.getKey()) && entry.getKey().getFirst().equals(villesSortante) && villeInterdit!=null && !entry.getKey().getSecond().equals(villeInterdit))
+			else if(villeInterdit==null && entry.getKey().getFirst().equals(villesSortante))
+			{
+				if(villeSortantInterdit!=null && !entry.getKey().getFirst().equals(villeSortantInterdit) && !dejaDansDeterministe(entry.getKey().getFirst(), entry.getKey().getSecond(), g.getDeterminists(),paireDansGlouton))
 				{
-					//System.out.println("Affiche = "+dejaDansDeterministe(entry.getKey().getFirst(), entry.getKey().getSecond(), g.getDeterminists(),paireDansGlouton));
-					if(!dejaDansDeterministe(entry.getKey().getFirst(), entry.getKey().getSecond(), g.getDeterminists(),paireDansGlouton))
+					if(plusprocheVoisin==null)
 					{
-						if(plusprocheVoisin==null)
-						{
-							plusprocheVoisin = entry.getKey();
-						}
-						else if(entry.getValue()<g.getCouts().get(plusprocheVoisin))
-						{
-							plusprocheVoisin = entry.getKey();
-						}
+						plusprocheVoisin = entry.getKey();
+					}
+					else if(entry.getValue()<g.getCouts().get(plusprocheVoisin))
+					{
+						plusprocheVoisin = entry.getKey();
 					}
 				}
-				else if(villeInterdit==null && entry.getKey().getFirst().equals(villesSortante))
-				{
-					if(villeSortantInterdit!=null && !entry.getKey().getFirst().equals(villeSortantInterdit) && !dejaDansDeterministe(entry.getKey().getFirst(), entry.getKey().getSecond(), g.getDeterminists(),paireDansGlouton))
-					{
-						if(plusprocheVoisin==null)
-						{
-							plusprocheVoisin = entry.getKey();
-						}
-						else if(entry.getValue()<g.getCouts().get(plusprocheVoisin))
-						{
-							plusprocheVoisin = entry.getKey();
-						}
-					}
-				}
+			}
 			
 		}
-		System.out.println("plus proche voisin"+plusprocheVoisin);
+		//System.out.println("plus proche voisin"+plusprocheVoisin);
 		return plusprocheVoisin;
 	}
 	

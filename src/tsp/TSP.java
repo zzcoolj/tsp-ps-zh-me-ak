@@ -28,7 +28,15 @@ public class TSP {
 		pl = new PL();
 
 		System.out.println("Avant glouton");
+		
+		long startTime = System.nanoTime();
 		pl.glouton(g);
+		long endTime = System.nanoTime();
+
+		long duration = (endTime - startTime)/1000000;  //divide by 1000000 to get milliseconds.
+		System.out.println("timer : "+duration+" ms");
+		
+		
 		//System.out.println("Contains = "+g.getCouts().containsKey(new PaireVertex(new Vertex(17), new Vertex(17))));
 		
 		//TODO Ici ou plus tard
