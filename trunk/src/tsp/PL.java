@@ -136,7 +136,7 @@ public class PL {
 		for(PaireVertex det : g.getDeterminists())
 		{
 			//Par exemple on trouve une paire (2,8) bah c'est okay
-			if(det.getFirst().equals(villesSortante) && !paireDansGlouton.contains(det))
+			if(det.getFirst().equals(villesSortante) && !paireDansGlouton.contains(det) && !det.getSecond().equals(villeInterdit))
 			{
 				System.out.println("Det : "+det);
 				return det;
