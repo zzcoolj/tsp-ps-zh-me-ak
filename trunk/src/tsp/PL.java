@@ -88,7 +88,7 @@ public class PL {
 	
 	public Graph glouton(Graph g)
 	{
-		System.out.println("Debut glouton");
+		//System.out.println("Debut glouton");
 		//System.out.println("Graphe = \n"+g);
 		
 		g.getDeterminists().add(new PaireVertex(new Vertex(4), new Vertex(12)));
@@ -119,7 +119,7 @@ public class PL {
 		if(last!=null)
 			vertexInterditSortant = last.getFirst();
 		
-		System.out.println("J'interdit : "+vertexInterditSortant);
+		//System.out.println("J'interdit : "+vertexInterditSortant);
 
 		PaireVertex tmp = cherche(sortante,paireDansGlouton,g,null,vertexInterditSortant);
 		paireDansGlouton.add(tmp);
@@ -155,7 +155,7 @@ public class PL {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			System.out.println("Liste a ajouter  = "+listeaAjouter);
+			//System.out.println("Liste a ajouter  = "+listeaAjouter);
 		
 			
 			Collections.reverse(listeaAjouter);

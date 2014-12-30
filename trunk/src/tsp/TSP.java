@@ -17,24 +17,19 @@ public class TSP {
 	
 	public TSP(String nameXml) {
 		p = new Parser(nameXml,"");
-		System.out.println("1");
 		g = new Graph(null);
-		System.out.println("2");
 		p.parse(g);
-		System.out.println("3");
 		s = new ArrayList<Scenario>();
 
-		System.out.println("4");
 		pl = new PL();
-
-		System.out.println("Avant glouton");
 		
+		System.out.println("Glouton en cours");
 		long startTime = System.nanoTime();
 		pl.glouton(g);
 		long endTime = System.nanoTime();
 
 		long duration = (endTime - startTime)/1000000;  //divide by 1000000 to get milliseconds.
-		System.out.println("timer : "+duration+" ms");
+		System.out.println("timer glouton : "+duration+" ms");
 		
 		
 		//System.out.println("Contains = "+g.getCouts().containsKey(new PaireVertex(new Vertex(17), new Vertex(17))));
