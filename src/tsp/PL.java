@@ -89,8 +89,12 @@ public class PL {
 	public Graph glouton(Graph g)
 	{
 		
-		g.getDeterminists().add(new PaireVertex(new Vertex(0), new Vertex(1)));
-		g.getDeterminists().add(new PaireVertex(new Vertex(4), new Vertex(2)));
+		g.getDeterminists().add(new PaireVertex(new Vertex(4), new Vertex(12)));
+		g.getDeterminists().add(new PaireVertex(new Vertex(5), new Vertex(2)));
+		g.getDeterminists().add(new PaireVertex(new Vertex(15), new Vertex(3)));
+		/*g.getDeterminists().add(new PaireVertex(new Vertex(16), new Vertex(1)));
+		g.getDeterminists().add(new PaireVertex(new Vertex(13), new Vertex(14)));
+		g.getDeterminists().add(new PaireVertex(new Vertex(1), new Vertex(4)));*/
 		
 		Vertex sortante = g.getDeterminists().get(0).getSecond();
 		ArrayList<PaireVertex> paireDansGlouton = new ArrayList<PaireVertex>();
@@ -98,13 +102,15 @@ public class PL {
 
 		PaireVertex tmp = cherche(sortante,paireDansGlouton,g,null);
 		paireDansGlouton.add(tmp);
-		
+		System.out.println("tmp = "+tmp);
 		PaireVertex sauvegarde = null;
 		while(paireDansGlouton.size()<g.getNbVilles())
 		{
 			sauvegarde = tmp;
 			tmp = cherche(tmp.getSecond(),paireDansGlouton,g,g.getDeterminists().get(0).getFirst());
-			paireDansGlouton.add(tmp);
+
+			if(tmp!=null)
+				paireDansGlouton.add(tmp);
 		}
 		
 		if(sauvegarde!=null)
@@ -125,6 +131,7 @@ public class PL {
 	//Supposon villesortantes = 2
 	public PaireVertex cherche(Vertex villesSortante,ArrayList<PaireVertex> paireDansGlouton,Graph g, Vertex villeInterdit)
 	{
+		System.out.println("Je cherche plus proche voisin de "+villesSortante);
 		for(PaireVertex det : g.getDeterminists())
 		{
 			//Par exemple on trouve une paire (2,8) bah c'est okay
@@ -138,7 +145,6 @@ public class PL {
 
 		for(Entry<PaireVertex,Double> entry : g.getCouts().entrySet())
 		{
-			
 				if(!arcExisteDeja(entry.getKey().getFirst(), entry.getKey().getSecond(), paireDansGlouton) && !paireDansGlouton.contains(entry.getKey()) && entry.getKey().getFirst().equals(villesSortante) && villeInterdit!=null && !entry.getKey().getSecond().equals(villeInterdit))
 				{
 					if(!dejaDansDeterministe(entry.getKey().getFirst(), entry.getKey().getSecond(), g.getDeterminists(),paireDansGlouton))
@@ -153,7 +159,7 @@ public class PL {
 						}
 					}
 				}
-				else if(villeInterdit==null && !arcExisteDeja(entry.getKey().getFirst(), entry.getKey().getSecond(), paireDansGlouton) && !paireDansGlouton.contains(entry.getKey()) && entry.getKey().getFirst().equals(villesSortante))
+				else if(villeInterdit==null && entry.getKey().getFirst().equals(villesSortante))
 				{
 					if(!dejaDansDeterministe(entry.getKey().getFirst(), entry.getKey().getSecond(), g.getDeterminists(),paireDansGlouton))
 					{
@@ -169,6 +175,7 @@ public class PL {
 				}
 			
 		}
+		System.out.println("plus proche voisin"+plusprocheVoisin);
 		return plusprocheVoisin;
 	}
 	
