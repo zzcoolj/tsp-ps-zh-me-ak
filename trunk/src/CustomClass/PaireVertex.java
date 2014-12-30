@@ -15,6 +15,14 @@ public class PaireVertex extends Paire<Vertex, Vertex>{
 	{
 		return this.first.getNumero()==this.second.getNumero();
 	}
+
+	@Override
+	public PaireVertex clone() throws CloneNotSupportedException {
+		// TODO Auto-generated method stub
+		
+		return new PaireVertex(new Vertex(first.getNumero()), new Vertex(second.getNumero()));
+	}
+	
 	
 	/*public static void main(String[] args) {
 		Vertex v1 = new Vertex(1);

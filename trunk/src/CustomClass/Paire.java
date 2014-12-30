@@ -68,4 +68,6 @@ public class Paire<T1,T2> {
 		// TODO Auto-generated method stub
 		return "("+first.toString()+","+second.toString()+")";
 	}
+	
+	
 }
