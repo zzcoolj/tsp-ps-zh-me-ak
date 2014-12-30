@@ -96,7 +96,8 @@ public class PL {
 		g.getDeterminists().add(new PaireVertex(new Vertex(16), new Vertex(1)));
 		g.getDeterminists().add(new PaireVertex(new Vertex(13), new Vertex(14)));
 		g.getDeterminists().add(new PaireVertex(new Vertex(1), new Vertex(4)));
-		g.getDeterminists().add(new PaireVertex(new Vertex(0), new Vertex(5)));
+		g.getDeterminists().add(new PaireVertex(new Vertex(0), new Vertex(9)));
+
 		
 		Vertex sortante = g.getDeterminists().get(0).getSecond();
 		ArrayList<PaireVertex> paireDansGlouton = new ArrayList<PaireVertex>();
