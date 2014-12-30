@@ -88,66 +88,123 @@ public class PL {
 	
 	public Graph glouton(Graph g)
 	{
-		List<Map.Entry<PaireVertex, Double>> entries = new ArrayList<Map.Entry<PaireVertex, Double>>(g.getCouts().entrySet());
-		
-		Map<PaireVertex, Double> sortedMap = sort(entries);
-		
-		ArrayList<PaireVertex> cheminGlouton = new ArrayList<PaireVertex>();
-		
-		ArrayList<Vertex> departs = new ArrayList<Vertex>();
-		ArrayList<Vertex> arrivee = new ArrayList<Vertex>();
 		
 		g.getDeterminists().add(new PaireVertex(new Vertex(0), new Vertex(1)));
-		g.getDeterminists().add(new PaireVertex(new Vertex(1), new Vertex(2)));
+		g.getDeterminists().add(new PaireVertex(new Vertex(0), new Vertex(4)));
 		
+		Vertex sortante = g.getDeterminists().get(0).getSecond();
+		ArrayList<PaireVertex> paireDansGlouton = new ArrayList<PaireVertex>();
+		paireDansGlouton.add(g.getDeterminists().get(0));
+
+		PaireVertex tmp = cherche(sortante,paireDansGlouton,g,null);
+		paireDansGlouton.add(tmp);
 		
-		
-		for(PaireVertex pv : g.getDeterminists())
+		PaireVertex sauvegarde = null;
+		while(paireDansGlouton.size()<g.getNbVilles())
 		{
-			departs.add(pv.getFirst());
-			arrivee.add(pv.getSecond());
+			sauvegarde = tmp;
+			tmp = cherche(tmp.getSecond(),paireDansGlouton,g,g.getDeterminists().get(0).getFirst());
+			paireDansGlouton.add(tmp);
 		}
 		
-		Vertex magique = new Vertex(departs.get(0).getNumero());
-		System.out.println("Magique : "+magique);
-		
-		for(Entry<PaireVertex, Double> entry : sortedMap.entrySet())
+		if(sauvegarde!=null)
 		{
-			if(!departs.contains(entry.getKey().getFirst()) && !arrivee.contains(entry.getKey().getSecond()) && !entry.getKey().getSecond().equals(magique))
-			{
-				if(!arcExisteDeja(entry.getKey().getFirst(), entry.getKey().getSecond(), departs, arrivee))
-				{
-					departs.add(entry.getKey().getFirst());
-					arrivee.add(entry.getKey().getSecond());
-				}
-				
-			}
+			paireDansGlouton.remove(null);
+			paireDansGlouton.add(new PaireVertex(sauvegarde.getSecond(), g.getDeterminists().get(0).getFirst()));
 		}
-		
-		for(Entry<PaireVertex, Double> entry : sortedMap.entrySet())
-		{
-			if(entry.getKey().getSecond().equals(magique) && !departs.contains(entry.getKey().getFirst()) && !arrivee.contains(entry.getKey().getSecond()))
-			{
-				if(!arcExisteDeja(entry.getKey().getFirst(), entry.getKey().getSecond(), departs, arrivee))
-				{
-					departs.add(entry.getKey().getFirst());
-					arrivee.add(entry.getKey().getSecond());
-				}
-				
-			}
-		}
+			
 		
 		System.out.println("Chemin glouton");
 		
-		for (int i = 0; i < departs.size(); i++) {
-			
-			PaireVertex tmp = new PaireVertex(departs.get(i), arrivee.get(i));
-			cheminGlouton.add(tmp);
-			System.out.println(departs.get(i)+"->"+arrivee.get(i)+" couts = "+sortedMap.get(tmp));
-		}
-		
+		System.out.println(paireDansGlouton);
 
 		return null;
+	}
+	
+	//Cherche plus proche voisin
+	//Supposon villesortantes = 2
+	public PaireVertex cherche(Vertex villesSortante,ArrayList<PaireVertex> paireDansGlouton,Graph g, Vertex villeInterdit)
+	{
+		for(PaireVertex det : g.getDeterminists())
+		{
+			//Par exemple on trouve une paire (2,8) bah c'est okay
+			if(det.getFirst().equals(villesSortante) && !paireDansGlouton.contains(det))
+			{
+				System.out.println("Det : "+det);
+				return det;
+			}
+		}
+		PaireVertex plusprocheVoisin = null;
+
+		for(Entry<PaireVertex,Double> entry : g.getCouts().entrySet())
+		{
+			
+				if(!arcExisteDeja(entry.getKey().getFirst(), entry.getKey().getSecond(), paireDansGlouton) && !paireDansGlouton.contains(entry.getKey()) && entry.getKey().getFirst().equals(villesSortante) && villeInterdit!=null && !entry.getKey().getSecond().equals(villeInterdit))
+				{
+					if(!dejaDansDeterministe(entry.getKey().getFirst(), entry.getKey().getSecond(), g.getDeterminists(),paireDansGlouton))
+					{
+						if(plusprocheVoisin==null)
+						{
+							plusprocheVoisin = entry.getKey();
+						}
+						else if(entry.getValue()<g.getCouts().get(plusprocheVoisin))
+						{
+							plusprocheVoisin = entry.getKey();
+						}
+					}
+				}
+				else if(villeInterdit==null && !arcExisteDeja(entry.getKey().getFirst(), entry.getKey().getSecond(), paireDansGlouton) && !paireDansGlouton.contains(entry.getKey()) && entry.getKey().getFirst().equals(villesSortante))
+				{
+					if(!dejaDansDeterministe(entry.getKey().getFirst(), entry.getKey().getSecond(), g.getDeterminists(),paireDansGlouton))
+					{
+						if(plusprocheVoisin==null)
+						{
+							plusprocheVoisin = entry.getKey();
+						}
+						else if(entry.getValue()<g.getCouts().get(plusprocheVoisin))
+						{
+							plusprocheVoisin = entry.getKey();
+						}
+					}
+				}
+			
+		}
+		return plusprocheVoisin;
+	}
+	
+	private boolean dejaDansDeterministe(Vertex x, Vertex y, ArrayList<PaireVertex> determinist, ArrayList<PaireVertex> arrayGlouton)
+	{
+		for(PaireVertex vd : determinist)
+		{
+			if(vd.getFirst().equals(x) || vd.getSecond().equals(y))
+			{
+				return true;
+			}
+		}
+	
+		
+		return false;
+	}
+	
+	private boolean arcExisteDeja(Vertex x, Vertex y, ArrayList<PaireVertex> array)
+	{
+		int i = 0;
+		for(PaireVertex vd : array)
+		{
+			if(vd.equals(new PaireVertex(y, x)))
+			{
+				return true;
+			}
+			
+			if(vd.getSecond().equals(y))
+			{
+				return true;
+			}
+			
+			i++;
+		}
+		
+		return false;
 	}
 	
 	private boolean arcExisteDeja(Vertex x, Vertex y, ArrayList<Vertex> departs, ArrayList<Vertex> arrivee)
