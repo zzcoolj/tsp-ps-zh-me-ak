@@ -56,8 +56,8 @@ public class Graph {
 
 		public Double[][] toTab()
 		{
-			
-			Double[][] tab = new Double[couts.size()][couts.size()];
+			System.out.println("Debut totab");
+			Double[][] tab = new Double[villes.size()][villes.size()];
 			
 			for(Entry<PaireVertex, Double> entry : couts.entrySet())
 			{
@@ -66,8 +66,22 @@ public class Graph {
 				
 				tab[key.getFirst().getNumero()][key.getSecond().getNumero()] = value;
 			}
-			
+			System.out.println("Fin totab");
 			return tab;
+		}
+		
+		@Override
+		public String toString() {
+		
+			String retour = "";
+			
+			for(Entry<PaireVertex, Double> entry : couts.entrySet())
+			{
+				retour += entry.getKey()+" = "+entry.getValue()+"\n";
+			}
+			
+			return retour;
+			
 		}
 		
 }
