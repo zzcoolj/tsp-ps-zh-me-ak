@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<travellingSalesmanProblemInstance>
+
+  <name>gr17</name>
+
+  <source>TSPLIB</source>
+
+  <description>17-city problem (Groetschel)</description>
+
+  <doublePrecision>15</doublePrecision>
+
+  <ignoredDigits>5</ignoredDigits>
+
+  <graph>
+    <vertex>
+      <edge cost="11">1</edge>
+      <edge cost="12">2</edge>
+      <edge cost="10">3</edge>
+      <edge cost="14">4</edge>
+    </vertex>
+    <vertex>
+      <edge cost="11">0</edge>
+      <edge cost="20">2</edge>
+      <edge cost="16">3</edge>
+      <edge cost="16">4</edge>
+    </vertex>
+    <vertex>
+      <edge cost="12">0</edge>
+      <edge cost="20">1</edge>
+      <edge cost="12">3</edge>
+      <edge cost="15">4</edge>
+    </vertex>
+    <vertex>
+      <edge cost="10">0</edge>
+      <edge cost="16">1</edge>
+      <edge cost="12">2</edge>
+      <edge cost="18">4</edge>
+    </vertex>
+    <vertex>
+      <edge cost="14">0</edge>
+      <edge cost="16">1</edge>
+      <edge cost="15">2</edge>
+      <edge cost="18">3</edge>
+    </vertex>
+  </graph>
+
+</travellingSalesmanProblemInstance>
