@@ -17,12 +17,17 @@ public class TSP {
 	
 	public TSP(String nameXml) {
 		p = new Parser(nameXml,"");
+		System.out.println("1");
 		g = new Graph(null);
+		System.out.println("2");
 		p.parse(g);
+		System.out.println("3");
 		s = new ArrayList<Scenario>();
 
+		System.out.println("4");
 		pl = new PL();
 
+		System.out.println("Avant glouton");
 		pl.glouton(g);
 		//System.out.println("Contains = "+g.getCouts().containsKey(new PaireVertex(new Vertex(17), new Vertex(17))));
 		
