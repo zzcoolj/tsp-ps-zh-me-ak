@@ -92,9 +92,9 @@ public class PL {
 		g.getDeterminists().add(new PaireVertex(new Vertex(4), new Vertex(12)));
 		g.getDeterminists().add(new PaireVertex(new Vertex(5), new Vertex(2)));
 		g.getDeterminists().add(new PaireVertex(new Vertex(15), new Vertex(3)));
-		/*g.getDeterminists().add(new PaireVertex(new Vertex(16), new Vertex(1)));
+		g.getDeterminists().add(new PaireVertex(new Vertex(16), new Vertex(1)));
 		g.getDeterminists().add(new PaireVertex(new Vertex(13), new Vertex(14)));
-		g.getDeterminists().add(new PaireVertex(new Vertex(1), new Vertex(4)));*/
+		g.getDeterminists().add(new PaireVertex(new Vertex(1), new Vertex(4)));
 		
 		Vertex sortante = g.getDeterminists().get(0).getSecond();
 		ArrayList<PaireVertex> paireDansGlouton = new ArrayList<PaireVertex>();
@@ -111,6 +111,7 @@ public class PL {
 
 			if(tmp!=null)
 				paireDansGlouton.add(tmp);
+			System.out.println("GLOUTON ======= "+paireDansGlouton);
 		}
 		
 		if(sauvegarde!=null)
@@ -140,13 +141,24 @@ public class PL {
 				System.out.println("Det : "+det);
 				return det;
 			}
+			
 		}
 		PaireVertex plusprocheVoisin = null;
 
 		for(Entry<PaireVertex,Double> entry : g.getCouts().entrySet())
 		{
+			if(entry.getKey().getFirst().equals(new Vertex(4)) && villesSortante.equals(new Vertex(4)))
+			{
+				System.out.println("Je suis au couple = "+entry.getKey());
+				System.out.println("arcExisteDeja = "+arcExisteDeja(entry.getKey().getFirst(), entry.getKey().getSecond(), paireDansGlouton));
+				System.out.println("estdansGlouton = "+paireDansGlouton.contains(entry.getKey()));
+				System.out.println("first = villesortante = "+entry.getKey().getFirst().equals(villesSortante));
+				System.out.println("second = villeinterdi 4 = "+entry.getKey().getSecond().equals(villeInterdit));
+			}
+				
 				if(!arcExisteDeja(entry.getKey().getFirst(), entry.getKey().getSecond(), paireDansGlouton) && !paireDansGlouton.contains(entry.getKey()) && entry.getKey().getFirst().equals(villesSortante) && villeInterdit!=null && !entry.getKey().getSecond().equals(villeInterdit))
 				{
+					System.out.println("Affiche = "+dejaDansDeterministe(entry.getKey().getFirst(), entry.getKey().getSecond(), g.getDeterminists(),paireDansGlouton));
 					if(!dejaDansDeterministe(entry.getKey().getFirst(), entry.getKey().getSecond(), g.getDeterminists(),paireDansGlouton))
 					{
 						if(plusprocheVoisin==null)
