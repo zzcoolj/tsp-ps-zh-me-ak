@@ -92,6 +92,7 @@ public class PL {
 		g.getDeterminists().add(new PaireVertex(new Vertex(4), new Vertex(12)));
 		g.getDeterminists().add(new PaireVertex(new Vertex(5), new Vertex(2)));
 		g.getDeterminists().add(new PaireVertex(new Vertex(15), new Vertex(3)));
+		g.getDeterminists().add(new PaireVertex(new Vertex(11), new Vertex(16)));
 		g.getDeterminists().add(new PaireVertex(new Vertex(16), new Vertex(1)));
 		g.getDeterminists().add(new PaireVertex(new Vertex(13), new Vertex(14)));
 		g.getDeterminists().add(new PaireVertex(new Vertex(1), new Vertex(4)));
@@ -99,25 +100,63 @@ public class PL {
 		Vertex sortante = g.getDeterminists().get(0).getSecond();
 		ArrayList<PaireVertex> paireDansGlouton = new ArrayList<PaireVertex>();
 		paireDansGlouton.add(g.getDeterminists().get(0));
+		
+		Vertex vertexInterditSortant = null;
+		
+		Vertex copie = null;
+		
+		PaireVertex last = null;
+		try {
+			last = recursif(g.getDeterminists(),g.getDeterminists().get(0).clone());
+		} catch (CloneNotSupportedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if(last!=null)
+			vertexInterditSortant = last.getFirst();
+		
+		System.out.println("J'interdit : "+vertexInterditSortant);
 
-		PaireVertex tmp = cherche(sortante,paireDansGlouton,g,null);
+		PaireVertex tmp = cherche(sortante,paireDansGlouton,g,null,vertexInterditSortant);
 		paireDansGlouton.add(tmp);
 		System.out.println("tmp = "+tmp);
 		PaireVertex sauvegarde = null;
 		while(paireDansGlouton.size()<g.getNbVilles())
 		{
-			sauvegarde = tmp;
-			tmp = cherche(tmp.getSecond(),paireDansGlouton,g,g.getDeterminists().get(0).getFirst());
-
 			if(tmp!=null)
-				paireDansGlouton.add(tmp);
+			{
+				sauvegarde = tmp;
+				tmp = cherche(tmp.getSecond(),paireDansGlouton,g,g.getDeterminists().get(0).getFirst(),vertexInterditSortant);
+				if(tmp!=null)
+					paireDansGlouton.add(tmp);
+				else 
+					break;
+			}
 			System.out.println("GLOUTON ======= "+paireDansGlouton);
 		}
 		
 		if(sauvegarde!=null)
 		{
 			paireDansGlouton.remove(null);
-			paireDansGlouton.add(new PaireVertex(sauvegarde.getSecond(), g.getDeterminists().get(0).getFirst()));
+			System.out.println("Sav = "+sauvegarde);
+			
+			ArrayList<PaireVertex> listeaAjouter = new ArrayList<PaireVertex>();
+			try {
+				recursifList(g.getDeterminists(), g.getDeterminists().get(0).clone(), listeaAjouter);
+			} catch (CloneNotSupportedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			System.out.println("Liste a ajouter  = "+listeaAjouter);
+			
+			for(int i=listeaAjouter.size()-1;i>=0;i--)
+			{
+				paireDansGlouton.add(new PaireVertex(sauvegarde.getSecond(), listeaAjouter.get(i).getFirst()));
+				paireDansGlouton.add(listeaAjouter.get(i));
+			}
+			
+			if(listeaAjouter.size()==0)
+				paireDansGlouton.add(new PaireVertex(sauvegarde.getSecond(), g.getDeterminists().get(0).getFirst()));
 		}
 			
 		
@@ -128,9 +167,65 @@ public class PL {
 		return null;
 	}
 	
+	
+
+	private PaireVertex recursif(ArrayList<PaireVertex> determinists,PaireVertex paireActuel) {
+		
+		if(paireActuel==null || determinists==null || determinists.size()==0)
+			return null;
+		else
+		{
+			boolean trouve = false;
+			
+			for(PaireVertex p : determinists)
+			{
+				if(p.getSecond().equals(paireActuel.getFirst()))
+				{
+					trouve = true;
+					paireActuel = p;
+				}
+			}
+			
+			if(!trouve)
+				return paireActuel;
+			
+			return recursif(determinists, paireActuel);
+		}
+		
+		
+	}
+	
+	private void recursifList(ArrayList<PaireVertex> determinists,PaireVertex paireActuel, ArrayList<PaireVertex> liste) {
+		
+		if(paireActuel==null || determinists==null || determinists.size()==0)
+			return;
+		else
+		{
+			 
+			boolean trouve = false;
+			
+			for(PaireVertex p : determinists)
+			{
+				if(p.getSecond().equals(paireActuel.getFirst()))
+				{
+					trouve = true;
+					paireActuel = p;
+					liste.add(paireActuel);
+				}
+			}
+			
+			if(!trouve)
+				return;
+			
+			recursifList(determinists, paireActuel,liste);
+		}
+		
+		
+	}
+
 	//Cherche plus proche voisin
 	//Supposon villesortantes = 2
-	public PaireVertex cherche(Vertex villesSortante,ArrayList<PaireVertex> paireDansGlouton,Graph g, Vertex villeInterdit)
+	public PaireVertex cherche(Vertex villesSortante,ArrayList<PaireVertex> paireDansGlouton,Graph g, Vertex villeInterdit, Vertex villeSortantInterdit)
 	{
 		System.out.println("Je cherche plus proche voisin de "+villesSortante);
 		for(PaireVertex det : g.getDeterminists())
@@ -147,16 +242,16 @@ public class PL {
 
 		for(Entry<PaireVertex,Double> entry : g.getCouts().entrySet())
 		{
-			if(entry.getKey().getFirst().equals(new Vertex(4)) && villesSortante.equals(new Vertex(4)))
+			/*if(entry.getKey().getFirst().equals(new Vertex(0)) && villesSortante.equals(new Vertex(0)))
 			{
 				System.out.println("Je suis au couple = "+entry.getKey());
 				System.out.println("arcExisteDeja = "+arcExisteDeja(entry.getKey().getFirst(), entry.getKey().getSecond(), paireDansGlouton));
 				System.out.println("estdansGlouton = "+paireDansGlouton.contains(entry.getKey()));
 				System.out.println("first = villesortante = "+entry.getKey().getFirst().equals(villesSortante));
 				System.out.println("second = villeinterdi 4 = "+entry.getKey().getSecond().equals(villeInterdit));
-			}
+			}*/
 				
-				if(!arcExisteDeja(entry.getKey().getFirst(), entry.getKey().getSecond(), paireDansGlouton) && !paireDansGlouton.contains(entry.getKey()) && entry.getKey().getFirst().equals(villesSortante) && villeInterdit!=null && !entry.getKey().getSecond().equals(villeInterdit))
+				if(villeSortantInterdit!=null && !entry.getKey().getSecond().equals(villeSortantInterdit) && !arcExisteDeja(entry.getKey().getFirst(), entry.getKey().getSecond(), paireDansGlouton) && !paireDansGlouton.contains(entry.getKey()) && entry.getKey().getFirst().equals(villesSortante) && villeInterdit!=null && !entry.getKey().getSecond().equals(villeInterdit))
 				{
 					System.out.println("Affiche = "+dejaDansDeterministe(entry.getKey().getFirst(), entry.getKey().getSecond(), g.getDeterminists(),paireDansGlouton));
 					if(!dejaDansDeterministe(entry.getKey().getFirst(), entry.getKey().getSecond(), g.getDeterminists(),paireDansGlouton))
@@ -173,7 +268,7 @@ public class PL {
 				}
 				else if(villeInterdit==null && entry.getKey().getFirst().equals(villesSortante))
 				{
-					if(!dejaDansDeterministe(entry.getKey().getFirst(), entry.getKey().getSecond(), g.getDeterminists(),paireDansGlouton))
+					if(villeSortantInterdit!=null && !entry.getKey().getFirst().equals(villeSortantInterdit) && !dejaDansDeterministe(entry.getKey().getFirst(), entry.getKey().getSecond(), g.getDeterminists(),paireDansGlouton))
 					{
 						if(plusprocheVoisin==null)
 						{
