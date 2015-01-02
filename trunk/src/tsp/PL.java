@@ -47,37 +47,74 @@ public class PL {
 		return null;
 	}
 	
-	public void initScenario(ArrayList<Scenario> s, TSP tsp)
+	public void initScenario(ArrayList<Scenario> s, TSP tsp, int n)
 	{
+		for(int i=0; i<n;i++){
+			Scenario s1 = new Scenario(i);
+			s.add(s1);
+		}
+		
+		LinkedHashMap<PaireVertex, ArrayList<Double>> listeStochastique = new LinkedHashMap<PaireVertex, ArrayList<Double>>();
+
+		for (Entry<PaireVertex, Double> liste : tsp.getG().getCouts().entrySet()) {
+			PaireVertex p = liste.getKey();
+			ArrayList<Double> valStocha = new ArrayList<Double>();
+				
+				if(tsp.getDeterminists().contains(p) || p.hasSameVertex()){
+					for(int i=0; i<n;i++){
+						valStocha.add(liste.getValue());
+					}
+					listeStochastique.put(p,valStocha);
+				}
+				else{
+					Double valeurXml = liste.getValue();
+					Double ecartype = Maths.calculEcartType(tsp);
+					Double min = valeurXml- (3 * ecartype);
+					Double max = valeurXml+ (3 *ecartype);
+					try {
+						valStocha.addAll(Maths.generateRandomCosts(valeurXml, n, min, max));
+						listeStochastique.put(p,valStocha);
+					} catch (ExceptionMaths e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+				}
+				
+		}
+		
+		for(int i=0; i<n; i++){
+		Graph g = new Graph(tsp.getG().getVilles());
+		LinkedHashMap<PaireVertex, Double> tmp = new LinkedHashMap<PaireVertex,Double>();
+			for(Entry<PaireVertex, ArrayList<Double>> liste2 : listeStochastique.entrySet()){
+				PaireVertex p = liste2.getKey();
+				Double d = liste2.getValue().get(i);
+				tmp.put(p, d);
+		}
+			System.out.println(tmp);
+			g.setCouts(tmp);
+			s.get(i).setSolution(g);
+		}
+		
+		/*
 		for (Scenario scenario : s) {
-			Graph g = new Graph(tsp.getG().getVilles());
-			LinkedHashMap<PaireVertex, Double> tmp = new LinkedHashMap<>();
 			
 			for(int i=0; i<g.getNbVilles(); i++){
 				for(int j=0; j<g.getNbVilles();j++){
 					PaireVertex p = new PaireVertex(new Vertex(i),new Vertex(j));
-					if(tsp.getDeterminists().contains(p) || p.hasSameVertex()){
-						tmp.put(p, tsp.getG().getCouts().get(p));
-					}
+					
 					else{
-						Double valeurXml = tsp.getG().getCouts().get(p);
-						Double ecartype = Maths.calculEcartType(tsp);
-						int nbvaleur = 3;
 						
-						Double min = valeurXml-ecartype;
-						Double max = valeurXml+ecartype;
-						try {
-							System.out.println(Maths.generateRandomCosts(valeurXml, nbvaleur, min, max));
-						} catch (ExceptionMaths e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
+						int nbvaleur = 1; 
+						
+						
 					}
 				}
 			}
+			System.out.println(tmp);
 			g.setCouts(tmp);
 			scenario.setSolution(g);
-		}
+		}*/
 	}
 	
 	public Graph generateSolutionReference(Graph g)

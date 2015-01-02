@@ -11,7 +11,7 @@ public class TSP {
 	private Graph g;
 	private Parser p;
 	private ArrayList<Scenario> s;
-	
+	private int scenario=10;
 	private float pourcentageDeterminist;
 	protected static Integer n_opt = 2;
 	
@@ -22,10 +22,12 @@ public class TSP {
 		s = new ArrayList<Scenario>();
 
 		pl = new PL();
-		
+		pl.initScenario(s, this, scenario);
+
 		System.out.println("Glouton en cours");
 		long startTime = System.nanoTime();
 		pl.glouton(g);
+
 		long endTime = System.nanoTime();
 
 		long duration = (endTime - startTime)/1000000;  //divide by 1000000 to get milliseconds.
@@ -34,8 +36,7 @@ public class TSP {
 		
 		//System.out.println("Contains = "+g.getCouts().containsKey(new PaireVertex(new Vertex(17), new Vertex(17))));
 		
-		//TODO Ici ou plus tard
-		//pl.initScenario(s);
+		//TODO regarder cela 
 
 	}
 	
