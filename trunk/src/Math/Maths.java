@@ -18,7 +18,8 @@ public class Maths {
 	 */
 	public static ArrayList<Double> generateRandomCosts(Double initial, int n, Double min, Double max) throws ExceptionMaths
 	{
-		ArrayList<Double> values=new ArrayList<Double>();
+		
+		ArrayList<Double> values = new ArrayList<Double>();
 		if(min<0)
 			min = 0.0;
 		if(max<0)
@@ -32,14 +33,15 @@ public class Maths {
 			Random rand = new Random();
 			values.add(min + (max - min) * rand.nextDouble());
 		}
+		
 		return values;
 	}
 	
-	/*public static void main(String[] args) {
+	public static void main(String[] args) {
 		
 		Double valeurXml = 18.0;
 		Double ecartype = 8.41;
-		int nbvaleur = 1;
+		int nbvaleur = 3;
 		
 		Double min = valeurXml-ecartype;
 		Double max = valeurXml+ecartype;
@@ -50,7 +52,7 @@ public class Maths {
 			e.printStackTrace();
 		}
 	}
-	*/
+	
 	
 	/**
 	 * calcul l'ecart type : Ecart-Type = sqrt(variance)
@@ -68,20 +70,22 @@ public class Maths {
 	 */
 	private static Double calculVariance(TSP tsp)
 	{
-		int taille = tsp.getG().getCouts().size();
+		int taille = tsp.getG().getNbVilles();
 		double xi[] = new double[taille];
 		float pi[] = new float[taille];
-		float ps = (float) 1/(tsp.getS().size());
+		
+		float ps = 1/(tsp.getS().size());
 		int j=0;
+		
 		for(Entry<PaireVertex, Double> entry : tsp.getG().getCouts().entrySet()) {
 		    PaireVertex key = entry.getKey();
 		    if(!(tsp.getDeterminists().contains(key)) && !(key.hasSameVertex())){
 		    	Double value = entry.getValue();
 		    	xi[j]= value;
-		    	pi[j]=ps;	
-		    	j++;
+		    	pi[j]=ps;		
 		    }
-		}    		
+		}    
+
 		Double sum = 0.0;
 		
 		//E(X)
@@ -104,6 +108,6 @@ public class Maths {
 		Double esperance2 = Math.pow(esperance, 2);
 		
 		//TODO return 3*variance ici ou plus tard ?
-		return esperance2-esperance1;
+		return esperance1-esperance2;
 	}
 }
