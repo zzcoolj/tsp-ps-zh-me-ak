@@ -34,7 +34,13 @@ public class Controleur implements MouseListener{
 			//System.out.println("Appuie sur open solve => appel de model.getTSP().getPL().solve()");
 			
 			if(verification())
-				model.tspSolve();
+			{
+				if(model.getTsp()!=null)
+				{
+					model.getTsp().addObserver(vue);
+				}
+				model.tspSolve((float)(vue.sliderDeterminist.getValue()/100), Integer.valueOf(vue.kmaxTxtField.getText()), Integer.valueOf(vue.nbscenarioTxtField.getText()));
+			}
 			else
 				lanceAlerte();
 			

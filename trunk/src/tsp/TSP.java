@@ -1,17 +1,19 @@
 package tsp;
 
 import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
 
 import CustomClass.PaireVertex;
 import mvc.GraphOpt;
 
-public class TSP {
+public class TSP extends Observable{
 	
 	private PL pl;
 	private Graph g;
 	private Parser p;
 	private ArrayList<Scenario> s;
-	private int scenario=10;
+	private int scenario = 10;
 	private float pourcentageDeterminist;
 	protected static Integer n_opt = 2;
 	
@@ -20,38 +22,39 @@ public class TSP {
 		g = new Graph(null);
 		p.parse(g);
 		s = new ArrayList<Scenario>();
-
-		pl = new PL();
+		pl = new PL();	}
+	
+	public GraphOpt launch(float determinist, Integer kmax, Integer nbScenario) 
+	{
+		scenario = nbScenario;
+		n_opt = kmax;
+		pourcentageDeterminist = determinist;
+		
 		pl.initScenario(s, this, scenario);
+		
+		System.out.println("====== "+s);
+		System.out.println("Debut vrai");
+		setChanged();
+		notifyObservers(this.s);
+		
+		System.out.println("Fin Vrai");
 
-		System.out.println("Glouton en cours");
+		/*System.out.println("Glouton en cours");
 		long startTime = System.nanoTime();
 		pl.glouton(g);
 		long endTime = System.nanoTime();
 
 		long duration = (endTime - startTime)/1000000;  //divide by 1000000 to get milliseconds.
-		System.out.println("timer glouton : "+duration+" ms");
-		
-		//System.out.println("Contains = "+g.getCouts().containsKey(new PaireVertex(new Vertex(17), new Vertex(17))));
-		
-		//TODO regarder cela 
-
-	}
-	
-	public GraphOpt launch() 
-	{
-		//Double[][] tab = d.toTab();
-		
-		//pl = new PL(tab);
+		System.out.println("timer glouton : "+duration+" ms");*/
 		
 		
-		long startTime = System.currentTimeMillis();
+		/*long startTime = System.currentTimeMillis();
 		GraphOpt result = pl.solve();
 		long stopTime = System.currentTimeMillis();
 		System.out.println("timer = "+(stopTime - startTime)/1000);
-		result.setTime((stopTime - startTime));
+		result.setTime((stopTime - startTime));*/
 
-		return result;
+		return null;
 		
 	}
 	

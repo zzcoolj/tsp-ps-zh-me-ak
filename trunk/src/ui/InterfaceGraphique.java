@@ -48,9 +48,7 @@ public class InterfaceGraphique extends JPanel {
 	}
 	
 	public void drawStream(Graph g) {
-		nbV = g.getNbVilles();
-		couts = g.toTab();
-		jgraphT(nbV, couts);
+		draw(g);
 	}
 
 	private void jgraphT(int nbV, Double[][] couts) {

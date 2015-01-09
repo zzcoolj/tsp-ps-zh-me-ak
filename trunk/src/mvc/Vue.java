@@ -39,6 +39,7 @@ public class Vue extends JFrame implements Observer {
 	JSlider sliderDeterminist;
 	JTextField kmaxTxtField;
 	JTextField nbscenarioTxtField ;
+	JScrollPane scrollScenarios;
 	
 	public Vue() {
 		// TODO Auto-generated constructor stub
@@ -50,6 +51,8 @@ public class Vue extends JFrame implements Observer {
 		int height = gd.getDisplayMode().getHeight();
 		setSize(width, height);
 		
+		scrollScenarios = new JScrollPane();
+		
 		init();
 		list = new JList();
 		
@@ -58,10 +61,11 @@ public class Vue extends JFrame implements Observer {
 		setVisible(true);
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 	}
-	
+	int sizeOfNoeud = 150;
+	private JPanel noeudetScenario;
 	private void init()
 	{
-		int sizeOfNoeud = 150;
+		
 		//Principal
 		principal = new JPanel(); principal.setBackground(Color.decode("#2980b9"));
 		principal.setLayout(new BorderLayout());
@@ -71,29 +75,25 @@ public class Vue extends JFrame implements Observer {
 		grapheInterface.setPreferredSize(new Dimension(getWidth()-sizeOfNoeud, getHeight()));
 		
 		//Droite
-		JPanel noeudetScenario = new JPanel();
+		noeudetScenario = new JPanel();
 		noeudetScenario.setLayout(new BorderLayout());
 		noeudetScenario.setPreferredSize(new Dimension(sizeOfNoeud*2, getHeight()-180));
-			//Scenario
-		ArrayList<Scenario> s = new ArrayList<Scenario>();
-		Scenario tmp = new Scenario(1);
-		tmp.setEtat(Scenario.etat.FINISHED);
-		Scenario tmp2 = new Scenario(2);
-		tmp2.setEtat(Scenario.etat.CHANGINGNEIGHBORHOOD);
-		Scenario tmp3 = new Scenario(3);
-		tmp3.setEtat(Scenario.etat.WAITING);
-		s.add(tmp);
-		s.add(tmp2);
-		s.add(tmp3);
-		
-		scenario = new ScenarioCanvas(s);scenario.setBackground(Color.decode("#34495e"));
-		scenario.setPreferredSize(new Dimension(sizeOfNoeud, getHeight()-180));
-		
+			
 			//Noeud
 		noeud = new JPanel(); noeud.setBackground(Color.decode("#27ae60"));
 		noeud.setPreferredSize(new Dimension(sizeOfNoeud, getHeight()-240));
-		noeudetScenario.add(scenario, BorderLayout.CENTER);
+		
+		scenario = new ScenarioCanvas();
+		scenario.setBackground(Color.decode("#34495e"));
+		scenario.setPreferredSize(new Dimension(sizeOfNoeud, getHeight()-180));
+		scrollScenarios.setViewportView(scenario);
+		
+		scrollScenarios.setPreferredSize(new Dimension(sizeOfNoeud, getHeight()-180));
+		
+		noeudetScenario.add(scrollScenarios, BorderLayout.CENTER);
+		
 		noeudetScenario.add(noeud, BorderLayout.LINE_END);
+		
 		
 		
 		//Menu
@@ -210,12 +210,28 @@ public class Vue extends JFrame implements Observer {
 		bas.addMouseListener(c);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void update(Observable o, Object arg) {
-		// TODO Auto-generated method stub
+		System.out.println("update() "+arg);
+		if(arg==null)
+			return;
+		//Si TSP notifie
 		try {
-			if(arg==null)
-				return;
+			ArrayList<Scenario> lScenario = new ArrayList<Scenario>();
+			lScenario.addAll((ArrayList<Scenario>) arg);
+			
+			//scenario.setBackground(Color.BLUE);
+			scenario.miseAjour(lScenario);
+			scenario.setPreferredSize(new Dimension(sizeOfNoeud, getHeight()*lScenario.size()/7-180));
+			scrollScenarios.setPreferredSize(new Dimension(sizeOfNoeud, getHeight()*lScenario.size()-180));
+						
+		} catch (ClassCastException e) {
+			// TODO: handle exception
+		}
+		
+		//SI modele notifie
+		try {
 			
 			if(arg instanceof TSP)
 			{

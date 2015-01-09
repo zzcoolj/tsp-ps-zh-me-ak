@@ -20,13 +20,13 @@ public class Model extends Observable{
 		
 	}
 	
-	public void tspSolve()
+	public void tspSolve(float determinist, Integer kmax, Integer nbScenario)
 	{
 		if(tsp==null)
 			return;
-		//System.out.println("patati");
+		
 		GraphOpt opt = new GraphOpt();//La tu met toi opt = tsp.launch
-		opt = tsp.launch();
+		opt = tsp.launch(determinist, kmax, nbScenario);
 		launch(opt);
 	}
 	
