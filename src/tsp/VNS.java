@@ -249,7 +249,7 @@ public class VNS {
 		//FIXME (Note 1) appel de ordonne(pioche,solutionScenarioGlouton); //ordonne la pioche en fonction du sens si (1->2)(5->6)(3->4) on se doit d'ordonner
 		//Vraiement de a-z : donc mettre (1,11) (11,2) etc ... a la suite bien comme il le faut 
 		
-		//FIXME les supprimer du chemin : ??? => de solutionScenarioGlouton
+		//FIXME les supprimer du chemin directement : ??? => de solutionScenarioGlouton
 		
 		LinkedHashMap<Vertex, Boolean> visite = new LinkedHashMap<Vertex, Boolean>();
 		for(PaireVertex p : pioche)
@@ -286,7 +286,7 @@ public class VNS {
 			
 		//FIXME methode qui colle les nouveau noeud a la solution du scenario : il faut bien les inserer a leur place 
 		//genre on doit inserer dans [ (1,2) (4,5) ] l'arrete (2,4) faut la mettre au milieu
-		//TODO Cf (FIXME Note 1 au dessus) : on utilisera la meme methode
+		//TODO Cf (FIXME Note 1 au dessus) : on utilisera la meme methode pour cette fois remettre dans l'ordre
 		
 		
 		System.out.println("Stochastique"+stochastiques);
