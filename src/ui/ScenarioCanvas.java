@@ -5,10 +5,13 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 import javax.swing.JPanel;
 
+import CustomClass.PaireVertex;
 import tsp.Scenario;
 
 public class ScenarioCanvas extends JPanel{
@@ -24,16 +27,21 @@ public class ScenarioCanvas extends JPanel{
 		// TODO Auto-generated constructor stub
 		listeScenario = new ArrayList<ScenarioComponent>();
 		
-		int height = 80;
-		int width = 150;
-		int x = 0;
-		int y = 0;
-		
-		for(Scenario s:scenarios)
+		if(scenarios.size()>0)
 		{
-			listeScenario.add(new ScenarioComponent(s, new Point(x, y), width, height, Color.RED, Color.RED));
-			y+=height;
+			int height = 80;
+			int width = 150;
+			int x = 0;
+			int y = 0;
+			
+			for(Scenario s:scenarios)
+			{
+				listeScenario.add(new ScenarioComponent(s, new Point(x, y), width, height, Color.RED, Color.RED));
+				y+=height;
+			}
 		}
+			
+		
 	}
 	
 	public void miseAjour(ArrayList<Scenario> scenarios)
@@ -50,6 +58,7 @@ public class ScenarioCanvas extends JPanel{
 			listeScenario.add(new ScenarioComponent(s, new Point(x, y), width, height, Color.RED, Color.RED));
 			y+=height;
 		}
+		repaint();
 	}
 	
 	@Override
@@ -96,6 +105,10 @@ public class ScenarioCanvas extends JPanel{
 			
 		}
 		
+	}
+
+	public ArrayList<ScenarioComponent> getScenarios() {
+		return listeScenario;
 	}
 
 }
