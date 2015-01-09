@@ -223,7 +223,7 @@ public class Vue extends JFrame implements Observer {
 			
 			//scenario.setBackground(Color.BLUE);
 			scenario.miseAjour(lScenario);
-			scenario.setPreferredSize(new Dimension(sizeOfNoeud, getHeight()*lScenario.size()/7-180));
+			scenario.setPreferredSize(new Dimension(sizeOfNoeud, getHeight()*lScenario.size()/7-280));
 			scrollScenarios.setPreferredSize(new Dimension(sizeOfNoeud, getHeight()*lScenario.size()-180));
 						
 		} catch (ClassCastException e) {

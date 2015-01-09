@@ -17,6 +17,11 @@ public class Graph {
 			this.determinists = new ArrayList<PaireVertex>();
 		}
 		
+		public Graph(){
+			this.couts = new LinkedHashMap<PaireVertex, Double>();
+			this.determinists = new ArrayList<PaireVertex>();
+		}
+		
 		public ArrayList<PaireVertex> getDeterminists() {
 			return determinists;
 		}
@@ -52,6 +57,12 @@ public class Graph {
 		
 		public void setCouts(LinkedHashMap<PaireVertex, Double> couts) {
 			this.couts = couts;
+			
+			for(PaireVertex paire : couts.keySet())
+			{
+				if(!villes.contains(paire.getFirst()))
+					villes.add(paire.getFirst());
+			}
 		}
 
 		public Double[][] toTab()

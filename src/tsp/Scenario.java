@@ -12,6 +12,7 @@ public class Scenario {
 	private Integer numero;
 	private Graph solution;
 	private etat e;
+	private VNS vns;
 	
 	//TODO METTRE UN ETAT pour le scenario
 	
@@ -20,7 +21,8 @@ public class Scenario {
 		this.numero = numero;
 		e = etat.WAITING;
 		//TODO null ou on commence penalite + VNS 
-		solution = null; 
+		solution = new Graph(); 
+		vns = new VNS();
 	}
 	
 	public void solve()
@@ -50,6 +52,11 @@ public class Scenario {
 	{
 		this.e = e;
 	}
+
+	public VNS getVns() {
+		return vns;
+	}
+	
 	
 
 }

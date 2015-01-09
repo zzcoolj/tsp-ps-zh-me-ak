@@ -23,10 +23,17 @@ public class VNS {
 
 }
 */
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.TreeSet;
 import java.util.Random;
+
+import javax.swing.text.StyledEditorKit.BoldAction;
+
+import CustomClass.PaireVertex;
+import Math.Maths;
 
 public class VNS {
 	private int kmax;
@@ -39,6 +46,10 @@ public class VNS {
 
 	public VNS(int neighborhood) {
 		this.neighborhood = neighborhood;
+	}
+	
+	public VNS() {
+		
 	}
 	
 	private void shake(int nbVille) {
@@ -154,7 +165,7 @@ public class VNS {
 
 	
 
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 
 		LinkedList<Integer> cheminsInitialTest = new LinkedList<Integer>();
 		cheminsInitialTest.add(0);
@@ -178,7 +189,118 @@ public class VNS {
 		VNS v = new VNS(2);
 		//v.solve(cheminsInitialTest);
 		v.neighborhoodChange(coutsTest, cheminsInitialTest, v.solve(cheminsInitialTest));
+		
+		
+	}*/
+	
+	
+	
+	/**
+	 * |			|
+	 * |			|
+	 * |			|		ALGO N-OPT
+	 * |			|
+	 * |			|
+	 */
+	
+	public void algoVNSNopt(Graph solutionScenarioGlouton,TSP tsp)
+	{
+		ArrayList<PaireVertex> stochastiques = new ArrayList<PaireVertex>();
+		for(PaireVertex paire : solutionScenarioGlouton.getCouts().keySet())
+		{
+			if(!tsp.getG().getDeterminists().contains(paire))
+				stochastiques.add(paire);
+		}
+		ArrayList<PaireVertex> pioche = new ArrayList<PaireVertex>();
+		/**
+		 * Une simple boucle pour dire que l'on doit avoir :
+		 * Pour 2-opt : 2 pioche
+		 * Pour 3-opt : 3 pioche
+		 * etc ...
+		 */
+		while(pioche.size()<TSP.n_opt)
+		{
+			//Random entre [0,stochastiques.size()-1)
+			PaireVertex choisi = stochastiques.get(Maths.randInt(0, stochastiques.size()-1));
+			if(!pioche.contains(choisi) && !vertexDejaPioche(choisi.getFirst(), pioche) && !vertexDejaPioche(choisi.getSecond(), pioche))
+				pioche.add(choisi);
+		}
+		
+		System.out.println("La pioche : "+pioche);
+		
+		//FIXME appel de ordonne(pioche,solutionScenarioGlouton); //ordonne la pioche en fonction du sens si (1->2)(5->6)(3->4) on se doit d'ordonner
+		//FIXME les supprimer du chemin : ??? => de solutionScenarioGlouton
+		
+		LinkedHashMap<Vertex, Boolean> visite = new LinkedHashMap<Vertex, Boolean>();
+		for(PaireVertex p : pioche)
+		{
+			visite.put(p.getFirst(), false);
+			visite.put(p.getSecond(), false);
+		}
+		
+		//FIXME : methode qui regarde dans les deux sens!!!!
+		
+		ArrayList<PaireVertex> nouveau = new ArrayList<PaireVertex>();
+		
+		int i = 0;
+		while(!toutViste(visite))
+		{
+			
+			if(i+1==pioche.size())
+			{
+				System.out.println("2) Je lie : "+pioche.get(i).getFirst()+" avec " + pioche.get(0).getSecond());
+				nouveau.add(lie(pioche.get(i).getFirst(), pioche.get(0).getSecond()));
+			}
+			else
+			{
+				System.out.println("3) Je lie : "+pioche.get(i).getFirst()+" avec " + pioche.get(i+1).getSecond());
+				nouveau.add(lie(pioche.get(i).getFirst(), pioche.get(i+1).getSecond()));
+			}
+			
+			PaireVertex tmp = nouveau.get(nouveau.size()-1);
+			visite.put(tmp.getFirst(),true);
+			visite.put(tmp.getSecond(), true);
+				
+			System.out.println("Visite ?? "+visite);
+				
+			i = i + 1;
+		}
+			
+		//FIXME methode qui colle les nouveau noeud a la solution du scenario : il faut bien les inserer a leur place 
+		//genre on doit inserer dans [ (1,2) (4,5) ] l'arrete (2,4) faut la mettre au milieu
+		
+		
+		System.out.println("Stochastique"+stochastiques);
+		System.out.println("Pioche "+pioche);
+		System.out.println("Nouveau : "+nouveau);
 	}
+	
+	//FIXME : lie que si le sommet n'est pas visite !!!!!
+	private PaireVertex lie(Vertex x, Vertex y)
+	{
+		return new PaireVertex(x, y);
+	}
+	
+	private boolean toutViste(LinkedHashMap<Vertex, Boolean> visite)
+	{
+		for(Boolean b : visite.values())
+		{
+			if(!b)
+				return false;
+		}
+		return true;
+	}
+	
+	private boolean vertexDejaPioche(Vertex vertex, ArrayList<PaireVertex> pioche)
+	{
+		for(PaireVertex paire : pioche)
+		{
+			if(paire.getFirst().equals(vertex) || paire.getSecond().equals(vertex))
+				return true;
+		}
+		return false;
+	}
+	
 }
 
 
