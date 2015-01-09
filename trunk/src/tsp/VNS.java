@@ -206,11 +206,22 @@ public class VNS {
 	public void algoVNSNopt(Graph solutionScenarioGlouton,TSP tsp)
 	{
 		ArrayList<PaireVertex> stochastiques = new ArrayList<PaireVertex>();
+		/**
+		 * On ne prend que les arretes stochastiques
+		 */
 		for(PaireVertex paire : solutionScenarioGlouton.getCouts().keySet())
 		{
 			if(!tsp.getG().getDeterminists().contains(paire))
 				stochastiques.add(paire);
 		}
+		
+		/*
+		 * --------------------------------------------------
+		 * 					SHAKING : Pioche
+		 * --------------------------------------------------
+		 */
+		
+		//TODO : cela correspond au shaking ? le fait de piocher au hasard ?
 		ArrayList<PaireVertex> pioche = new ArrayList<PaireVertex>();
 		/**
 		 * Une simple boucle pour dire que l'on doit avoir :
@@ -228,7 +239,16 @@ public class VNS {
 		
 		System.out.println("La pioche : "+pioche);
 		
-		//FIXME appel de ordonne(pioche,solutionScenarioGlouton); //ordonne la pioche en fonction du sens si (1->2)(5->6)(3->4) on se doit d'ordonner
+		
+		/*
+		 * --------------------------------------------------
+		 * 					ALGO : Le saut de pas que l'on fait : CF Image rapport pour N-opt
+		 * --------------------------------------------------
+		 */
+		
+		//FIXME (Note 1) appel de ordonne(pioche,solutionScenarioGlouton); //ordonne la pioche en fonction du sens si (1->2)(5->6)(3->4) on se doit d'ordonner
+		//Vraiement de a-z : donc mettre (1,11) (11,2) etc ... a la suite bien comme il le faut 
+		
 		//FIXME les supprimer du chemin : ??? => de solutionScenarioGlouton
 		
 		LinkedHashMap<Vertex, Boolean> visite = new LinkedHashMap<Vertex, Boolean>();
@@ -237,8 +257,6 @@ public class VNS {
 			visite.put(p.getFirst(), false);
 			visite.put(p.getSecond(), false);
 		}
-		
-		//FIXME : methode qui regarde dans les deux sens!!!!
 		
 		ArrayList<PaireVertex> nouveau = new ArrayList<PaireVertex>();
 		
@@ -268,6 +286,7 @@ public class VNS {
 			
 		//FIXME methode qui colle les nouveau noeud a la solution du scenario : il faut bien les inserer a leur place 
 		//genre on doit inserer dans [ (1,2) (4,5) ] l'arrete (2,4) faut la mettre au milieu
+		//TODO Cf (FIXME Note 1 au dessus) : on utilisera la meme methode
 		
 		
 		System.out.println("Stochastique"+stochastiques);
