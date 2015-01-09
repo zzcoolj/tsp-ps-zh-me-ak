@@ -53,6 +53,8 @@ public class PL {
 					PaireVertex p = new PaireVertex(new Vertex(i),new Vertex(j));
 					if(tsp.getDeterminists().contains(p) || p.hasSameVertex()){
 						tmp.put(p, tsp.getG().getCouts().get(p));
+						//FIXME : mettre les arretes deterministe aussi dans le graphe solution du scenario pour ne pas 
+						//avoir a passer par TSP.getG().getDeterminists()
 					}
 					else{
 						Double valeurXml = tsp.getG().getCouts().get(p);
@@ -80,6 +82,10 @@ public class PL {
 	}
 
 	public Graph glouton(Graph g) {
+		
+		if(g==null)
+			return null;
+		
 		Vertex depart = g.getVilles()
 				.get((int) Math.random() * g.getNbVilles());
 		ArrayList<PaireVertex> cheminInterdit = new ArrayList<PaireVertex>();

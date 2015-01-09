@@ -39,6 +39,21 @@ public class TSP extends Observable{
 		
 		System.out.println("Fin Vrai");
 
+		
+		Scenario sc = this.s.get(0);
+		
+		sc.setSolution(pl.glouton(sc.getSolution()));
+		sc.getVns().algoVNSNopt(sc.getSolution(), this);
+		
+		
+		/*for(Scenario sc : this.s)
+		{
+			sc.setSolution(pl.glouton(sc.getSolution()));
+			sc.getVns().algoVNSNopt(sc.getSolution(), this);
+		}*/
+		
+		
+		
 		/*System.out.println("Glouton en cours");
 		long startTime = System.nanoTime();
 		pl.glouton(g);
