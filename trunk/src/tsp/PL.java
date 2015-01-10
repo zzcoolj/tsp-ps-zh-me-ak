@@ -220,4 +220,26 @@ public class PL {
 		scenario.getVns().findBestSolution(scenario);
 		
 	}
+	
+	public void initDeterminist(Graph g, float pourcentage)
+	{
+		
+		int nombre = (int)(g.getNbVilles()*pourcentage);
+		
+		int min = 0;
+		int max = g.getNbVilles();
+		
+		ArrayList<PaireVertex> lesPaires = new ArrayList<PaireVertex>();
+		lesPaires.addAll(g.getCouts().keySet());
+		
+		while(g.getDeterminists().size()<nombre)
+		{	
+			PaireVertex pioche = lesPaires.get(Maths.randInt(min, max));
+			if (!g.getDeterminists().contains(pioche) && !pioche.hasSameVertex()) {
+				g.getDeterminists().add(pioche);
+			}
+		}
+		
+	}
+	
 }

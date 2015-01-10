@@ -19,7 +19,8 @@ public class TSP extends Observable{
 	
 	public TSP(String nameXml) {
 		p = new Parser(nameXml,"");
-		g = new Graph(null);
+		//g = new Graph(null);
+		g = new Graph();
 		p.parse(g);
 		s = new ArrayList<Scenario>();
 		pl = new PL();	}
@@ -29,6 +30,8 @@ public class TSP extends Observable{
 		scenario = nbScenario;
 		n_opt = kmax;
 		pourcentageDeterminist = determinist;
+		
+		pl.initDeterminist(g, pourcentageDeterminist);
 		
 		System.out.println("initialisation des scenario");
 		pl.initScenario(s, this, scenario);
