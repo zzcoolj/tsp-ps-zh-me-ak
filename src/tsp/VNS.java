@@ -201,15 +201,23 @@ public class VNS {
 	 * |			|		ALGO N-OPT
 	 * |			|
 	 * |			|
+	 * @throws CloneNotSupportedException 
 	 */
 	
-	public void algoVNSNopt(Graph solutionScenarioGlouton,TSP tsp)
+	public void algoVNSNopt(Graph solutionScenarioGlouton,TSP tsp) throws CloneNotSupportedException
 	{
 		ArrayList<PaireVertex> stochastiques = new ArrayList<PaireVertex>();
 		/**
 		 * On ne prend que les arretes stochastiques
 		 */
-		for(PaireVertex paire : solutionScenarioGlouton.getCouts().keySet())
+		
+		System.out.println("1) "+solutionScenarioGlouton+"\n");
+		
+		Graph solutionScenarioGloutonClone = (Graph) solutionScenarioGlouton.clone();
+		
+		System.out.println("2) "+solutionScenarioGloutonClone);
+		
+		for(PaireVertex paire : solutionScenarioGloutonClone.getCouts().keySet())
 		{
 			if(!tsp.getG().getDeterminists().contains(paire))
 				stochastiques.add(paire);

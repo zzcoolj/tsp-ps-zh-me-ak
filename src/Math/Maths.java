@@ -16,7 +16,7 @@ public class Maths {
 	 * @param n : nombre de valeur retourne = nombre de scenario
 	 * @return
 	 */
-	public static Double generateRandomCosts(Double initial, Double min, Double max) throws ExceptionMaths
+	public static Double generateRandomCostsBis(Double initial, Double min, Double max) throws ExceptionMaths
 	{
 		
 		Double value;
@@ -34,7 +34,28 @@ public class Maths {
 		return value;
 	}
 	
-	public static void main(String[] args) {
+	public static ArrayList<Double> generateRandomCosts(Double initial, Double min, Double max, int nb) throws ExceptionMaths
+	{
+		
+		ArrayList<Double> values = new ArrayList<Double>();
+		if(min<0)
+			min = 0.0;
+		if(max<0)
+		{
+			throw new ExceptionMaths("Le maximum de l'intervalle choisi est negatif");
+		}
+			
+		for(int i = 0; i<nb; i++)
+		{
+			Random rand = new Random();
+			values.add(min + (max - min) * rand.nextDouble());
+		}
+
+		
+		return values;
+	}
+	
+	/*public static void main(String[] args) {
 		
 		Double valeurXml = 18.0;
 		Double ecartype = 8.41;
@@ -42,12 +63,12 @@ public class Maths {
 		Double min = valeurXml-ecartype;
 		Double max = valeurXml+ecartype;
 		try {
-			System.out.println(Maths.generateRandomCosts(valeurXml, min, max));
+			System.out.println(Maths.generateRandomCostsBis(valeurXml, min, max));
 		} catch (ExceptionMaths e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
+	}*/
 	
 	
 	/**

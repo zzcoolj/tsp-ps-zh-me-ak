@@ -30,6 +30,7 @@ public class TSP extends Observable{
 		n_opt = kmax;
 		pourcentageDeterminist = determinist;
 		
+		System.out.println("initialisation des scenario");
 		pl.initScenario(s, this, scenario);
 		
 		System.out.println("====== "+s);
@@ -43,7 +44,11 @@ public class TSP extends Observable{
 		Scenario sc = this.s.get(0);
 		
 		sc.setSolution(pl.glouton(sc.getSolution()));
-		sc.getVns().algoVNSNopt(sc.getSolution(), this);
+		try {
+			sc.getVns().algoVNSNopt(sc.getSolution(), this);
+		} catch (CloneNotSupportedException e) {
+			System.err.println("Une erreur innatendu est survenu : relancer le programme");
+		}
 		
 		
 		/*for(Scenario sc : this.s)
