@@ -1,9 +1,10 @@
 package tsp;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.Observable;
-import java.util.Observer;
 
+import CustomClass.PaireLamdbaRho;
 import CustomClass.PaireVertex;
 import mvc.GraphOpt;
 
@@ -16,6 +17,8 @@ public class TSP extends Observable{
 	private int scenario = 10;
 	private float pourcentageDeterminist;
 	protected static Integer n_opt = 2;
+	private LinkedHashMap<Integer, ArrayList<PaireLamdbaRho>> penalite;
+	
 	
 	public TSP(String nameXml) {
 		p = new Parser(nameXml,"");
@@ -23,7 +26,9 @@ public class TSP extends Observable{
 		g = new Graph();
 		p.parse(g);
 		s = new ArrayList<Scenario>();
-		pl = new PL();	}
+		pl = new PL();	
+		penalite = new LinkedHashMap<Integer, ArrayList<PaireLamdbaRho>>();
+	}
 	
 	public GraphOpt launch(float determinist, Integer kmax, Integer nbScenario) 
 	{
@@ -43,22 +48,28 @@ public class TSP extends Observable{
 		
 		System.out.println("Fin Vrai");
 
+		Graph reference = pl.glouton(g);
+		reference.setDeterminists(getDeterministes(reference,g));
 		
-		Scenario sc = this.s.get(0);
-		
-		sc.setSolution(pl.glouton(sc.getGeneral()));
-		try {
-			sc.getVns().algoVNSNopt(sc);
-		} catch (CloneNotSupportedException e) {
-			System.err.println("Une erreur innatendu est survenu : relancer le programme");
-		}
-		
-		
-		/*for(Scenario sc : this.s)
+		for(Scenario sc : this.s)
 		{
 			sc.setSolution(pl.glouton(sc.getSolution()));
-			sc.getVns().algoVNSNopt(sc.getSolution(), this);
-		}*/
+		}
+		boolean continuer = true;
+		
+		int iteration = 0;
+		
+		do{ 
+			for(Scenario sc : this.s)
+			{
+				sc.setSolution(pl.glouton(sc.getSolution()));
+			}
+			iteration++;
+		}while(testArret());
+
+		
+		
+	
 		
 		
 		
@@ -80,6 +91,24 @@ public class TSP extends Observable{
 		return null;
 		
 	}
+	
+	private ArrayList<PaireVertex> getDeterministes(Graph reference, Graph g) {
+		ArrayList<PaireVertex> listeDeterministe = new ArrayList<PaireVertex>();
+		for(PaireVertex p : g.getDeterminists()){
+			if(g.getCouts().containsKey(p)){
+				listeDeterministe.add(p);
+			}
+		}
+		return listeDeterministe;
+	}
+
+	
+	public boolean testArret() {
+		return false;
+	}
+
+
+	
 	
 	public GraphOpt findBestSolution()
 	{
@@ -118,7 +147,31 @@ public class TSP extends Observable{
 	public static Integer getN_opt() {
 		return n_opt;
 	}
+	
+	public Double getMaxValue(Graph g) {
+		Double maxi = 0.0;
+		for(Double max : g.getCouts().values()){
+			if(max>maxi){
+				maxi = max;
+			}
+		}
+		return maxi;
+	}
 
+	public void algorithmePenalite(int penalite, Graph reference){
+		if(penalite == 0){
+			int size = reference.getDeterminists().size();
+			ArrayList<PaireLamdbaRho> test = new ArrayList<PaireLamdbaRho>();
+			Double max = getMaxValue(g);
+			for(int i=0; i<size;i++){
+				PaireVertex paire = reference.getDeterminists().get(i);
+				Double cout = g.getCouts().get(paire).doubleValue();
+				test.add(new PaireLamdbaRho(max, cout));
+			}
+		}
+		
+		
+	}
 	
 
 
