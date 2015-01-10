@@ -43,9 +43,9 @@ public class TSP extends Observable{
 		
 		Scenario sc = this.s.get(0);
 		
-		sc.setSolution(pl.glouton(sc.getSolution()));
+		sc.setSolution(pl.glouton(sc.getGeneral()));
 		try {
-			sc.getVns().algoVNSNopt(sc.getSolution(), this);
+			sc.getVns().algoVNSNopt(sc);
 		} catch (CloneNotSupportedException e) {
 			System.err.println("Une erreur innatendu est survenu : relancer le programme");
 		}
