@@ -38,7 +38,8 @@ public class VNS {
 	private int kmax;
 	private int neighborhood;
 	private TreeSet<Integer> shakeList;// !!!
-	private int coutDeCheminExistePas = 999;
+	private Double coutDeCheminExistePas = 999.0;
+	private Double coutsTotalDeCheminExistePas = Double.MAX_VALUE;
 
 	// HashMap<Vertex, ArrayList<Double>> couts;
 	Double[][] coutsTest;
@@ -56,30 +57,28 @@ public class VNS {
 		Random r = new Random();
 		while (shakeList.size() < neighborhood) {
 			shakeList.add(r.nextInt(nbVille));// [0, nbVille-1] !!! 若nbville 后面会爆掉
-			System.out.println("shakeList size : " + shakeList.size()
-					+ "\nnombre(s) choisi(s) : " + shakeList.toString());// for test
 		}
-
-		System.out.print("arretes choisis : ");// test
-		Iterator<Integer> it = shakeList.iterator();// test
-		while (it.hasNext()) {// test
-			int i = it.next();// test
+		//for test
+		System.out.print("arretes choisis pour "+neighborhood+"-opt : ");
+		Iterator<Integer> it = shakeList.iterator();
+		while (it.hasNext()) {
+			int i = it.next();
 			if(i+1 < nbVille){
-				System.out.print("[ " + i + ", " + (i + 1) + " ]");// test
+				System.out.print("[ " + i + ", " + (i + 1) + " ]");
 			}
 			else{
-				System.out.print("[ " + i + ", " + "villeDepart ]");// test
+				System.out.print("[ " + i + ", " + "villeDepart ]");
 			}
-		}// test
-		System.out.println();// test
+		}
+		System.out.println("\n");
 	}
 
 	
 	// public LinkedList<Integer> solve(Double[][] couts, LinkedList<Integer>
 	// cheminsInitial){
-	public LinkedList<Integer> solve(LinkedList<Integer> cheminsInitial) {
+	public ArrayList<LinkedList<Integer>> solve(LinkedList<Integer> cheminsInitial) {
 
-		LinkedList<Integer> cheminsChange = new LinkedList<Integer>();
+		ArrayList<LinkedList<Integer>> listCheminsChange = new ArrayList<LinkedList<Integer>>();
 
 		if (neighborhood < 2) {
 			System.err
@@ -87,6 +86,7 @@ public class VNS {
 		}
 
 		if (neighborhood == 2) {
+			LinkedList<Integer> cheminsChange = new LinkedList<Integer>();
 			
 			shake(cheminsInitial.size());
 			for (int i = 0; i <= shakeList.first(); i++) {
@@ -101,62 +101,170 @@ public class VNS {
 			//cheminsChange.add(cheminsInitial.get(0));// !!! villeArriver =
 		
 														// villeDepart
-		
+			listCheminsChange.add(cheminsChange);
+			System.out.println("cheminChange : " + cheminsChange);// test
 		}
 
 		if (neighborhood == 3) {
+			LinkedList<Integer> cheminsChange1 = new LinkedList<Integer>();
+			LinkedList<Integer> cheminsChange2 = new LinkedList<Integer>();
+			LinkedList<Integer> cheminsChange3 = new LinkedList<Integer>();
+			LinkedList<Integer> cheminsChange4 = new LinkedList<Integer>();
+			
+			shake(cheminsInitial.size());
+			int positionFirst = shakeList.first(), positionSecond = shakeList.lower(shakeList.last()), positionThird = shakeList.last();
+			/* solution1 */
+			for (int i = 0; i <= positionFirst; i++) {
+				cheminsChange1.add(cheminsInitial.get(i));
+			}
+			for (int i = positionSecond; i>=positionFirst+1; i--) {
+				cheminsChange1.add(cheminsInitial.get(i));
+			}
+			for (int i= positionThird; i>= positionSecond+1; i--){
+				cheminsChange1.add(cheminsInitial.get(i));
+			}
+			for (int i= positionThird+1; i< cheminsInitial.size(); i++){
+				cheminsChange1.add(cheminsInitial.get(i));
+			}
+			
+			/* solution2 */
+			for (int i = 0; i <= positionFirst; i++) {
+				cheminsChange2.add(cheminsInitial.get(i));
+			}
+			for (int i = positionSecond+1; i<=positionThird; i++) {
+				cheminsChange2.add(cheminsInitial.get(i));
+			}
+			for (int i= positionFirst+1; i<= positionSecond; i++){
+				cheminsChange2.add(cheminsInitial.get(i));
+			}
+			for (int i= positionThird+1; i< cheminsInitial.size(); i++){
+				cheminsChange2.add(cheminsInitial.get(i));
+			}
+			
+			/* solution3 */
+			for (int i = 0; i <= positionFirst; i++) {
+				cheminsChange3.add(cheminsInitial.get(i));
+			}
+			for (int i = positionSecond+1; i<=positionThird; i++) {
+				cheminsChange3.add(cheminsInitial.get(i));
+			}
+			for (int i= positionSecond; i>= positionFirst+1; i--){
+				cheminsChange3.add(cheminsInitial.get(i));
+			}
+			for (int i= positionThird+1; i< cheminsInitial.size(); i++){
+				cheminsChange3.add(cheminsInitial.get(i));
+			}
 
+			/* solution4 */
+			for (int i = 0; i <= positionFirst; i++) {
+				cheminsChange4.add(cheminsInitial.get(i));
+			}
+			for (int i = positionThird; i>=positionSecond+1; i--) {
+				cheminsChange4.add(cheminsInitial.get(i));
+			}
+			for (int i= positionFirst+1; i<= positionSecond; i++){
+				cheminsChange4.add(cheminsInitial.get(i));
+			}
+			for (int i= positionThird+1; i< cheminsInitial.size(); i++){
+				cheminsChange4.add(cheminsInitial.get(i));
+			}
+			
+			listCheminsChange.add(cheminsChange1);
+			listCheminsChange.add(cheminsChange2);
+			listCheminsChange.add(cheminsChange3);
+			listCheminsChange.add(cheminsChange4);
+			
+			/* for test
+			System.out.println("cheminChange1 : " + cheminsChange1);
+			System.out.println("cheminChange2 : " + cheminsChange2);
+			System.out.println("cheminChange3 : " + cheminsChange3);
+			System.out.println("cheminChange4 : " + cheminsChange4);
+			*/
 		}
 
 		if (neighborhood > 3) {
 
 		}
-		System.out.println("cheminChange : " + cheminsChange);// test
-		return cheminsChange;
+		
+		
+		return listCheminsChange;
 	}
 	
 	
-	//comparer les couts
+	/* juger change le chemin ou pas */
 	private LinkedList<Integer> neighborhoodChange(Double[][] couts,
-			LinkedList<Integer> cheminsInitial,
-			LinkedList<Integer> cheminsChange) {
+			LinkedList<Integer> cheminsInitial) {
 		
+		/* cout de cheminInitial */
 		Double coutsTotalInitial = couts[cheminsInitial.get(cheminsInitial
 				.size() - 1)][0]; 
-		Double coutsTotalChange = couts[cheminsChange.get(cheminsChange
-				.size() - 1)][0];
-		
-		if(couts[cheminsChange.get(cheminsChange.size() - 1)][0] > coutDeCheminExistePas){
-				System.out.println("chemin [ " + cheminsChange.get(cheminsChange.size() - 1) + ", " + cheminsChange
-			           					.get(0) + "] existe pas");
-				return cheminsInitial;//!!!
-			}
-		
-		//cout de cheminInitial
 		for (int i = 0; i < cheminsInitial.size() - 1; i++) {
 			coutsTotalInitial += couts[cheminsInitial.get(i)][cheminsInitial
 					.get(i + 1)];
 		}
-		System.out.println("coutsTotalInitial : " + coutsTotalInitial);//for test
+		System.out.println("cheminInitial" + " : " + cheminsInitial + " -----> coutsTotal de cheminInitial" + " : "
+				+ coutsTotalInitial);// for
+		// test
 		
-		//cout de cheminChange
-		for (int i = 0; i < cheminsChange.size() - 1; i++) {
-			if(couts[cheminsChange.get(i)][cheminsChange
-			           					.get(i + 1)] > coutDeCheminExistePas){
-				System.out.println("chemin [ " + cheminsChange.get(i) + ", " + cheminsChange
-			           					.get(i + 1) + "] existe pas");
-				return cheminsInitial;//!!!
+		
+		/* cout de cheminChange */
+		ArrayList<LinkedList<Integer>> listCheminsChange = this
+				.solve(cheminsInitial);
+		Double coutsTotalChange = coutsTotalDeCheminExistePas;
+		int positionCheminsChange = 0;
+		
+
+		// parcourt touts les possibilites de cheminsChange
+		for (int k = 0; k < listCheminsChange.size(); k++) {
+			LinkedList<Integer> cheminsChange = listCheminsChange.get(
+					k);
+			Double coutsTotalChangeTemp = couts[cheminsChange.get(cheminsChange
+					.size() - 1)][0];
+			if (couts[cheminsChange.get(cheminsChange.size() - 1)][0] > coutDeCheminExistePas) {
+				coutsTotalChangeTemp = Double.MAX_VALUE;
+				System.out.println("cheminChange" + (k+1) + " : " + cheminsChange + " -----> coutsTotal de cheminChange" + (k+1) + " : "
+						+ coutsTotalChangeTemp);// for
+				// test
+				System.out.println("chemin [ "
+						+ cheminsChange.get(cheminsChange.size() - 1) + ", "
+						+ cheminsChange.get(0) + "] existe pas");
+				
+				continue;
 			}
-			coutsTotalChange += couts[cheminsChange.get(i)][cheminsChange
-					.get(i + 1)];
+
+			for (int i = 0; i < cheminsChange.size() - 1; i++) {
+				if (couts[cheminsChange.get(i)][cheminsChange.get(i + 1)] > coutDeCheminExistePas) {
+					coutsTotalChangeTemp = Double.MAX_VALUE;
+					System.out.println("cheminChange" + (k+1) + " : " + cheminsChange + " -----> coutsTotal de cheminChange" + (k+1) + " : "
+							+ coutsTotalChangeTemp);// for
+					// test
+					System.out.println("chemin [ " + cheminsChange.get(i)
+							+ ", " + cheminsChange.get(i + 1) + "] existe pas");
+					coutsTotalChangeTemp = Double.MAX_VALUE;
+					break;
+				}
+				coutsTotalChangeTemp += couts[cheminsChange.get(i)][cheminsChange
+						.get(i + 1)];
+			}
+			if (coutsTotalChangeTemp != Double.MAX_VALUE) {
+				System.out.println("cheminChange" + (k+1) + " : " + cheminsChange + " -----> coutsTotal de cheminChange" + (k+1) + " : "
+						+ coutsTotalChangeTemp);// for
+				// test
+			}
+			if (coutsTotalChangeTemp < coutsTotalChange) {
+				coutsTotalChange = coutsTotalChangeTemp;
+				positionCheminsChange = k;
+			}
 		}
-		System.out.println("coutsTotalChange : " + coutsTotalChange);//for test
+		System.out.println("\n");
 		
+		
+		/* comparer coutsTotalChange et coutsTotalInitial */
 		if(coutsTotalChange < coutsTotalInitial){
-			System.out.println("on change cheminsInitial a cheminsChange");//for test
-			return cheminsChange;
+			System.out.println("=====> on change cheminsInitial a cheminsChange : " + listCheminsChange.get(positionCheminsChange));//for test
+			return listCheminsChange.get(positionCheminsChange);
 		}
-		System.out.println("on change pas de chemin");//for test
+		System.out.println("=====> on change pas de chemin");//for test
 		
 		return cheminsInitial;
 		
@@ -185,9 +293,10 @@ public class VNS {
 				{ 12.0, 1000.0, 9.0, 1000.0, 7.0, 9.0, 1000.0}, 
 				};
 
-		VNS v = new VNS(2);
+		//VNS v = new VNS(2);
+		VNS v = new VNS(3);
 		//v.solve(cheminsInitialTest);
-		v.neighborhoodChange(coutsTest, cheminsInitialTest, v.solve(cheminsInitialTest));
+		v.neighborhoodChange(coutsTest, cheminsInitialTest);
 		
 		
 	}*/
