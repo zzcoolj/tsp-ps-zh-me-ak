@@ -3,12 +3,13 @@ package tsp;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Observable;
+import java.util.Observer;
 
 import CustomClass.PaireLamdbaRho;
 import CustomClass.PaireVertex;
 import mvc.GraphOpt;
 
-public class TSP extends Observable{
+public class TSP extends Observable implements Observer{
 	
 	private PL pl;
 	private Graph g;
@@ -32,14 +33,19 @@ public class TSP extends Observable{
 	
 	public GraphOpt launch(float determinist, Integer kmax, Integer nbScenario) 
 	{
+		
 		scenario = nbScenario;
 		n_opt = kmax;
 		pourcentageDeterminist = determinist;
 		
 		pl.initDeterminist(g, pourcentageDeterminist);
 		
+		System.out.println("J'ai choisis comme deterministe : "+g.getDeterminists());
+		
 		System.out.println("initialisation des scenario");
 		pl.initScenario(s, this, scenario);
+		
+		
 		
 		System.out.println("====== "+s);
 		System.out.println("Debut vrai");
@@ -53,17 +59,22 @@ public class TSP extends Observable{
 		
 		for(Scenario sc : this.s)
 		{
-			sc.setSolution(pl.glouton(sc.getSolution()));
+			sc.setSolution(pl.glouton(sc.getGeneral()));
 		}
+		
+		/*try {
+			s.get(0).getVns().algoVNSNopt(s.get(0));
+		} catch (CloneNotSupportedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
+		
 		boolean continuer = true;
 		
 		int iteration = 0;
 		
 		do{ 
-			for(Scenario sc : this.s)
-			{
-				sc.setSolution(pl.glouton(sc.getSolution()));
-			}
+			
 			iteration++;
 		}while(testArret());
 
@@ -107,9 +118,6 @@ public class TSP extends Observable{
 		return false;
 	}
 
-
-	
-	
 	public GraphOpt findBestSolution()
 	{
 		return null;
@@ -170,6 +178,20 @@ public class TSP extends Observable{
 			}
 		}
 		
+		
+	}
+
+	@Override
+	public void update(Observable o, Object arg) {
+		
+		try {
+			Scenario updated = (Scenario)arg;
+			
+			setChanged();
+			notifyObservers(updated);
+		} catch (ClassCastException e) {
+			// TODO: handle exception
+		}
 		
 	}
 	

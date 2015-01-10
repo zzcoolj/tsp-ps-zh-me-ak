@@ -113,6 +113,11 @@ public class PL {
 			}
 		}
 		
+		for(Scenario scenario : s)
+		{
+			scenario.addObserver(tsp);
+		}
+		
 		
 	}
 
@@ -125,8 +130,8 @@ public class PL {
 		
 		if(g==null)
 			return null;
-		
-		Vertex depart = g.getVilles().get((int) Math.random() * g.getNbVilles());
+
+		Vertex depart = g.getVilles().get(Maths.randInt(0, g.getNbVilles()-1));
 		ArrayList<PaireVertex> cheminInterdit = new ArrayList<PaireVertex>();
 		Vertex vilaInterdit = depart;
 		for (int i = 0; i < g.getNbVilles()-1; i++) {
@@ -146,7 +151,7 @@ public class PL {
 		Vertex entrante = cheminInterdit.get(0).getFirst(); 
 		
 		cheminInterdit.add(new PaireVertex(sortante,entrante));
-		System.out.println(cheminInterdit);
+		//System.out.println(cheminInterdit);
 		
 		Graph graphe = new Graph(g.getVilles());
 		LinkedHashMap<PaireVertex, Double> map = new LinkedHashMap<PaireVertex, Double>();
@@ -227,10 +232,12 @@ public class PL {
 		int nombre = (int)(g.getNbVilles()*pourcentage);
 		
 		int min = 0;
-		int max = g.getNbVilles();
+		
 		
 		ArrayList<PaireVertex> lesPaires = new ArrayList<PaireVertex>();
 		lesPaires.addAll(g.getCouts().keySet());
+		
+		int max = lesPaires.size();
 		
 		while(g.getDeterminists().size()<nombre)
 		{	
