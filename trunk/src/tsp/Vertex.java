@@ -58,4 +58,11 @@ public class Vertex {
 	}
 	
 	
+	@Override
+	protected Object clone() throws CloneNotSupportedException {
+		
+		return new Vertex(numero);
+	}
+	
+	
 }

@@ -17,7 +17,7 @@ public class PaireVertex extends Paire<Vertex, Vertex>{
 	}
 
 	@Override
-	public PaireVertex clone() throws CloneNotSupportedException {
+	public Object clone() throws CloneNotSupportedException {
 		// TODO Auto-generated method stub
 		
 		return new PaireVertex(new Vertex(first.getNumero()), new Vertex(second.getNumero()));

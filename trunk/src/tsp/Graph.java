@@ -20,6 +20,7 @@ public class Graph {
 		public Graph(){
 			this.couts = new LinkedHashMap<PaireVertex, Double>();
 			this.determinists = new ArrayList<PaireVertex>();
+			this.villes = new ArrayList<Vertex>();
 		}
 		
 		public ArrayList<PaireVertex> getDeterminists() {
@@ -93,6 +94,29 @@ public class Graph {
 			
 			return retour;
 			
+		}
+		
+		@Override
+		protected Object clone() throws CloneNotSupportedException {
+			
+			Graph copie = new Graph();
+
+			for(Vertex v : villes)
+			{
+				copie.villes.add((Vertex) v.clone());
+			}
+			
+			for(PaireVertex paire : determinists)
+			{
+				copie.determinists.add((PaireVertex) paire.clone());
+			}
+			
+			for(Entry<PaireVertex,Double> entry : couts.entrySet())
+			{
+				copie.couts.put((PaireVertex)entry.getKey().clone(), entry.getValue());
+			}
+			
+			return copie;
 		}
 		
 }

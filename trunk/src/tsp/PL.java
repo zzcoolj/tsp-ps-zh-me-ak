@@ -42,9 +42,13 @@ public class PL {
 		for(int i = 0; i < n; i++)
 		{
 			s.add(new Scenario(i));
+			s.get(i).getSolution().setCities(tsp.getG().getVilles());
 		}
 		
-		for (Scenario scenario : s) {
+		/*for (Scenario scenario : s) {
+			
+			System.out.println("\t\t\t scenario numero "+scenario.getNumero()+" debut d'init");
+			
 			Graph g = new Graph(tsp.getG().getVilles());
 			LinkedHashMap<PaireVertex, Double> tmp = new LinkedHashMap<>();
 			
@@ -63,7 +67,8 @@ public class PL {
 						Double min = valeurXml-ecartype;
 						Double max = valeurXml+ecartype;
 						try {
-							Double rand = Maths.generateRandomCosts(valeurXml, min, max);
+							Double rand = Maths.generateRandomCostsBis(valeurXml, min, max);
+							//System.out.println("Rand = "+rand);
 							tmp.put(p, rand);	
 						} catch (ExceptionMaths e) {
 							e.printStackTrace();
@@ -73,7 +78,41 @@ public class PL {
 			}
 			g.setCouts(tmp);
 			scenario.setSolution(g);
+		}*/
+		
+		
+		for(PaireVertex p : tsp.getG().getCouts().keySet())
+		{
+			//PaireVertex p = new PaireVertex(new Vertex(i),new Vertex(j));
+			if(tsp.getDeterminists().contains(p) || p.hasSameVertex()){
+				for(Scenario scenario : s)
+				{
+					scenario.getSolution().getCouts().put(p, tsp.getG().getCouts().get(p));
+				}
+			}
+			else{
+				Double valeurXml = tsp.getG().getCouts().get(p);
+				Double ecartype = Maths.calculEcartType(tsp);
+				
+				Double min = valeurXml-ecartype;
+				Double max = valeurXml+ecartype;
+				try {
+					ArrayList<Double> rand = Maths.generateRandomCosts(valeurXml, min, max, s.size());
+					//System.out.println("Rand = "+rand);
+					
+					int cpt = 0;
+					for(Scenario scenario : s)
+					{
+						scenario.getSolution().getCouts().put(p, rand.get(cpt));
+						cpt++;
+					}
+				} catch (ExceptionMaths e) {
+					e.printStackTrace();
+				}
+			}
 		}
+		
+		
 	}
 
 	public Graph generateSolutionReference(Graph g) {
@@ -86,8 +125,7 @@ public class PL {
 		if(g==null)
 			return null;
 		
-		Vertex depart = g.getVilles()
-				.get((int) Math.random() * g.getNbVilles());
+		Vertex depart = g.getVilles().get((int) Math.random() * g.getNbVilles());
 		ArrayList<PaireVertex> cheminInterdit = new ArrayList<PaireVertex>();
 		Vertex vilaInterdit = depart;
 		for (int i = 0; i < g.getNbVilles()-1; i++) {
