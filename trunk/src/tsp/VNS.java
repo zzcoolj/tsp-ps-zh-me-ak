@@ -20,7 +20,6 @@ public class VNS {
 	{
 		
 	}
-
 }
 */
 import java.util.ArrayList;
@@ -338,6 +337,31 @@ public class VNS {
 		for(PaireVertex paire2 : nouveau){
 			solution.getCouts().put(paire2, s.getGeneral().getCouts().get(paire2));
 		}
+	}
+	
+	public boolean isBetterSolution(Graph old, Graph actual)
+	{
+		
+		
+		return false;
+	}
+
+	public void findBestSolution(Scenario s) throws CloneNotSupportedException {
+	
+		int k = 2;
+		while(k <= TSP.n_opt)
+		{
+			Graph newSolution = algoVNSNopt(s);
+			if(isBetterSolution(s.getSolution(), newSolution))
+			{
+				s.setSolution(newSolution);
+			}
+			else
+			{
+				k = k+1;
+			}
+		}
+		
 	}
 }
 

@@ -1,5 +1,6 @@
 package tsp;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
@@ -211,5 +212,12 @@ public class PL {
 
 		}
 		return false;
+	}
+	
+	public void algoPenalite(Scenario scenario) throws CloneNotSupportedException
+	{
+
+		scenario.getVns().findBestSolution(scenario);
+		
 	}
 }
