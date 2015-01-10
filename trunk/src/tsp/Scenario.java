@@ -1,6 +1,10 @@
 package tsp;
 
-public class Scenario {
+import java.util.Observable;
+
+import tsp.Scenario.etat;
+
+public class Scenario extends Observable{
 	
 	public enum etat{
 		FINISHED,
@@ -37,7 +41,26 @@ public class Scenario {
 
 	public void solve()
 	{
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
 		
+		if(obj==null)
+			return false;
+		if(obj==this)
+			return true;
+		
+		
+		try {
+			
+			Scenario second = (Scenario)obj;
+			
+			return second.getNumero().equals(numero);
+			
+		} catch (ClassCastException e) {
+			return false;
+		}
 	}
 	
 	public void setNumero(Integer numero) {
@@ -61,12 +84,24 @@ public class Scenario {
 	public void setEtat(etat e)
 	{
 		this.e = e;
+		setChanged();
+		notifyObservers(this);
 	}
 
 	public VNS getVns() {
 		return vns;
 	}
+
+	public void updateEtat(etat e) {
+		this.e = e;
+	}
 	
+	
+	@Override
+	public String toString() {
+		return "Scenario "+ numero 
+				+ "Etat = "+e;
+	}
 	
 
 }
