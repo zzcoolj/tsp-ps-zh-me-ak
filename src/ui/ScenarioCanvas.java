@@ -39,9 +39,23 @@ public class ScenarioCanvas extends JPanel{
 				listeScenario.add(new ScenarioComponent(s, new Point(x, y), width, height, Color.RED, Color.RED));
 				y+=height;
 			}
+		}	
+	}
+	
+	public void miseAjour(Scenario s)
+	{
+
+		for(ScenarioComponent scenario : listeScenario)
+		{
+			if(scenario.getS().equals(s))
+			{
+				scenario.getS().updateEtat(s.getEtat());
+				scenario.update();
+				repaint();
+				break;
+			}
 		}
-			
-		
+
 	}
 	
 	public void miseAjour(ArrayList<Scenario> scenarios)
