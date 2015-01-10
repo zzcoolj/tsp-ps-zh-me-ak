@@ -31,6 +31,7 @@ import java.util.Random;
 
 import javax.swing.text.StyledEditorKit.BoldAction;
 
+import tsp.Scenario.etat;
 import CustomClass.PaireVertex;
 import Math.Maths;
 
@@ -293,10 +294,9 @@ public class VNS {
 				{ 12.0, 1000.0, 9.0, 1000.0, 7.0, 9.0, 1000.0}, 
 				};
 
-		//VNS v = new VNS(2);
-		VNS v = new VNS(3);
+		VNS v = new VNS(2);
 		//v.solve(cheminsInitialTest);
-		v.neighborhoodChange(coutsTest, cheminsInitialTest);
+		v.neighborhoodChange(coutsTest, cheminsInitialTest, v.solve(cheminsInitialTest));
 		
 		
 	}*/
@@ -345,9 +345,13 @@ public class VNS {
 		 * Pour 3-opt : 3 pioche
 		 * etc ...
 		 */
+		
+		s.setEtat(etat.SHAKING);
+		
 		while(pioche.size()<TSP.n_opt)
 		{
 			//Random entre [0,stochastiques.size()-1)
+			//FIXME : mettre un try catch de java.lang.IllegalArgumentException
 			PaireVertex choisi = stochastiques.get(Maths.randInt(0, stochastiques.size()-1));
 			if(!pioche.contains(choisi) && !vertexDejaPioche(choisi.getFirst(), pioche) && !vertexDejaPioche(choisi.getSecond(), pioche))
 				pioche.add(choisi);
@@ -362,7 +366,7 @@ public class VNS {
 		 * --------------------------------------------------
 		 */
 		
-		
+		s.setEtat(etat.CHANGINGNEIGHBORHOOD);
 		
 		LinkedHashMap<Vertex, Boolean> visite = new LinkedHashMap<Vertex, Boolean>();
 		for(PaireVertex p : pioche)
@@ -406,6 +410,8 @@ public class VNS {
 		System.out.println("Pioche "+pioche);
 		System.out.println("Nouveau : "+nouveau);
 		System.out.println("Solutionlone : "+solutionScenarioGloutonClone);
+		
+		s.setEtat(etat.FINISHED);
 		
 		return solutionScenarioGloutonClone;
 		
