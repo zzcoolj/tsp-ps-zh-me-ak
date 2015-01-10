@@ -11,6 +11,7 @@ public class Scenario {
 	
 	private Integer numero;
 	private Graph solution;
+	private Graph general;
 	private etat e;
 	private VNS vns;
 	
@@ -22,9 +23,18 @@ public class Scenario {
 		e = etat.WAITING;
 		//TODO null ou on commence penalite + VNS 
 		solution = new Graph(); 
+		general = new Graph();
 		vns = new VNS();
 	}
 	
+	public Graph getGeneral() {
+		return general;
+	}
+
+	public void setGeneral(Graph general) {
+		this.general = general;
+	}
+
 	public void solve()
 	{
 		

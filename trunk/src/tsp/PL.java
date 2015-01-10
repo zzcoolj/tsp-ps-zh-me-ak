@@ -42,7 +42,7 @@ public class PL {
 		for(int i = 0; i < n; i++)
 		{
 			s.add(new Scenario(i));
-			s.get(i).getSolution().setCities(tsp.getG().getVilles());
+			s.get(i).getGeneral().setCities(tsp.getG().getVilles());
 		}
 		
 		/*for (Scenario scenario : s) {
@@ -87,7 +87,7 @@ public class PL {
 			if(tsp.getDeterminists().contains(p) || p.hasSameVertex()){
 				for(Scenario scenario : s)
 				{
-					scenario.getSolution().getCouts().put(p, tsp.getG().getCouts().get(p));
+					scenario.getGeneral().getCouts().put(p, tsp.getG().getCouts().get(p));
 				}
 			}
 			else{
@@ -103,7 +103,7 @@ public class PL {
 					int cpt = 0;
 					for(Scenario scenario : s)
 					{
-						scenario.getSolution().getCouts().put(p, rand.get(cpt));
+						scenario.getGeneral().getCouts().put(p, rand.get(cpt));
 						cpt++;
 					}
 				} catch (ExceptionMaths e) {

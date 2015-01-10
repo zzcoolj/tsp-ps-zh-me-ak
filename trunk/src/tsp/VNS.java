@@ -204,22 +204,22 @@ public class VNS {
 	 * @throws CloneNotSupportedException 
 	 */
 	
-	public void algoVNSNopt(Graph solutionScenarioGlouton,TSP tsp) throws CloneNotSupportedException
+	public Graph  algoVNSNopt(Scenario s) throws CloneNotSupportedException
 	{
 		ArrayList<PaireVertex> stochastiques = new ArrayList<PaireVertex>();
 		/**
 		 * On ne prend que les arretes stochastiques
 		 */
 		
-		System.out.println("1) "+solutionScenarioGlouton+"\n");
+		System.out.println("1) "+s.getSolution()+"\n");
 		
-		Graph solutionScenarioGloutonClone = (Graph) solutionScenarioGlouton.clone();
+		Graph solutionScenarioGloutonClone = (Graph) s.getSolution().clone();
 		
-		System.out.println("2) "+solutionScenarioGloutonClone);
+		System.out.println("2) "+solutionScenarioGloutonClone.getCouts());
 		
 		for(PaireVertex paire : solutionScenarioGloutonClone.getCouts().keySet())
-		{
-			if(!tsp.getG().getDeterminists().contains(paire))
+		{			
+			if(!s.getGeneral().getDeterminists().contains(paire))
 				stochastiques.add(paire);
 		}
 		
@@ -254,10 +254,7 @@ public class VNS {
 		 * --------------------------------------------------
 		 */
 		
-		//FIXME (Note 1) appel de ordonne(pioche,solutionScenarioGlouton); //ordonne la pioche en fonction du sens si (1->2)(5->6)(3->4) on se doit d'ordonner
-		//Vraiement de a-z : donc mettre (1,11) (11,2) etc ... a la suite bien comme il le faut 
 		
-		//FIXME les supprimer du chemin directement : ??? => de solutionScenarioGlouton
 		
 		LinkedHashMap<Vertex, Boolean> visite = new LinkedHashMap<Vertex, Boolean>();
 		for(PaireVertex p : pioche)
@@ -295,11 +292,15 @@ public class VNS {
 		//FIXME methode qui colle les nouveau noeud a la solution du scenario : il faut bien les inserer a leur place 
 		//genre on doit inserer dans [ (1,2) (4,5) ] l'arrete (2,4) faut la mettre au milieu
 		//TODO Cf (FIXME Note 1 au dessus) : on utilisera la meme methode pour cette fois remettre dans l'ordre
-		
+		update(solutionScenarioGloutonClone, pioche, nouveau, s);
 		
 		System.out.println("Stochastique"+stochastiques);
 		System.out.println("Pioche "+pioche);
 		System.out.println("Nouveau : "+nouveau);
+		System.out.println("Solutionlone : "+solutionScenarioGloutonClone);
+		
+		return solutionScenarioGloutonClone;
+		
 	}
 	
 	//FIXME : lie que si le sommet n'est pas visite !!!!!
@@ -328,6 +329,16 @@ public class VNS {
 		return false;
 	}
 	
+	public void update(Graph solution, ArrayList<PaireVertex> pioche, ArrayList<PaireVertex> nouveau, Scenario s){
+		
+		for(PaireVertex paire : pioche){
+			solution.getCouts().remove(paire);
+		}
+		
+		for(PaireVertex paire2 : nouveau){
+			solution.getCouts().put(paire2, s.getGeneral().getCouts().get(paire2));
+		}
+	}
 }
 
 
