@@ -39,7 +39,8 @@ public class Controleur implements MouseListener{
 				{
 					model.getTsp().addObserver(vue);
 				}
-				model.tspSolve((float)(vue.sliderDeterminist.getValue()/100), Integer.valueOf(vue.kmaxTxtField.getText()), Integer.valueOf(vue.nbscenarioTxtField.getText()));
+
+				model.tspSolve((vue.sliderDeterminist.getValue()/100f), Integer.valueOf(vue.kmaxTxtField.getText()), Integer.valueOf(vue.nbscenarioTxtField.getText()));
 			}
 			else
 				lanceAlerte();
