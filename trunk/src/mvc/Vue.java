@@ -32,7 +32,7 @@ import ui.ScenarioCanvas;
 public class Vue extends JFrame implements Observer {
 	
 	JPanel principal,noeud,menu,newmenu;
-	ScenarioCanvas scenario;
+	ScenarioCanvas scenarioCanvas;
 	InterfaceGraphique grapheInterface;
 	MenuBasCanvas bas;
 	JList list;//Liste de noeuds
@@ -81,12 +81,12 @@ public class Vue extends JFrame implements Observer {
 			
 			//Noeud
 		noeud = new JPanel(); noeud.setBackground(Color.decode("#27ae60"));
-		noeud.setPreferredSize(new Dimension(sizeOfNoeud, getHeight()-240));
+		noeud.setPreferredSize(new Dimension(sizeOfNoeud, getHeight()-180));
 		
-		scenario = new ScenarioCanvas();
-		scenario.setBackground(Color.decode("#34495e"));
-		scenario.setPreferredSize(new Dimension(sizeOfNoeud, getHeight()-180));
-		scrollScenarios.setViewportView(scenario);
+		scenarioCanvas = new ScenarioCanvas();
+		scenarioCanvas.setBackground(Color.decode("#34495e"));
+		scenarioCanvas.setPreferredSize(new Dimension(sizeOfNoeud, getHeight()-180));
+		scrollScenarios.setViewportView(scenarioCanvas);
 		
 		scrollScenarios.setPreferredSize(new Dimension(sizeOfNoeud, getHeight()-180));
 		
@@ -222,10 +222,24 @@ public class Vue extends JFrame implements Observer {
 			lScenario.addAll((ArrayList<Scenario>) arg);
 			
 			//scenario.setBackground(Color.BLUE);
-			scenario.miseAjour(lScenario);
-			scenario.setPreferredSize(new Dimension(sizeOfNoeud, getHeight()*lScenario.size()/7-280));
-			scrollScenarios.setPreferredSize(new Dimension(sizeOfNoeud, getHeight()*lScenario.size()-180));
+			scenarioCanvas.miseAjour(lScenario);
+			scenarioCanvas.setPreferredSize(new Dimension(sizeOfNoeud, getHeight()*lScenario.size()/7-200));
+			scrollScenarios.setPreferredSize(new Dimension(sizeOfNoeud, getHeight()*lScenario.size()-200));
+			
+			return;
 						
+		} catch (ClassCastException e) {
+			// TODO: handle exception
+		}
+		
+		try {
+			
+			Scenario scenario = (Scenario)arg;
+			scenarioCanvas.miseAjour(scenario);
+			
+			
+			return;
+			
 		} catch (ClassCastException e) {
 			// TODO: handle exception
 		}
@@ -260,6 +274,7 @@ public class Vue extends JFrame implements Observer {
 				bas.setCout(optimal.getCout());
 				bas.setTime(optimal.getTime());
 				grapheInterface.showSoulutionOptimale(optimal.getChemin());
+				return;
 			}
 			
 		} catch (ClassCastException e) {
