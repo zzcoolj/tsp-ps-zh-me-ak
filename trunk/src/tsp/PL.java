@@ -6,6 +6,8 @@ import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 
 import mvc.GraphOpt;
+import CustomClass.HashLambdaRho;
+import CustomClass.PaireLamdbaRho;
 import CustomClass.PaireVertex;
 import Math.ExceptionMaths;
 import Math.Maths;
@@ -218,17 +220,141 @@ public class PL {
 		return false;
 	}
 	
-	public void algoPenalite(Scenario scenario) throws CloneNotSupportedException
+	
+	public void algoPenalite(int iteration, LinkedHashMap<Integer, ArrayList<HashLambdaRho>> penalite, Graph reference, Graph global, ArrayList<Scenario> listeScenario)
 	{
-
-		scenario.getVns().findBestSolution(scenario);
+		penalite.put(iteration, new ArrayList<HashLambdaRho>());
+		for(Scenario scenario : listeScenario)
+		{
+			penalite.get(iteration).add(new HashLambdaRho(scenario));
+		}
+		if(iteration == 0)
+		{
+			Double M = getMaxValue(reference);
+			/**
+			 * Pour chaque HashLambdaRho d'un scenario
+			 */
+			for(int i = 0; i<listeScenario.size(); i++)
+			{
+				for(PaireVertex paireD : global.getDeterminists())
+				{
+					System.out.println("global.... dans algoPenalite "+global.getCouts().get(paireD).doubleValue()/2);
+					penalite.get(iteration).get(i).put(paireD, new PaireLamdbaRho(M, global.getCouts().get(paireD).doubleValue()/2));
+				}
+			}
+			
+		}
+		else
+		{
+			
+			//lambda(i,j) t = lambda(i,j) t-1(s) + rho(i,j) t-1 * ( xij t(s) - xBarre(i,j) t)
+			
+			//rho(i,j) t = 2*rho(ij) t-1 
+			
+			for (int i = 0; i < listeScenario.size(); i++) 
+			{
+				for(PaireVertex paireD : global.getDeterminists())
+				{
+					int xij = 0;
+					if (listeScenario.get(i).getSolution().getCouts().containsKey(paireD)) {
+						xij = 1;
+					}
+					int xijbarre = 0;
+					if (reference.getDeterminists().contains(paireD)) {
+						xijbarre = 1;
+					}
+					Double rhotmoins1 = penalite.get(iteration-1).get(i).get(paireD).getRho();
+					Double lambda = penalite.get(iteration-1).get(i).get(paireD).getLambda() + rhotmoins1*(xij-xijbarre);
+					Double rho = 2.0*rhotmoins1;
+					penalite.get(iteration).get(i).put(paireD, new PaireLamdbaRho(lambda, rho));
+				}
+				
+			}
+			
+		}
+	}
+	
+	
+	public Double fonctionObjectiveLocalResultat(ArrayList<Scenario> s,LinkedHashMap<Integer, ArrayList<HashLambdaRho>> penalite, Graph reference)
+	{
+		Double resultat = 0.0;
+		for(Scenario scenario : s)
+		{
+			resultat+=fonctionObjectiveLocaleCalculInterne(scenario, penalite, reference);
+		}
 		
+		for(Entry<Integer,ArrayList<HashLambdaRho>> entry : penalite.entrySet())
+		{
+			System.err.println("Penalite : iteration "+entry.getKey() + "\n" + entry.getValue()+"\n");
+		}
+		
+		return (1f/s.size())*resultat;
+	}
+	
+	private Double fonctionObjectiveLocaleCalculInterne(Scenario s, LinkedHashMap<Integer, ArrayList<HashLambdaRho>> penalite, Graph reference) {
+		
+		//FIXME => verifier que les aretes deterministe du scenario soient bien init
+		
+		Double partieDeterminist = 0.0;
+		Double partieStochastique = 0.0;
+		
+		
+		
+		
+		
+		for(Entry<PaireVertex,Double> entry : s.getSolution().getCouts().entrySet())
+		{
+			//cas deterministe
+			if(reference.getDeterminists().contains(entry.getKey()) && s.getSolution().getCouts().containsKey(entry.getKey()))
+			{
+				
+				int xij = 0;
+				if (s.getSolution().getCouts().containsKey(entry.getKey())) {
+					xij = 1;
+				}
+				int xijbarre = 0;
+				if (reference.getDeterminists().contains(entry.getKey())) {
+					xijbarre = 1;
+				}
+				Double rho = penalite.get(penalite.size()-1).get(s.getNumero()).get(entry.getKey()).getRho();
+				partieDeterminist+=(entry.getValue()+penalite.get(penalite.size()-1).get(s.getNumero()).get(entry.getKey()).getLambda()
+								  -rho*xijbarre+rho/2f)*xij;
+			}
+			//cas stochastique
+			else
+			{
+				int yij = 0;
+				if (s.getSolution().getCouts().containsKey(entry.getKey())) {
+					yij = 1;
+				}
+				partieStochastique+=entry.getValue()*yij;
+			}
+		}
+		System.out.println("partieDeterminist+Stochastique = "+(partieDeterminist+partieStochastique));
+		return (partieDeterminist+partieStochastique);
+	}
+	
+	public void callVNS(ArrayList<Scenario> s) throws CloneNotSupportedException
+	{
+		for (Scenario scenario : s) {
+			scenario.getVns().findBestSolution(scenario);
+		}
+	}
+	
+	public Double getMaxValue(Graph g) {
+		Double maxi = 0.0;
+		for(Double max : g.getCouts().values()){
+			if(max>maxi){
+				maxi = max;
+			}
+		}
+		return maxi;
 	}
 	
 	public void initDeterminist(Graph g, float pourcentage)
 	{
 		
-		int nombre = (int)(g.getNbVilles()*pourcentage);
+		int nombre = (int)(g.getNbVilles()*(g.getNbVilles()-1)*pourcentage);
 		
 		int min = 0;
 		
@@ -247,5 +373,4 @@ public class PL {
 		}
 		
 	}
-	
 }

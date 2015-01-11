@@ -213,7 +213,7 @@ public class Vue extends JFrame implements Observer {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void update(Observable o, Object arg) {
-		System.out.println("update() "+arg);
+		//System.out.println("update() "+arg);
 		if(arg==null)
 			return;
 		//Si TSP notifie

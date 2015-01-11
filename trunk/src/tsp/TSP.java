@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.Observable;
 import java.util.Observer;
 
+import CustomClass.HashLambdaRho;
 import CustomClass.PaireLamdbaRho;
 import CustomClass.PaireVertex;
 import mvc.GraphOpt;
@@ -18,7 +19,8 @@ public class TSP extends Observable implements Observer{
 	private int scenario = 10;
 	private float pourcentageDeterminist;
 	protected static Integer n_opt = 2;
-	private LinkedHashMap<Integer, ArrayList<PaireLamdbaRho>> penalite;
+	//penalite.get(0) => array.get(0) => scenario 0 iteration 0
+	private LinkedHashMap<Integer, ArrayList<HashLambdaRho>> penalite;
 	
 	
 	public TSP(String nameXml) {
@@ -28,7 +30,7 @@ public class TSP extends Observable implements Observer{
 		p.parse(g);
 		s = new ArrayList<Scenario>();
 		pl = new PL();	
-		penalite = new LinkedHashMap<Integer, ArrayList<PaireLamdbaRho>>();
+		penalite = new LinkedHashMap<Integer, ArrayList<HashLambdaRho>>();
 	}
 	
 	public GraphOpt launch(float determinist, Integer kmax, Integer nbScenario) 
@@ -55,6 +57,7 @@ public class TSP extends Observable implements Observer{
 		System.out.println("Fin Vrai");
 
 		Graph reference = pl.glouton(g);
+		System.err.println("pl.glouton )))))))))) = "+reference.coutSolution());
 		reference.setDeterminists(getDeterministes(reference,g));
 		
 		for(Scenario sc : this.s)
@@ -75,11 +78,43 @@ public class TSP extends Observable implements Observer{
 		
 		do{ 
 			
+			pl.algoPenalite(iteration, penalite, reference, g, s);
+			
+			for(Scenario scenario : s)
+			{
+				try {
+					scenario.getVns().findBestSolution(scenario);
+				} catch (CloneNotSupportedException e) {
+					System.err.println("CloneNotSupported dans classe TSP");
+					e.printStackTrace();
+				}
+			}
+			
+			System.out.println("Cout actuel : "+pl.fonctionObjectiveLocalResultat(s, penalite, reference));
+			
+			iteration++;
+			
+			System.err.println("---------------------------------------------------------------------------");
+			
+			pl.algoPenalite(iteration, penalite, reference, g, s);
+			
+			for(Scenario scenario : s)
+			{
+				try {
+					scenario.getVns().findBestSolution(scenario);
+				} catch (CloneNotSupportedException e) {
+					System.err.println("CloneNotSupported dans classe TSP");
+					e.printStackTrace();
+				}
+			}
+			
+			System.out.println("Cout actuel : "+pl.fonctionObjectiveLocalResultat(s, penalite, reference));
+			
 			iteration++;
 		}while(testArret());
 
 		
-		
+		System.out.println("Fini");
 	
 		
 		
@@ -156,17 +191,9 @@ public class TSP extends Observable implements Observer{
 		return n_opt;
 	}
 	
-	public Double getMaxValue(Graph g) {
-		Double maxi = 0.0;
-		for(Double max : g.getCouts().values()){
-			if(max>maxi){
-				maxi = max;
-			}
-		}
-		return maxi;
-	}
+	
 
-	public void algorithmePenalite(int penalite, Graph reference){
+	/*public void algorithmePenalite(int penalite, Graph reference){
 		if(penalite == 0){
 			int size = reference.getDeterminists().size();
 			ArrayList<PaireLamdbaRho> test = new ArrayList<PaireLamdbaRho>();
@@ -179,7 +206,7 @@ public class TSP extends Observable implements Observer{
 		}
 		
 		
-	}
+	}*/
 
 	@Override
 	public void update(Observable o, Object arg) {

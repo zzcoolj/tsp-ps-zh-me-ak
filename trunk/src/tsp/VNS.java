@@ -307,7 +307,7 @@ public class VNS {
 	 * @throws CloneNotSupportedException 
 	 */
 	
-	public Graph algoVNSNopt(Scenario s, int kopt) throws CloneNotSupportedException
+	private Graph algoVNSNopt(Scenario s, int kopt) throws CloneNotSupportedException
 	{
 		
 		//FIXME Zheng :))
@@ -427,7 +427,7 @@ public class VNS {
 		
 	}
 	
-	public Graph algoVNS2ou3opt(Scenario s, boolean is2opt) {
+	private Graph algoVNS2ou3opt(Scenario s, boolean is2opt) {
 		Graph g = new Graph();
 		g.setCities(s.getGeneral().getVilles());
 		g.setDeterminists(s.getGeneral().getDeterminists());
@@ -503,11 +503,9 @@ public class VNS {
 		}
 	}
 	
-	public boolean isBetterSolution(Graph old, Graph actual)
+	private boolean isBetterSolution(Graph old, Graph actual)
 	{
-		
-		
-		return false;
+		return (old.coutSolution()>actual.coutSolution());
 	}
 
 	public void findBestSolution(Scenario s) throws CloneNotSupportedException {
@@ -516,6 +514,7 @@ public class VNS {
 		while(kopt <= TSP.n_opt)
 		{
 			Graph newSolution = algoVNSNopt(s,kopt);
+			System.out.println("Graphe actuel : "+newSolution);
 			if(isBetterSolution(s.getSolution(), newSolution))
 			{
 				s.setSolution(newSolution);
@@ -529,12 +528,12 @@ public class VNS {
 		
 	}
 	
-	public Graph algoVNS2opt(Scenario s)
+	private Graph algoVNS2opt(Scenario s)
 	{
 		return algoVNS2ou3opt(s, true);
 	}
 	
-	public Graph algoVNS3opt(Scenario s)
+	private Graph algoVNS3opt(Scenario s)
 	{
 		return algoVNS2ou3opt(s, false);
 	}
