@@ -311,108 +311,123 @@ public class VNS {
 	 * @throws CloneNotSupportedException 
 	 */
 	
-	public Graph  algoVNSNopt(Scenario s) throws CloneNotSupportedException
+	public Graph algoVNSNopt(Scenario s, int kopt) throws CloneNotSupportedException
 	{
-		ArrayList<PaireVertex> stochastiques = new ArrayList<PaireVertex>();
-		/**
-		 * On ne prend que les arretes stochastiques
-		 */
 		
-		System.out.println("1) "+s.getSolution()+"\n");
-		
-		Graph solutionScenarioGloutonClone = (Graph) s.getSolution().clone();
-		
-		System.out.println("2) "+solutionScenarioGloutonClone.getCouts());
-		
-		for(PaireVertex paire : solutionScenarioGloutonClone.getCouts().keySet())
-		{			
-			if(!s.getGeneral().getDeterminists().contains(paire))
-				stochastiques.add(paire);
-		}
-		
-		/*
-		 * --------------------------------------------------
-		 * 					SHAKING : Pioche
-		 * --------------------------------------------------
-		 */
-		
-		//TODO : cela correspond au shaking ? le fait de piocher au hasard ?
-		ArrayList<PaireVertex> pioche = new ArrayList<PaireVertex>();
-		/**
-		 * Une simple boucle pour dire que l'on doit avoir :
-		 * Pour 2-opt : 2 pioche
-		 * Pour 3-opt : 3 pioche
-		 * etc ...
-		 */
-		
-		s.setEtat(etat.SHAKING);
-		
-		while(pioche.size()<TSP.n_opt)
+		//FIXME Zheng :))
+		if(kopt==2)
 		{
-			//Random entre [0,stochastiques.size()-1)
-			//FIXME : mettre un try catch de java.lang.IllegalArgumentException
-			PaireVertex choisi = stochastiques.get(Maths.randInt(0, stochastiques.size()-1));
-			if(!pioche.contains(choisi) && !vertexDejaPioche(choisi.getFirst(), pioche) && !vertexDejaPioche(choisi.getSecond(), pioche))
-				pioche.add(choisi);
+			return algoVNS2opt(s);
 		}
-		
-		System.out.println("La pioche : "+pioche);
-		
-		
-		/*
-		 * --------------------------------------------------
-		 * 					ALGO : Le saut de pas que l'on fait : CF Image rapport pour N-opt
-		 * --------------------------------------------------
-		 */
-		
-		s.setEtat(etat.CHANGINGNEIGHBORHOOD);
-		
-		LinkedHashMap<Vertex, Boolean> visite = new LinkedHashMap<Vertex, Boolean>();
-		for(PaireVertex p : pioche)
+		else if(kopt==3)
 		{
-			visite.put(p.getFirst(), false);
-			visite.put(p.getSecond(), false);
+			return algoVNS3opt(s);
 		}
-		
-		ArrayList<PaireVertex> nouveau = new ArrayList<PaireVertex>();
-		
-		int i = 0;
-		while(!toutViste(visite))
+		//kopt>3
+		else
 		{
 			
-			if(i+1==pioche.size())
-			{
-				System.out.println("2) Je lie : "+pioche.get(i).getFirst()+" avec " + pioche.get(0).getSecond());
-				nouveau.add(lie(pioche.get(i).getFirst(), pioche.get(0).getSecond()));
-			}
-			else
-			{
-				System.out.println("3) Je lie : "+pioche.get(i).getFirst()+" avec " + pioche.get(i+1).getSecond());
-				nouveau.add(lie(pioche.get(i).getFirst(), pioche.get(i+1).getSecond()));
+			ArrayList<PaireVertex> stochastiques = new ArrayList<PaireVertex>();
+			/**
+			 * On ne prend que les arretes stochastiques
+			 */
+			
+			System.out.println("1) "+s.getSolution()+"\n");
+			
+			Graph solutionScenarioGloutonClone = (Graph) s.getSolution().clone();
+			
+			System.out.println("2) "+solutionScenarioGloutonClone.getCouts());
+			
+			for(PaireVertex paire : solutionScenarioGloutonClone.getCouts().keySet())
+			{			
+				if(!s.getGeneral().getDeterminists().contains(paire))
+					stochastiques.add(paire);
 			}
 			
-			PaireVertex tmp = nouveau.get(nouveau.size()-1);
-			visite.put(tmp.getFirst(),true);
-			visite.put(tmp.getSecond(), true);
-				
-			System.out.println("Visite ?? "+visite);
-				
-			i = i + 1;
-		}
+			/*
+			 * --------------------------------------------------
+			 * 					SHAKING : Pioche
+			 * --------------------------------------------------
+			 */
 			
-		//FIXME methode qui colle les nouveau noeud a la solution du scenario : il faut bien les inserer a leur place 
-		//genre on doit inserer dans [ (1,2) (4,5) ] l'arrete (2,4) faut la mettre au milieu
-		//TODO Cf (FIXME Note 1 au dessus) : on utilisera la meme methode pour cette fois remettre dans l'ordre
-		update(solutionScenarioGloutonClone, pioche, nouveau, s);
+			//TODO : cela correspond au shaking ? le fait de piocher au hasard ?
+			ArrayList<PaireVertex> pioche = new ArrayList<PaireVertex>();
+			/**
+			 * Une simple boucle pour dire que l'on doit avoir :
+			 * Pour 2-opt : 2 pioche
+			 * Pour 3-opt : 3 pioche
+			 * etc ...
+			 */
+			
+			s.setEtat(etat.SHAKING);
+			
+			while(pioche.size()<kopt)
+			{
+				//Random entre [0,stochastiques.size()-1)
+				//FIXME : mettre un try catch de java.lang.IllegalArgumentException
+				PaireVertex choisi = stochastiques.get(Maths.randInt(0, stochastiques.size()-1));
+				if(!pioche.contains(choisi) && !vertexDejaPioche(choisi.getFirst(), pioche) && !vertexDejaPioche(choisi.getSecond(), pioche))
+					pioche.add(choisi);
+			}
+			
+			System.out.println("La pioche : "+pioche);
+			
+			/*
+			 * --------------------------------------------------
+			 * 					ALGO : Le saut de pas que l'on fait : CF Image rapport pour N-opt
+			 * --------------------------------------------------
+			 */
+			
+			s.setEtat(etat.CHANGINGNEIGHBORHOOD);
+			
+			LinkedHashMap<Vertex, Boolean> visite = new LinkedHashMap<Vertex, Boolean>();
+			for(PaireVertex p : pioche)
+			{
+				visite.put(p.getFirst(), false);
+				visite.put(p.getSecond(), false);
+			}
+			
+			ArrayList<PaireVertex> nouveau = new ArrayList<PaireVertex>();
+			
+			int i = 0;
+			while(!toutViste(visite))
+			{
+				
+				if(i+1==pioche.size())
+				{
+					System.out.println("2) Je lie : "+pioche.get(i).getFirst()+" avec " + pioche.get(0).getSecond());
+					nouveau.add(lie(pioche.get(i).getFirst(), pioche.get(0).getSecond()));
+				}
+				else
+				{
+					System.out.println("3) Je lie : "+pioche.get(i).getFirst()+" avec " + pioche.get(i+1).getSecond());
+					nouveau.add(lie(pioche.get(i).getFirst(), pioche.get(i+1).getSecond()));
+				}
+				
+				PaireVertex tmp = nouveau.get(nouveau.size()-1);
+				visite.put(tmp.getFirst(),true);
+				visite.put(tmp.getSecond(), true);
+					
+				System.out.println("Visite ?? "+visite);
+					
+				i = i + 1;
+			}
+				
+			//FIXME methode qui colle les nouveau noeud a la solution du scenario : il faut bien les inserer a leur place 
+			//genre on doit inserer dans [ (1,2) (4,5) ] l'arrete (2,4) faut la mettre au milieu
+			//TODO Cf (FIXME Note 1 au dessus) : on utilisera la meme methode pour cette fois remettre dans l'ordre
+			update(solutionScenarioGloutonClone, pioche, nouveau, s);
+			
+			System.out.println("Stochastique"+stochastiques);
+			System.out.println("Pioche "+pioche);
+			System.out.println("Nouveau : "+nouveau);
+			System.out.println("Solutionlone : "+solutionScenarioGloutonClone);
+			
+			s.setEtat(etat.FINISHED);
+			
+			return solutionScenarioGloutonClone;
+		}
 		
-		System.out.println("Stochastique"+stochastiques);
-		System.out.println("Pioche "+pioche);
-		System.out.println("Nouveau : "+nouveau);
-		System.out.println("Solutionlone : "+solutionScenarioGloutonClone);
-		
-		s.setEtat(etat.FINISHED);
-		
-		return solutionScenarioGloutonClone;
 		
 	}
 	
@@ -440,13 +455,16 @@ public class VNS {
 		LinkedList<Integer> cheminsOptimal = new LinkedList<Integer>();
 		cheminsOptimal = vns.neighborhoodChange(s.getGeneral().toTab(), cheminsInitial);
 		
+		//[0,1,2,4,5,3]
 		/* cheminOptimal(LinkedList<Integer) ->  Couts optimal(LinkedHashMap) */
 		LinkedHashMap<PaireVertex, Double> coutsOptimal = new LinkedHashMap<PaireVertex, Double>();
 		for(int i=0;i<cheminsOptimal.size()-1;i++){
 			PaireVertex pV = new PaireVertex(new Vertex(cheminsOptimal.get(i)),new Vertex(cheminsOptimal.get(i+1)));
-			coutsOptimal.put(pV, s.getGeneral().toTab()[cheminsOptimal.get(i)][cheminsOptimal.get(i+1)]);
+			//System.out.println("Ca "+s.getGeneral().toTab()[cheminsOptimal.get(i)][cheminsOptimal.get(i+1)]+" est egale a ca : "+s.getGeneral().getCouts().get(pV));
+			coutsOptimal.put(pV, s.getGeneral().getCouts().get(pV));
 		}
-		coutsOptimal.put(new PaireVertex(new Vertex(cheminsOptimal.get(cheminsOptimal.size()-1)),new Vertex(cheminsOptimal.get(0))), s.getGeneral().toTab()[cheminsOptimal.size()-1][cheminsOptimal.get(0)]);
+		PaireVertex lastPaire = new PaireVertex(new Vertex(cheminsOptimal.get(cheminsOptimal.size()-1)),new Vertex(cheminsOptimal.get(0)));
+		coutsOptimal.put(lastPaire, s.getGeneral().getCouts().get(lastPaire));
 		
 		g.setCouts(coutsOptimal);
 		return g;
@@ -498,20 +516,31 @@ public class VNS {
 
 	public void findBestSolution(Scenario s) throws CloneNotSupportedException {
 	
-		int k = 2;
-		while(k <= TSP.n_opt)
+		int kopt = 2;
+		while(kopt <= TSP.n_opt)
 		{
-			Graph newSolution = algoVNSNopt(s);
+			Graph newSolution = algoVNSNopt(s,kopt);
 			if(isBetterSolution(s.getSolution(), newSolution))
 			{
 				s.setSolution(newSolution);
+				kopt = 2;
 			}
 			else
 			{
-				k = k+1;
+				kopt = kopt+1;
 			}
 		}
 		
+	}
+	
+	public Graph algoVNS2opt(Scenario s)
+	{
+		return algoVNS2ou3opt(s, true);
+	}
+	
+	public Graph algoVNS3opt(Scenario s)
+	{
+		return algoVNS2ou3opt(s, false);
 	}
 }
 
