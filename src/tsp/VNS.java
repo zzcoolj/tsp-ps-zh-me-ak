@@ -182,10 +182,6 @@ public class VNS {
 			System.out.println("cheminChange4 : " + cheminsChange4);
 			*/
 		}
-
-		if (neighborhood > 3) {
-
-		}
 		
 		
 		return listCheminsChange;
