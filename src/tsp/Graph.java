@@ -117,4 +117,16 @@ public class Graph {
 			return copie;
 		}
 		
+		public Double coutSolution()
+		{
+			Double cout = 0.0;
+			
+			//System.err.println("!!!!!!!! VALUES "+getCouts().values());
+			for(Double d : getCouts().values())
+			{
+				cout+=d;
+			}
+			return cout;
+		}
+		
 }
