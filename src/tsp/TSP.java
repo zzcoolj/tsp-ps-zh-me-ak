@@ -62,12 +62,12 @@ public class TSP extends Observable implements Observer{
 			sc.setSolution(pl.glouton(sc.getGeneral()));
 		}
 		
-		/*try {
-			s.get(0).getVns().algoVNSNopt(s.get(0));
+		try {
+			s.get(0).getVns().algoVNSNopt(s.get(0),n_opt);
 		} catch (CloneNotSupportedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}*/
+		}
 		
 		boolean continuer = true;
 		
