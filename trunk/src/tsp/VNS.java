@@ -198,7 +198,7 @@ public class VNS {
 		
 		/* cout de cheminInitial */
 		Double coutsTotalInitial = couts[cheminsInitial.get(cheminsInitial
-				.size() - 1)][0]; 
+				.size() - 1)][cheminsInitial.get(0)]; 
 		for (int i = 0; i < cheminsInitial.size() - 1; i++) {
 			coutsTotalInitial += couts[cheminsInitial.get(i)][cheminsInitial
 					.get(i + 1)];
@@ -220,8 +220,8 @@ public class VNS {
 			LinkedList<Integer> cheminsChange = listCheminsChange.get(
 					k);
 			Double coutsTotalChangeTemp = couts[cheminsChange.get(cheminsChange
-					.size() - 1)][0];
-			if (couts[cheminsChange.get(cheminsChange.size() - 1)][0] > coutDeCheminExistePas) {
+					.size() - 1)][cheminsChange.get(0)];
+			if (couts[cheminsChange.get(cheminsChange.size() - 1)][cheminsChange.get(0)] > coutDeCheminExistePas) {
 				coutsTotalChangeTemp = Double.MAX_VALUE;
 				System.out.println("cheminChange" + (k+1) + " : " + cheminsChange + " -----> coutsTotal de cheminChange" + (k+1) + " : "
 						+ coutsTotalChangeTemp);// for
@@ -295,7 +295,6 @@ public class VNS {
 				};
 
 		VNS v = new VNS(2);
-		//v.solve(cheminsInitialTest);
 		v.neighborhoodChange(coutsTest, cheminsInitialTest, v.solve(cheminsInitialTest));
 		
 		
@@ -415,6 +414,42 @@ public class VNS {
 		
 		return solutionScenarioGloutonClone;
 		
+	}
+	
+	public Graph algoVNS2Ou3opt(Scenario s, boolean is2opt) {
+		Graph g = new Graph();
+		g.setCities(s.getGeneral().getVilles());
+		g.setDeterminists(s.getGeneral().getDeterminists());
+
+		/* Couts initial(LinkedHashMap) -> cheminInitial(LinkedList<Integer>) */
+		LinkedList<Integer> cheminsInitial = new LinkedList<Integer>();
+		Iterator<PaireVertex> it = s.getSolution().getCouts().keySet().iterator();
+		while(it.hasNext()){
+			cheminsInitial.add(it.next().getFirst().getNumero());
+		}
+		
+		/* utilise la fonction neighborhoodChange pour trouver le chemin optimal(LinkedList<Integer) */
+		int opt;
+		if(is2opt){
+			opt = 2;
+		}
+		else{
+			opt = 3;
+		}
+		VNS vns = new VNS(opt);
+		LinkedList<Integer> cheminsOptimal = new LinkedList<Integer>();
+		cheminsOptimal = vns.neighborhoodChange(s.getGeneral().toTab(), cheminsInitial);
+		
+		/* cheminOptimal(LinkedList<Integer) ->  Couts optimal(LinkedHashMap) */
+		LinkedHashMap<PaireVertex, Double> coutsOptimal = new LinkedHashMap<PaireVertex, Double>();
+		for(int i=0;i<cheminsOptimal.size()-1;i++){
+			PaireVertex pV = new PaireVertex(new Vertex(cheminsOptimal.get(i)),new Vertex(cheminsOptimal.get(i+1)));
+			coutsOptimal.put(pV, s.getGeneral().toTab()[cheminsOptimal.get(i)][cheminsOptimal.get(i+1)]);
+		}
+		coutsOptimal.put(new PaireVertex(new Vertex(cheminsOptimal.get(cheminsOptimal.size()-1)),new Vertex(cheminsOptimal.get(0))), s.getGeneral().toTab()[cheminsOptimal.size()-1][cheminsOptimal.get(0)]);
+		
+		g.setCouts(coutsOptimal);
+		return g;
 	}
 	
 	//FIXME : lie que si le sommet n'est pas visite !!!!!
