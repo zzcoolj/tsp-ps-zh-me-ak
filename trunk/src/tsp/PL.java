@@ -81,7 +81,7 @@ public class PL {
 			scenario.setSolution(g);
 		}*/
 		
-		
+		Double ecartype = Maths.calculEcartType(tsp);
 		for(PaireVertex p : tsp.getG().getCouts().keySet())
 		{
 			//PaireVertex p = new PaireVertex(new Vertex(i),new Vertex(j));
@@ -91,12 +91,11 @@ public class PL {
 					scenario.getGeneral().getCouts().put(p, tsp.getG().getCouts().get(p));
 				}
 			}
-			else{
-				Double valeurXml = tsp.getG().getCouts().get(p);
-				Double ecartype = Maths.calculEcartType(tsp);
-				
-				Double min = valeurXml-ecartype;
-				Double max = valeurXml+ecartype;
+			else
+			{
+				Double valeurXml = tsp.getG().getCouts().get(p);	
+				Double min = valeurXml-3*ecartype;
+				Double max = valeurXml+3*ecartype;
 				try {
 					ArrayList<Double> rand = Maths.generateRandomCosts(valeurXml, min, max, s.size());
 					//System.out.println("Rand = "+rand);
