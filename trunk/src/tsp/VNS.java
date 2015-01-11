@@ -217,7 +217,10 @@ public class VNS {
 					k);
 			Double coutsTotalChangeTemp = couts[cheminsChange.get(cheminsChange
 					.size() - 1)][cheminsChange.get(0)];
+			/*
 			if (couts[cheminsChange.get(cheminsChange.size() - 1)][cheminsChange.get(0)] > coutDeCheminExistePas) {
+			*/
+			if (couts[cheminsChange.get(cheminsChange.size() - 1)][cheminsChange.get(0)] > coutDeCheminExistePas || couts[cheminsChange.get(cheminsChange.size() - 1)][cheminsChange.get(0)] <= 0) {
 				coutsTotalChangeTemp = Double.MAX_VALUE;
 				System.out.println("cheminChange" + (k+1) + " : " + cheminsChange + " -----> coutsTotal de cheminChange" + (k+1) + " : "
 						+ coutsTotalChangeTemp);// for
@@ -230,7 +233,10 @@ public class VNS {
 			}
 
 			for (int i = 0; i < cheminsChange.size() - 1; i++) {
+				/*
 				if (couts[cheminsChange.get(i)][cheminsChange.get(i + 1)] > coutDeCheminExistePas) {
+				*/
+				if (couts[cheminsChange.get(i)][cheminsChange.get(i + 1)] > coutDeCheminExistePas || couts[cheminsChange.get(i)][cheminsChange.get(i + 1)] <= 0) {
 					coutsTotalChangeTemp = Double.MAX_VALUE;
 					System.out.println("cheminChange" + (k+1) + " : " + cheminsChange + " -----> coutsTotal de cheminChange" + (k+1) + " : "
 							+ coutsTotalChangeTemp);// for
