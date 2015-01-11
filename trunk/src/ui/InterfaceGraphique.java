@@ -2,16 +2,20 @@ package ui;
 
 import java.awt.Dimension;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Random;
 
 import javax.swing.JPanel;
+
+import CustomClass.PaireVertex;
 
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.util.mxConstants;
 import com.mxgraph.view.mxGraph;
 
 import tsp.Graph;
+import tsp.Vertex;
 
 public class InterfaceGraphique extends JPanel {
 
@@ -25,11 +29,12 @@ public class InterfaceGraphique extends JPanel {
 	private int distanceX;
 	private int distanceY;
 	
-	Object[] vertexsAller;//for test
-	Object[] vertexsRetour;//for test
-	int nbV;//for test
-	mxGraph graph;//for test
-	Double[][] couts;//for test
+	Object[] vertexsAller;
+	Object[] vertexsRetour;
+	int nbV;
+	mxGraph graph;
+	//Double[][] couts;//for test
+	LinkedHashMap<PaireVertex, Double> couts;
 	
 	ArrayList<Forme> formes;
 
@@ -41,9 +46,16 @@ public class InterfaceGraphique extends JPanel {
 		this.distanceY = distanceY/2+2;// if faut distanceX>distanceY	
 	}
 
+	/*
 	public void draw(Graph g) {
 		nbV = g.getNbVilles();
 		couts = g.toTab();
+		jgraphT(nbV, couts);
+	}
+	*/
+	public void draw(Graph g) {
+		nbV = g.getNbVilles();
+		couts = g.getCouts();
 		jgraphT(nbV, couts);
 	}
 	
@@ -51,7 +63,7 @@ public class InterfaceGraphique extends JPanel {
 		draw(g);
 	}
 
-	private void jgraphT(int nbV, Double[][] couts) {
+	private void jgraphT(int nbV, LinkedHashMap<PaireVertex, Double> couts) {
 		
 		graph = new mxGraph();
 		//graph.addListener(mxEvent., function(sender, evt) {graph.zoomIn(); scrollTo(graph, evt.properties.event.layerX, evt.properties.event.layerY);});
@@ -90,8 +102,13 @@ public class InterfaceGraphique extends JPanel {
 				for (int i = 0; i < nbV; i++) {
 					for (int j = 0; j < nbV; j++) {
 						if (i < j) {
+							/*
 							edgesAller[num] = graph.insertEdge(parent, null,
 									couts[i][j], vertexsAller[i],
+									vertexsAller[j], "strokeColor=#34495e");
+									*/
+							edgesAller[num] = graph.insertEdge(parent, null,
+									couts.get(new PaireVertex(new Vertex(i), new Vertex(j))), vertexsAller[i],
 									vertexsAller[j], "strokeColor=#34495e");
 							num++;
 						}
@@ -103,28 +120,31 @@ public class InterfaceGraphique extends JPanel {
 				for (int i = 0; i < nbV; i++) {
 					for (int j = 0; j < nbV; j++) {
 						if (i > j) {
-
-							// System.out.println("couts[i][j] : "+couts[i][j]);//for
-							// test
-							// System.out.println("couts[j][i] : "+couts[j][i]);//for
-							// test
-
+							/*
 							if (!(couts[i][j].equals(couts[j][i]))) {
-
-								// System.out.println("!=");//for test
+							*/
+							if (!(couts.get(new PaireVertex(new Vertex(i), new Vertex(j))).equals(couts.get(new PaireVertex(new Vertex(j), new Vertex(i)))))) {
+								/*
 								edgesRetour[num] = graph
 										.insertEdge(parent, null, couts[i][j],
 												vertexsRetour[i],
 												vertexsRetour[j],
-												"strokeColor=#5e6035");// TODO
-																		// change
-																		// couleur
+												"strokeColor=#5e6035");// change couleur
+												*/
+								edgesRetour[num] = graph
+										.insertEdge(parent, null, couts.get(new PaireVertex(new Vertex(i), new Vertex(j))),
+												vertexsRetour[i],
+												vertexsRetour[j],
+												"strokeColor=#5e6035");// change couleur							
 								num++;
 							} else {
-								// System.out.println("=");//for test
-
+								/*
 								edgesRetour[num] = graph.insertEdge(parent,
 										null, couts[i][j], vertexsAller[i],
+										vertexsAller[j], "strokeColor=#34495e");
+										*/
+								edgesRetour[num] = graph.insertEdge(parent,
+										null, couts.get(new PaireVertex(new Vertex(i), new Vertex(j))), vertexsAller[i],
 										vertexsAller[j], "strokeColor=#34495e");
 								num++;
 							}
@@ -161,6 +181,7 @@ public class InterfaceGraphique extends JPanel {
 		graph.getModel().endUpdate();
 	}
 	
+	
 	public void showSoulutionOptimale(LinkedList<Integer> cheminsOptimals) {
 		graph.getModel().beginUpdate();
 		try {
@@ -174,7 +195,12 @@ public class InterfaceGraphique extends JPanel {
 				for (int i = 0; i < nbV; i++) {
 					for (int j = 0; j < nbV; j++) {
 						if (i != j) {
+							/*
 							if ((i > j) && (!(couts[i][j].equals(couts[j][i])))) {
+								edgesRemove[k] = graph.getEdgesBetween(
+										vertexsRetour[i], vertexsRetour[j]);
+										*/
+							if ((i > j) && (!(couts.get(new PaireVertex(new Vertex(i), new Vertex(j))).equals(couts.get(new PaireVertex(new Vertex(j), new Vertex(i))))))) {
 								edgesRemove[k] = graph.getEdgesBetween(
 										vertexsRetour[i], vertexsRetour[j]);
 							} else {
