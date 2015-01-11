@@ -416,7 +416,7 @@ public class VNS {
 		
 	}
 	
-	public Graph algoVNS2Ou3opt(Scenario s, boolean is2opt) {
+	public Graph algoVNS2ou3opt(Scenario s, boolean is2opt) {
 		Graph g = new Graph();
 		g.setCities(s.getGeneral().getVilles());
 		g.setDeterminists(s.getGeneral().getDeterminists());
