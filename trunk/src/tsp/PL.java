@@ -2,6 +2,7 @@ package tsp;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 
@@ -166,9 +167,7 @@ public class PL {
 	}
 
 	
-	public PaireVertex procheVoisin(Vertex depart,
-			LinkedHashMap<PaireVertex, Double> map,
-			ArrayList<PaireVertex> cheminInterdit, Vertex interdit) {
+	public PaireVertex procheVoisin(Vertex depart,LinkedHashMap<PaireVertex, Double> map,ArrayList<PaireVertex> cheminInterdit, Vertex interdit) {
 		PaireVertex voisin = null;
 		double min;
 		/**
@@ -177,18 +176,12 @@ public class PL {
 		ArrayList<PaireVertex> liste = new ArrayList<PaireVertex>();
 		for (PaireVertex p : map.keySet()) {
 			if(interdit == null){
-				if (p.getFirst().equals(depart)
-						&& !p.getSecond().equals(depart)
-						&& !arcExisteDeja(p.getFirst(), p.getSecond(),
-								cheminInterdit)) {
+				if (p.getFirst().equals(depart) && !p.getSecond().equals(depart) && !arcExisteDeja(p.getFirst(), p.getSecond(),cheminInterdit)) {
 					liste.add(p);
 				}
 			}
 			else{
-				if (p.getFirst().equals(depart)
-						&& !p.getSecond().equals(depart)
-						&& !arcExisteDeja(p.getFirst(), p.getSecond(),
-								cheminInterdit) && !p.getSecond().equals(interdit)) {
+				if (p.getFirst().equals(depart) && !p.getSecond().equals(depart) && !arcExisteDeja(p.getFirst(), p.getSecond(), cheminInterdit) && !p.getSecond().equals(interdit)) {
 					liste.add(p);
 				}
 			}
@@ -206,6 +199,11 @@ public class PL {
 
 	public boolean arcExisteDeja(Vertex x, Vertex y, ArrayList<PaireVertex> array) {
 		for (PaireVertex vd : array) {
+			/*System.out.println("Je suis a la paire "+vd+" et je cherche si la paire ("+x+","+y+") est autorisé");
+			System.out.println("Ma liste est "+array);
+			System.out.println("vd.getFirst().equals(x)" + vd.getFirst().equals(x));
+			System.out.println("vd.equals(new PaireVertex(y, x))"+vd.equals(new PaireVertex(y, x)));
+			System.out.println("vd.getSecond().equals(y)"+vd.getSecond().equals(y));*/
 			if(vd.getFirst().equals(x)){
 				return true;
 			}
@@ -216,6 +214,7 @@ public class PL {
 			if (vd.getSecond().equals(y)) {
 				return true;
 			}
+			//System.err.println("//////////////////\n");
 
 		}
 		return false;
@@ -377,45 +376,387 @@ public class PL {
 		
 	}
 	
-	public Graph gloutonBis(Graph g, ArrayList<PaireVertex> paireReference) {
+	public void gloutonBis(Graph g, ArrayList<PaireVertex> paireReference) {
 		
 		if(g==null)
-			return null;
+			return;
 
-		Vertex depart = g.getVilles().get(Maths.randInt(0, g.getNbVilles()-1));
+		Vertex depart = trouveVilleInterdit(paireReference);
+		System.out.println("une villes interdit et de depart");
 		ArrayList<PaireVertex> cheminInterdit = new ArrayList<PaireVertex>();
-		cheminInterdit.addAll(paireReference);
+		
+		for(PaireVertex paire : paireReference)
+		{
+			cheminInterdit.add(paire);
+		}
 		
 		Vertex vilaInterdit = depart;
-		for (int i = 0; i < g.getNbVilles()-1; i++) {
-			PaireVertex tmp = null;
-			
-			if(i==0) {
-				 tmp = procheVoisin(depart, g.getCouts(), cheminInterdit,null);
-				 System.out.println("1)Avant nulll je passe la "+tmp);
-			}
-			else{
-				tmp = procheVoisin(depart, g.getCouts(), cheminInterdit, vilaInterdit);
-				System.out.println("2)Avant nulll je passe la "+tmp);
-			}
-			cheminInterdit.add(tmp);
-			depart = tmp.getSecond();
-			
+		
+		ArrayList<Vertex> arreteDejaTrouve = new ArrayList<Vertex>();
+		
+		for(PaireVertex v : paireReference)
+		{
+			arreteDejaTrouve.add(v.getFirst());
 		}
+		
+		for (int i = 0; i < g.getNbVilles()-1; i++) {
+			if(!arreteDejaTrouve.contains(depart) && !existeDejaDansReference(depart, paireReference))
+			{
+				PaireVertex tmp = null;
+				System.out.println("Depart : ------ "+depart+" villes interdit "+vilaInterdit);
+				if(i==0) 
+				{
+					 tmp = procheVoisin(depart, g.getCouts(), cheminInterdit,null);
+					 System.out.println("1)Avant nulll je passe la "+tmp);
+				}
+				else
+				{
+					tmp = procheVoisin(depart, g.getCouts(), cheminInterdit, vilaInterdit);
+					System.out.println("2)Avant nulll je passe la "+tmp);
+				}
+				cheminInterdit.add(tmp);
+				depart = tmp.getSecond();
+			}
+		}
+		
+		System.out.println("bis : "+cheminInterdit);
+		
 		Vertex sortante = cheminInterdit.get(cheminInterdit.size()-1).getSecond();
 		Vertex entrante = cheminInterdit.get(0).getFirst(); 
 		
 		cheminInterdit.add(new PaireVertex(sortante,entrante));
-		////System.out.println(cheminInterdit);
 		
-		Graph graphe = new Graph(g.getVilles());
-		LinkedHashMap<PaireVertex, Double> map = new LinkedHashMap<PaireVertex, Double>();
-		for (PaireVertex p : cheminInterdit) {
-			map.put(p, g.getCouts().get(p).doubleValue());
-		}
-		graphe.setCouts(map);
-
-		return graphe;
+		
+		System.out.println("chemin interdit"+cheminInterdit);
+		
+		
 	}
+	
+	private Vertex trouveVilleInterdit(ArrayList<PaireVertex> paireReference) {
+		Vertex interdit = null;
+		
+		for(PaireVertex pv : paireReference)
+		{
+			if(!aDejaUneAreteCommencantPar(paireReference, pv.getSecond()))
+			{
+				interdit = pv.getSecond();
+				break;
+			}
+		}
+		
+		return interdit;
+	}
+
+	private boolean aDejaUneAreteCommencantPar(ArrayList<PaireVertex> paireReference, Vertex second) {
+		
+		for(PaireVertex pv : paireReference)
+		{
+			if(pv.getFirst().equals(second))
+			{
+				return true;
+			}
+		}
+		
+		return false;
+		
+	}
+
+	public PaireVertex recursif(ArrayList<PaireVertex> paireReference,PaireVertex paireActuel, int iteration, PaireVertex paireSauvegarde) {
+        
+        if(paireActuel==null || paireReference==null || paireReference.size()==0)
+                return null;
+        else
+        {
+                boolean trouve = false;
+                
+                for(PaireVertex p : paireReference)
+                {
+                        if(p.getSecond().equals(paireActuel.getFirst()))
+                        {
+                                trouve = true;
+                                paireActuel = p;
+                        }
+                }
+                
+                if(!trouve)
+                        return paireActuel;
+                
+                if(paireActuel.equals(paireSauvegarde) && iteration>0)
+                	return paireSauvegarde;
+                
+                System.out.println("iteration++ = "+iteration);
+                
+                return recursif(paireReference, paireActuel,iteration++, paireSauvegarde);
+        }
+        
+        
+	}
+	
+	private boolean existeDejaDansReference(Vertex x, ArrayList<PaireVertex> paireReference)
+	{
+		for(PaireVertex paire : paireReference)
+		{
+			if(paire.getFirst().equals(x))
+				return true;
+		}
+		return false;
+	}
+	
+	
+	
+	
+	
+	/**
+	 * @param paireReferenceXij 
+	 * @throws CloneNotSupportedException 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 */
+	
+	
+	public ArrayList<PaireVertex> gloutonBis2(Graph gr, ArrayList<PaireVertex> paireReferenceXij) throws CloneNotSupportedException
+    {
+            System.out.println("Debut glouton");
+            //System.out.println("Graphe = \n"+g);
+            
+            Graph g = (Graph)gr.clone();
+            
+            g.getDeterminists().clear();
+            
+            /*g.getDeterminists().add(new PaireVertex(new Vertex(4), new Vertex(12)));
+            g.getDeterminists().add(new PaireVertex(new Vertex(5), new Vertex(2)));
+            g.getDeterminists().add(new PaireVertex(new Vertex(15), new Vertex(3)));
+            g.getDeterminists().add(new PaireVertex(new Vertex(11), new Vertex(16)));
+            g.getDeterminists().add(new PaireVertex(new Vertex(16), new Vertex(1)));
+            g.getDeterminists().add(new PaireVertex(new Vertex(13), new Vertex(14)));
+            //g.getDeterminists().add(new PaireVertex(new Vertex(1), new Vertex(4)));
+            g.getDeterminists().add(new PaireVertex(new Vertex(0), new Vertex(9)));*/
+            
+            for(PaireVertex paire : paireReferenceXij)
+            {
+            	g.getDeterminists().add(paire);
+            }
+
+            
+            Vertex sortante = g.getDeterminists().get(0).getSecond();
+            ArrayList<PaireVertex> paireDansGlouton = new ArrayList<PaireVertex>();
+            paireDansGlouton.add(g.getDeterminists().get(0));
+            
+            Vertex vertexInterditSortant = null;
+            
+            Vertex copie = null;
+            
+            PaireVertex last = null;
+            try {
+                    last = recursif(g.getDeterminists(),(PaireVertex)g.getDeterminists().get(0).clone());
+            } catch (CloneNotSupportedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+            }
+            if(last!=null)
+                    vertexInterditSortant = last.getFirst();
+            
+            System.out.println("J'interdit : "+vertexInterditSortant);
+
+            PaireVertex tmp = cherche(sortante,paireDansGlouton,g,null,vertexInterditSortant);
+            paireDansGlouton.add(tmp);
+            System.out.println("tmp = "+tmp);
+            PaireVertex sauvegarde = null;
+            System.out.println("nb villes ="+g.getNbVilles());
+            while(paireDansGlouton.size()<g.getNbVilles())
+            {
+                    if(tmp!=null)
+                    {
+                            sauvegarde = tmp;
+                            tmp = cherche(tmp.getSecond(),paireDansGlouton,g,g.getDeterminists().get(0).getFirst(),vertexInterditSortant);
+                            System.out.println("Sauvegarde"+sauvegarde);
+                            if(tmp!=null)
+                                    paireDansGlouton.add(tmp);
+                            else
+                                    break;
+                    }
+                    
+            }
+            
+            System.out.println("paireDansGlouton.size()<g.getNbVilles() = "+(paireDansGlouton.size()<g.getNbVilles()));
+            
+            if(sauvegarde!=null)
+            {
+                    paireDansGlouton.remove(null);
+                    System.out.println("Sav = "+sauvegarde);
+                    
+                    ArrayList<PaireVertex> listeaAjouter = new ArrayList<PaireVertex>();
+                    try {
+                            recursifList(g.getDeterminists(),(PaireVertex)g.getDeterminists().get(0).clone(), listeaAjouter);
+                    } catch (CloneNotSupportedException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                    }
+                    System.out.println("Liste a ajouter  = "+listeaAjouter);
+            
+                    
+                    Collections.reverse(listeaAjouter);
+                    
+                    if(listeaAjouter.size()>0)
+                    {
+                            paireDansGlouton.add(new PaireVertex(sauvegarde.getSecond(), listeaAjouter.get(0).getFirst()));
+                            for(PaireVertex paire : listeaAjouter)
+                            {
+                                    paireDansGlouton.add(paire);
+                            }
+                            
+                    }
+                    
+                    if(listeaAjouter.size()==0)
+                            paireDansGlouton.add(new PaireVertex(sauvegarde.getSecond(), g.getDeterminists().get(0).getFirst()));
+            }
+                    
+            
+            System.out.println("Chemin glouton");
+            
+            System.out.println(paireDansGlouton);
+
+            return paireDansGlouton;
+    }
+	
+	private PaireVertex recursif(ArrayList<PaireVertex> determinists,PaireVertex paireActuel) {
+        
+        if(paireActuel==null || determinists==null || determinists.size()==0)
+                return null;
+        else
+        {
+                boolean trouve = false;
+                
+                for(PaireVertex p : determinists)
+                {
+                        if(p.getSecond().equals(paireActuel.getFirst()))
+                        {
+                                trouve = true;
+                                paireActuel = p;
+                        }
+                }
+                
+                if(!trouve)
+                        return paireActuel;
+                
+                return recursif(determinists, paireActuel);
+        }
+        
+        
+}
+
+		private void recursifList(ArrayList<PaireVertex> determinists,PaireVertex paireActuel, ArrayList<PaireVertex> liste) {
+        
+        if(paireActuel==null || determinists==null || determinists.size()==0)
+                return;
+        else
+        {
+                 
+                boolean trouve = false;
+                
+                for(PaireVertex p : determinists)
+                {
+                        if(p.getSecond().equals(paireActuel.getFirst()))
+                        {
+                                trouve = true;
+                                paireActuel = p;
+                                liste.add(paireActuel);
+                        }
+                }
+                
+                if(!trouve)
+                        return;
+                
+                recursifList(determinists, paireActuel,liste);
+        }
+        
+        
+}
+
+//Cherche plus proche voisin
+//Supposon villesortantes = 2
+public PaireVertex cherche(Vertex villesSortante,ArrayList<PaireVertex> paireDansGlouton,Graph g, Vertex villeInterdit, Vertex villeSortantInterdit)
+{
+        System.out.println("Je cherche plus proche voisin de "+villesSortante);
+        for(PaireVertex det : g.getDeterminists())
+        {
+                //Par exemple on trouve une paire (2,8) bah c'est okay
+                if(det.getFirst().equals(villesSortante) && !paireDansGlouton.contains(det) && !det.getSecond().equals(villeInterdit))
+                {
+                        System.out.println("Det : "+det);
+                        return det;
+                }
+                
+        }
+        PaireVertex plusprocheVoisin = null;
+
+        for(Entry<PaireVertex,Double> entry : g.getCouts().entrySet())
+        {
+                if(entry.getKey().getFirst().equals(new Vertex(100)) && villesSortante.equals(new Vertex(100)))
+                {
+                        System.out.println("Je suis au couple = "+entry.getKey());
+                        System.out.println("arcExisteDeja = "+arcExisteDeja(entry.getKey().getFirst(), entry.getKey().getSecond(), paireDansGlouton));
+                        System.out.println("estdansGlouton = "+paireDansGlouton.contains(entry.getKey()));
+                        System.out.println("first = villesortante = "+entry.getKey().getFirst().equals(villesSortante));
+                        System.out.println("second = villeinterdi 4 = "+entry.getKey().getSecond().equals(villeInterdit));
+                }
+                        
+                        if(villeSortantInterdit!=null && !entry.getKey().getSecond().equals(villeSortantInterdit) && !arcExisteDeja(entry.getKey().getFirst(), entry.getKey().getSecond(), paireDansGlouton) && !paireDansGlouton.contains(entry.getKey()) && entry.getKey().getFirst().equals(villesSortante) && villeInterdit!=null && !entry.getKey().getSecond().equals(villeInterdit))
+                        {
+                                //System.out.println("Affiche = "+dejaDansDeterministe(entry.getKey().getFirst(), entry.getKey().getSecond(), g.getDeterminists(),paireDansGlouton));
+                                if(!dejaDansDeterministe(entry.getKey().getFirst(), entry.getKey().getSecond(), g.getDeterminists(),paireDansGlouton))
+                                {
+                                        if(plusprocheVoisin==null)
+                                        {
+                                                plusprocheVoisin = entry.getKey();
+                                        }
+                                        else if(entry.getValue()<g.getCouts().get(plusprocheVoisin))
+                                        {
+                                                plusprocheVoisin = entry.getKey();
+                                        }
+                                }
+                        }
+                        else if(villeInterdit==null && entry.getKey().getFirst().equals(villesSortante))
+                        {
+                                if(villeSortantInterdit!=null && !entry.getKey().getFirst().equals(villeSortantInterdit) && !dejaDansDeterministe(entry.getKey().getFirst(), entry.getKey().getSecond(), g.getDeterminists(),paireDansGlouton))
+                                {
+                                        if(plusprocheVoisin==null)
+                                        {
+                                                plusprocheVoisin = entry.getKey();
+                                        }
+                                        else if(entry.getValue()<g.getCouts().get(plusprocheVoisin))
+                                        {
+                                                plusprocheVoisin = entry.getKey();
+                                        }
+                                }
+                        }
+                
+        }
+        System.out.println("plus proche voisin"+plusprocheVoisin);
+        return plusprocheVoisin;
+	}
+	private boolean dejaDansDeterministe(Vertex x, Vertex y, ArrayList<PaireVertex> determinist, ArrayList<PaireVertex> arrayGlouton)
+{
+        for(PaireVertex vd : determinist)
+        {
+                if(vd.getFirst().equals(x) || vd.getSecond().equals(y))
+                {
+                        return true;
+                }
+        }
+
+        
+        return false;
+}
 
 }

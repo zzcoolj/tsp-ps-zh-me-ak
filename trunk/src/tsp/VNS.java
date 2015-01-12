@@ -449,7 +449,7 @@ public class VNS extends Observable{
 		Graph g = new Graph();
 		g.setCities(s.getGeneral().getVilles());
 		g.setDeterminists(s.getGeneral().getDeterminists());
-
+		
 		/* Couts initial(LinkedHashMap) -> cheminInitial(LinkedList<Integer>) */
 		LinkedList<Integer> cheminsInitial = new LinkedList<Integer>();
 		Iterator<PaireVertex> it = s.getSolution().getCouts().keySet().iterator();
@@ -466,6 +466,7 @@ public class VNS extends Observable{
 			opt = 3;
 		}
 		VNS vns = new VNS(opt);
+		s.setEtat(etat.CHANGINGNEIGHBORHOOD);
 		LinkedList<Integer> cheminsOptimal = new LinkedList<Integer>();
 		cheminsOptimal = vns.neighborhoodChange(s.getGeneral().toTab(), cheminsInitial);
 		
@@ -481,6 +482,7 @@ public class VNS extends Observable{
 		coutsOptimal.put(lastPaire, s.getGeneral().getCouts().get(lastPaire));
 		
 		g.setCouts(coutsOptimal);
+		s.setEtat(etat.FINISHED);
 		return g;
 	}
 	
