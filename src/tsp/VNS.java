@@ -41,7 +41,7 @@ public class VNS extends Observable{
 	private int kmax;
 	private int neighborhood;
 	private TreeSet<Integer> shakeList;// !!!
-	private Double coutDeCheminExistePas = 999.0;
+	private Double coutDeCheminExistePas = Double.MAX_VALUE;
 	private Double coutsTotalDeCheminExistePas = Double.MAX_VALUE;
 
 	// HashMap<Vertex, ArrayList<Double>> couts;
