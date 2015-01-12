@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Map.Entry;
 
 import CustomClass.HashLambdaRho;
 import CustomClass.PaireLamdbaRho;
@@ -23,7 +24,7 @@ public class TSP extends Observable implements Observer{
 	 */
 	
 	private boolean N_Iteration = false;
-	private int nbIteration = 100;
+	private int nbIteration = 300;
 	
 	
 	private PL pl;
@@ -216,22 +217,30 @@ public class TSP extends Observable implements Observer{
 				if(xij>0.5)
 				{
 					//x->y on a pas le droit d'avoir z->y
+					PaireVertex tmp = pl.recursif(paireReferenceXij, paire, 0, paire);
+					System.out.println("tmp.equals(paire)"+paire.equals(tmp)+"\n");
 					if(!pl.arcExisteDeja(paire.getFirst(), paire.getSecond(), paireReferenceXij))
 					{
+						//System.err.println("J'ajoute " +paire);
 						paireReferenceXij.add(paire);
 						coutsNouveau.put(paire, mincij);
 					}
 				}
 				else
 				{
-					paireDisponible.add(paire);
+					if(!pl.arcExisteDeja(paire.getFirst(), paire.getSecond(), paireReferenceXij))
+					{
+						paireDisponible.add(paire);
+					}
 				}
 			}
 		}
 		
-		System.out.println("PaireReference Avant "+paireReferenceXij);
+		// System.out.println("PaireDisponible : "+paireDisponible);
 		
-		Vertex depart = paireReferenceXij.get(0).getFirst();
+		System.out.println("Reference  AVANT ?? "+paireReferenceXij);
+		
+		/*Vertex depart = paireReferenceXij.get(0).getFirst();
 		
 		for(PaireVertex paireD : paireDisponible)
 		{
@@ -242,15 +251,110 @@ public class TSP extends Observable implements Observer{
 			}
 		}
 		
-		paireReferenceXij.add(new PaireVertex(paireReferenceXij.get(paireReferenceXij.size()-1).getSecond(), depart));
+		try {
+			paireReferenceXij.add(paireVertexDerniere(paireReferenceXij));
+		} catch (Exception e) {
+
+		}*/
 		
-		System.out.println("Nouveau chemin final "+paireReferenceXij);
+		ArrayList<PaireVertex> cheminReferenceFinal = new ArrayList<PaireVertex>();
+		try {
+			cheminReferenceFinal = pl.gloutonBis2(g, paireReferenceXij);
+		} catch (CloneNotSupportedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("Nouveau chemin final "+cheminReferenceFinal);
 		
+		
+		
+		
+		LinkedHashMap<PaireVertex, Double> cheminReferenceFinalCout = new LinkedHashMap<PaireVertex, Double>();
+		
+		for(PaireVertex paire : cheminReferenceFinal)
+		{
+			if(reference.getCouts().get(paire)!=null)
+			{
+				cheminReferenceFinalCout.put(paire, reference.getCouts().get(paire));
+			}
+			else
+			{
+				cheminReferenceFinalCout.put(paire, g.getCouts().get(paire));
+			}
+			
+		}
+		
+		
+		//for(Entry<PaireVertex,Double> entry : referenceF)
 		
 		Graph dernier = new Graph(g.getVilles());
-		dernier.setCouts(coutsNouveau);
-		dernier.setDeterminists(reference.getDeterminists());
+		dernier.setCouts(cheminReferenceFinalCout);
+		dernier.setDeterminists(g.getDeterminists());
+	
 		return dernier;
+	}
+	
+	public PaireVertex paireVertexDerniere(ArrayList<PaireVertex> paireReferenceXij) throws Exception
+	{
+		
+		LinkedHashMap<Vertex, Boolean> sortante = new LinkedHashMap<Vertex, Boolean>();
+		LinkedHashMap<Vertex, Boolean> entrante = new LinkedHashMap<Vertex, Boolean>();
+		
+		/**
+		 * Init tout a false
+		 */
+		for(PaireVertex pv : g.getCouts().keySet())
+		{
+			if(!pv.hasSameVertex() && paireReferenceXij.contains(pv))
+			{
+				sortante.put(pv.getFirst(), false);
+				sortante.put(pv.getSecond(),false);
+				
+				entrante.put(pv.getFirst(), false);
+				entrante.put(pv.getSecond(),false);
+			}
+		}
+		
+		
+	
+		/**
+		 * On boucle pour initialiser les vrai valeurs de entrante et sortante
+		 */
+		for(PaireVertex pv : paireReferenceXij)
+		{
+			sortante.replace(pv.getFirst(), true);
+			entrante.replace(pv.getSecond(), true);
+		}
+		
+		/**
+		 * On boucle pour retrouver la vertex qui n'est jamais sortante et la vertex qui n'est jamais entrante
+		 */
+		
+		Vertex e = null;
+		Vertex s = null;
+		
+		for(Entry<Vertex, Boolean> entry : sortante.entrySet())
+		{
+			if(entry.getValue()==false)
+			{
+				s = entry.getKey();
+				break;
+			}
+		}
+		
+		for(Entry<Vertex, Boolean> entry : entrante.entrySet())
+		{
+			if(entry.getValue()==false)
+			{
+				e = entry.getKey();
+				break;
+			}
+		}
+		
+		if(s==null || e==null)
+			throw new Exception("Une erreur est intervenu nous n'avons pas pu completer la solution de reference car elle doit l'etre deja"+" s = "+s+" e "+ e);
+		
+		return new PaireVertex(s, e);
 	}
 
 	public GraphOpt findBestSolution()
