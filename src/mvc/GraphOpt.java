@@ -1,7 +1,11 @@
 package mvc;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
+
+import CustomClass.PaireVertex;
 
 public class GraphOpt {
 
@@ -10,13 +14,25 @@ public class GraphOpt {
 	private LinkedList<Integer> chemin;
 	private HashMap<Integer, LinkedList<Integer>> listSubtours;
 	
-	
 
 	public GraphOpt() {
 		cout = 0;
 		time = 0;
 		this.listSubtours = new HashMap<Integer, LinkedList<Integer>>();
 		this.chemin = new LinkedList<Integer>();
+	}
+		
+	public void setCheminVNS(LinkedHashMap<PaireVertex, Double> cout)
+	{
+		chemin.clear();
+		
+		for(PaireVertex paire : cout.keySet())
+		{
+			chemin.add(paire.getFirst().getNumero());
+		}
+		ArrayList<PaireVertex> tmp = new ArrayList<PaireVertex>();
+		tmp.addAll(cout.keySet());
+		chemin.add(tmp.get(0).getFirst().getNumero());
 	}
 
 	public long getTime() {

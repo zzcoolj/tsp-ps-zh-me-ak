@@ -2,11 +2,12 @@ package tsp;
 
 import java.util.ArrayList;
 import java.util.Observable;
+import java.util.Observer;
 
 import CustomClass.HashLambdaRho;
 import tsp.Scenario.etat;
 
-public class Scenario extends Observable{
+public class Scenario extends Observable implements Observer{
 	
 	public enum etat{
 		FINISHED,
@@ -31,6 +32,7 @@ public class Scenario extends Observable{
 		solution = new Graph(); 
 		general = new Graph();
 		vns = new VNS();
+		vns.addObserver(this);
 	}
 	
 	public Graph getGeneral() {
@@ -103,6 +105,13 @@ public class Scenario extends Observable{
 	public String toString() {
 		return "Scenario "+ numero 
 				+ "Etat = "+e;
+	}
+
+	@Override
+	public void update(Observable o, Object arg) {
+		
+		setChanged();
+		notifyObservers(arg);
 	}
 	
 
