@@ -46,11 +46,12 @@ public class PL {
 		{
 			s.add(new Scenario(i));
 			s.get(i).getGeneral().setCities(tsp.getG().getVilles());
+			s.get(i).getGeneral().setDeterminists(tsp.getG().getDeterminists());
 		}
 		
 		/*for (Scenario scenario : s) {
 			
-			System.out.println("\t\t\t scenario numero "+scenario.getNumero()+" debut d'init");
+			//System.out.println("\t\t\t scenario numero "+scenario.getNumero()+" debut d'init");
 			
 			Graph g = new Graph(tsp.getG().getVilles());
 			LinkedHashMap<PaireVertex, Double> tmp = new LinkedHashMap<>();
@@ -71,7 +72,7 @@ public class PL {
 						Double max = valeurXml+ecartype;
 						try {
 							Double rand = Maths.generateRandomCostsBis(valeurXml, min, max);
-							//System.out.println("Rand = "+rand);
+							////System.out.println("Rand = "+rand);
 							tmp.put(p, rand);	
 						} catch (ExceptionMaths e) {
 							e.printStackTrace();
@@ -100,7 +101,7 @@ public class PL {
 				Double max = valeurXml+3*ecartype;
 				try {
 					ArrayList<Double> rand = Maths.generateRandomCosts(valeurXml, min, max, s.size());
-					//System.out.println("Rand = "+rand);
+					////System.out.println("Rand = "+rand);
 					
 					int cpt = 0;
 					for(Scenario scenario : s)
@@ -152,7 +153,7 @@ public class PL {
 		Vertex entrante = cheminInterdit.get(0).getFirst(); 
 		
 		cheminInterdit.add(new PaireVertex(sortante,entrante));
-		//System.out.println(cheminInterdit);
+		////System.out.println(cheminInterdit);
 		
 		Graph graphe = new Graph(g.getVilles());
 		LinkedHashMap<PaireVertex, Double> map = new LinkedHashMap<PaireVertex, Double>();
@@ -164,6 +165,7 @@ public class PL {
 		return graphe;
 	}
 
+	
 	public PaireVertex procheVoisin(Vertex depart,
 			LinkedHashMap<PaireVertex, Double> map,
 			ArrayList<PaireVertex> cheminInterdit, Vertex interdit) {
@@ -192,7 +194,7 @@ public class PL {
 			}
 		}
 		min = Double.MAX_VALUE;
-		//System.out.println("---"+liste+"  ville depart"+depart);
+		////System.out.println("---"+liste+"  ville depart"+depart);
 		for (PaireVertex p : liste) {
 			if (min > map.get(p).doubleValue()) {
 				min = map.get(p).doubleValue();
@@ -202,8 +204,7 @@ public class PL {
 		return voisin;
 	}
 
-	private boolean arcExisteDeja(Vertex x, Vertex y,
-			ArrayList<PaireVertex> array) {
+	public boolean arcExisteDeja(Vertex x, Vertex y, ArrayList<PaireVertex> array) {
 		for (PaireVertex vd : array) {
 			if(vd.getFirst().equals(x)){
 				return true;
@@ -238,7 +239,7 @@ public class PL {
 			{
 				for(PaireVertex paireD : global.getDeterminists())
 				{
-					System.out.println("global.... dans algoPenalite "+global.getCouts().get(paireD).doubleValue()/2);
+					//System.out.println("global.... dans algoPenalite "+global.getCouts().get(paireD).doubleValue()/2);
 					penalite.get(iteration).get(i).put(paireD, new PaireLamdbaRho(M, global.getCouts().get(paireD).doubleValue()/2));
 				}
 			}
@@ -283,10 +284,10 @@ public class PL {
 			resultat+=fonctionObjectiveLocaleCalculInterne(scenario, penalite, reference);
 		}
 		
-		for(Entry<Integer,ArrayList<HashLambdaRho>> entry : penalite.entrySet())
+		/*for(Entry<Integer,ArrayList<HashLambdaRho>> entry : penalite.entrySet())
 		{
-			System.err.println("Penalite : iteration "+entry.getKey() + "\n" + entry.getValue()+"\n");
-		}
+			//System.err.println("Penalite : iteration "+entry.getKey() + "\n" + entry.getValue()+"\n");
+		}*/
 		
 		return (1f/s.size())*resultat;
 	}
@@ -298,14 +299,11 @@ public class PL {
 		Double partieDeterminist = 0.0;
 		Double partieStochastique = 0.0;
 		
-		
-		
-		
-		
 		for(Entry<PaireVertex,Double> entry : s.getSolution().getCouts().entrySet())
 		{
-			//cas deterministe
-			if(reference.getDeterminists().contains(entry.getKey()) && s.getSolution().getCouts().containsKey(entry.getKey()))
+			//System.err.println("Condition = "+s.getGeneral().getDeterminists().contains(entry.getKey())+" taille "+s.getGeneral().getDeterminists().size());
+			//cas deterministe => on verifie que l'on utilise bien les aretes deterministe dans la solution de reference
+			if(s.getGeneral().getDeterminists().contains(entry.getKey()))
 			{
 				
 				int xij = 0;
@@ -317,8 +315,13 @@ public class PL {
 					xijbarre = 1;
 				}
 				Double rho = penalite.get(penalite.size()-1).get(s.getNumero()).get(entry.getKey()).getRho();
-				partieDeterminist+=(entry.getValue()+penalite.get(penalite.size()-1).get(s.getNumero()).get(entry.getKey()).getLambda()
-								  -rho*xijbarre+rho/2f)*xij;
+				
+				Double calcul = (entry.getValue()+penalite.get(penalite.size()-1).get(s.getNumero()).get(entry.getKey()).getLambda()
+						  -rho*xijbarre+rho/2f)*xij;
+				
+				s.getGeneral().getCouts().replace(entry.getKey(), calcul);
+				
+				partieDeterminist+=calcul;
 			}
 			//cas stochastique
 			else
@@ -330,7 +333,7 @@ public class PL {
 				partieStochastique+=entry.getValue()*yij;
 			}
 		}
-		System.out.println("partieDeterminist+Stochastique = "+(partieDeterminist+partieStochastique));
+		////System.out.println("partieDeterminist+Stochastique = "+(partieDeterminist+partieStochastique));
 		return (partieDeterminist+partieStochastique);
 	}
 	
@@ -362,7 +365,7 @@ public class PL {
 		ArrayList<PaireVertex> lesPaires = new ArrayList<PaireVertex>();
 		lesPaires.addAll(g.getCouts().keySet());
 		
-		int max = lesPaires.size();
+		int max = lesPaires.size()-1;
 		
 		while(g.getDeterminists().size()<nombre)
 		{	
@@ -373,4 +376,46 @@ public class PL {
 		}
 		
 	}
+	
+	public Graph gloutonBis(Graph g, ArrayList<PaireVertex> paireReference) {
+		
+		if(g==null)
+			return null;
+
+		Vertex depart = g.getVilles().get(Maths.randInt(0, g.getNbVilles()-1));
+		ArrayList<PaireVertex> cheminInterdit = new ArrayList<PaireVertex>();
+		cheminInterdit.addAll(paireReference);
+		
+		Vertex vilaInterdit = depart;
+		for (int i = 0; i < g.getNbVilles()-1; i++) {
+			PaireVertex tmp = null;
+			
+			if(i==0) {
+				 tmp = procheVoisin(depart, g.getCouts(), cheminInterdit,null);
+				 System.out.println("1)Avant nulll je passe la "+tmp);
+			}
+			else{
+				tmp = procheVoisin(depart, g.getCouts(), cheminInterdit, vilaInterdit);
+				System.out.println("2)Avant nulll je passe la "+tmp);
+			}
+			cheminInterdit.add(tmp);
+			depart = tmp.getSecond();
+			
+		}
+		Vertex sortante = cheminInterdit.get(cheminInterdit.size()-1).getSecond();
+		Vertex entrante = cheminInterdit.get(0).getFirst(); 
+		
+		cheminInterdit.add(new PaireVertex(sortante,entrante));
+		////System.out.println(cheminInterdit);
+		
+		Graph graphe = new Graph(g.getVilles());
+		LinkedHashMap<PaireVertex, Double> map = new LinkedHashMap<PaireVertex, Double>();
+		for (PaireVertex p : cheminInterdit) {
+			map.put(p, g.getCouts().get(p).doubleValue());
+		}
+		graphe.setCouts(map);
+
+		return graphe;
+	}
+
 }

@@ -8,6 +8,7 @@ import java.util.Observer;
 import CustomClass.HashLambdaRho;
 import CustomClass.PaireLamdbaRho;
 import CustomClass.PaireVertex;
+import Math.Maths;
 import mvc.GraphOpt;
 
 public class TSP extends Observable implements Observer{
@@ -35,6 +36,8 @@ public class TSP extends Observable implements Observer{
 	
 	public GraphOpt launch(float determinist, Integer kmax, Integer nbScenario) 
 	{
+		penalite.clear();
+		s.clear();
 		
 		scenario = nbScenario;
 		n_opt = kmax;
@@ -92,32 +95,20 @@ public class TSP extends Observable implements Observer{
 			
 			System.out.println("Cout actuel : "+pl.fonctionObjectiveLocalResultat(s, penalite, reference));
 			
-			iteration++;
-			
-			System.err.println("---------------------------------------------------------------------------");
-			
-			pl.algoPenalite(iteration, penalite, reference, g, s);
-			
-			for(Scenario scenario : s)
-			{
-				try {
-					scenario.getVns().findBestSolution(scenario);
-				} catch (CloneNotSupportedException e) {
-					System.err.println("CloneNotSupported dans classe TSP");
-					e.printStackTrace();
-				}
-			}
-			
-			System.out.println("Cout actuel : "+pl.fonctionObjectiveLocalResultat(s, penalite, reference));
+			reference = fusion(reference);
 			
 			iteration++;
-		}while(testArret());
+			
+			System.out.println("\n\n\n-------------------------------NOUVELLE ITERATION +" + iteration + "-------------------------------\n\n\n");
+		}while(!testArret(reference));
 
 		
+		
 		System.out.println("Fini");
-	
-		
-		
+		System.out.println("Cout final = "+reference.coutSolution());
+		GraphOpt gopt = new GraphOpt();
+		gopt.setCout(reference.coutSolution());
+		gopt.setCheminVNS(reference.getCouts());
 		
 		/*System.out.println("Glouton en cours");
 		long startTime = System.nanoTime();
@@ -133,8 +124,9 @@ public class TSP extends Observable implements Observer{
 		long stopTime = System.currentTimeMillis();
 		System.out.println("timer = "+(stopTime - startTime)/1000);
 		result.setTime((stopTime - startTime));*/
-
-		return null;
+		setChanged();
+		notifyObservers(gopt);
+		return gopt;
 		
 	}
 	
@@ -149,8 +141,94 @@ public class TSP extends Observable implements Observer{
 	}
 
 	
-	public boolean testArret() {
-		return false;
+	public boolean testArret(Graph reference) {
+		
+		for(PaireVertex determinist : reference.getCouts().keySet())
+		{
+			if(reference.getDeterminists().contains(determinist))
+			{
+				for(Scenario scenario : s)
+				{
+					if(!scenario.getSolution().getCouts().containsKey(determinist))
+					{
+						//FIXME ne pas oublier de mettre false ici
+						return false;
+					}
+				}
+			}
+		}
+		
+		return true;
+	}
+	
+	public Graph fusion(Graph reference)
+	{
+		//somme xij si > 0.5 on prend l'arete
+		//sinon on l'a prend pas
+		//
+		
+		ArrayList<PaireVertex> paireReferenceXij = new ArrayList<PaireVertex>();
+		ArrayList<PaireVertex> paireDisponible = new ArrayList<PaireVertex>();
+		LinkedHashMap<PaireVertex, Double> coutsNouveau = new LinkedHashMap<PaireVertex, Double>();
+		
+		for(PaireVertex paire : g.getCouts().keySet())
+		{
+			if(!paire.hasSameVertex())
+			{
+				float xij = 0f;
+				Double mincij = Double.MAX_VALUE;
+				for(Scenario scenario : s)
+				{
+					if(scenario.getSolution().getCouts().containsKey(paire))
+					{
+						if(mincij > scenario.getSolution().getCouts().get(paire))
+						{
+							mincij = scenario.getSolution().getCouts().get(paire);
+						}
+						xij+=1;
+					}
+				}
+				
+				xij = ((float)xij)/s.size();
+				
+				if(xij>0.5)
+				{
+					//x->y on a pas le droit d'avoir z->y
+					if(!pl.arcExisteDeja(paire.getFirst(), paire.getSecond(), paireReferenceXij))
+					{
+						paireReferenceXij.add(paire);
+						coutsNouveau.put(paire, mincij);
+					}
+				}
+				else
+				{
+					paireDisponible.add(paire);
+				}
+			}
+		}
+		
+		System.out.println("PaireReference Avant "+paireReferenceXij);
+		
+		Vertex depart = paireReferenceXij.get(0).getFirst();
+		
+		for(PaireVertex paireD : paireDisponible)
+		{
+			if(!pl.arcExisteDeja(paireD.getFirst(), paireD.getSecond(), paireReferenceXij) && !paireD.getSecond().equals(depart))
+			{
+				paireReferenceXij.add(paireD);
+				coutsNouveau.put(paireD, g.getCouts().get(paireD));
+			}
+		}
+		
+		paireReferenceXij.add(new PaireVertex(paireReferenceXij.get(paireReferenceXij.size()-1).getSecond(), depart));
+		
+		System.out.println("Nouveau chemin final "+paireReferenceXij);
+		
+		
+		Graph dernier = new Graph(g.getVilles());
+		dernier.setCouts(coutsNouveau);
+		dernier.setDeterminists(reference.getDeterminists());
+		return dernier;
 	}
 
 	public GraphOpt findBestSolution()
@@ -217,7 +295,8 @@ public class TSP extends Observable implements Observer{
 			setChanged();
 			notifyObservers(updated);
 		} catch (ClassCastException e) {
-			// TODO: handle exception
+			setChanged();
+			notifyObservers(arg);
 		}
 		
 	}

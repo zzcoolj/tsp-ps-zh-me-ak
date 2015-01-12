@@ -25,7 +25,7 @@ public class Model extends Observable{
 		if(tsp==null)
 			return;
 		
-		GraphOpt opt = new GraphOpt();//La tu met toi opt = tsp.launch
+		GraphOpt opt = new GraphOpt();
 		opt = tsp.launch(determinist, kmax, nbScenario);
 		launch(opt);
 	}

@@ -26,16 +26,18 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
+import java.util.Observable;
 import java.util.TreeSet;
 import java.util.Random;
 
 import javax.swing.text.StyledEditorKit.BoldAction;
 
+import mvc.GraphOpt;
 import tsp.Scenario.etat;
 import CustomClass.PaireVertex;
 import Math.Maths;
 
-public class VNS {
+public class VNS extends Observable{
 	private int kmax;
 	private int neighborhood;
 	private TreeSet<Integer> shakeList;// !!!
@@ -189,8 +191,7 @@ public class VNS {
 	
 	
 	/* juger change le chemin ou pas */
-	private LinkedList<Integer> neighborhoodChange(Double[][] couts,
-			LinkedList<Integer> cheminsInitial) {
+	private LinkedList<Integer> neighborhoodChange(Double[][] couts, LinkedList<Integer> cheminsInitial) {
 		
 		/* cout de cheminInitial */
 		Double coutsTotalInitial = couts[cheminsInitial.get(cheminsInitial
@@ -199,8 +200,9 @@ public class VNS {
 			coutsTotalInitial += couts[cheminsInitial.get(i)][cheminsInitial
 					.get(i + 1)];
 		}
-		System.out.println("cheminInitial" + " : " + cheminsInitial + " -----> coutsTotal de cheminInitial" + " : "
-				+ coutsTotalInitial);// for
+		/*System.out.println("cheminInitial" + " : " + cheminsInitial + " -----> coutsTotal de cheminInitial" + " : "
+				+ coutsTotalInitial);*/ 
+		// for
 		// test
 		
 		
@@ -222,12 +224,10 @@ public class VNS {
 			*/
 			if (couts[cheminsChange.get(cheminsChange.size() - 1)][cheminsChange.get(0)] > coutDeCheminExistePas || couts[cheminsChange.get(cheminsChange.size() - 1)][cheminsChange.get(0)] <= 0) {
 				coutsTotalChangeTemp = Double.MAX_VALUE;
-				System.out.println("cheminChange" + (k+1) + " : " + cheminsChange + " -----> coutsTotal de cheminChange" + (k+1) + " : "
-						+ coutsTotalChangeTemp);// for
+				/*System.out.println("cheminChange" + (k+1) + " : " + cheminsChange + " -----> coutsTotal de cheminChange" + (k+1) + " : "
+						+ coutsTotalChangeTemp);*/// for
 				// test
-				System.out.println("chemin [ "
-						+ cheminsChange.get(cheminsChange.size() - 1) + ", "
-						+ cheminsChange.get(0) + "] existe pas");
+				/*System.out.println("chemin [ "+ cheminsChange.get(cheminsChange.size() - 1) + ", "+ cheminsChange.get(0) + "] existe pas");*/
 				
 				continue;
 			}
@@ -238,20 +238,24 @@ public class VNS {
 				*/
 				if (couts[cheminsChange.get(i)][cheminsChange.get(i + 1)] > coutDeCheminExistePas || couts[cheminsChange.get(i)][cheminsChange.get(i + 1)] <= 0) {
 					coutsTotalChangeTemp = Double.MAX_VALUE;
-					System.out.println("cheminChange" + (k+1) + " : " + cheminsChange + " -----> coutsTotal de cheminChange" + (k+1) + " : "
-							+ coutsTotalChangeTemp);// for
+					/*System.out.println("cheminChange" + (k+1) + " : " + cheminsChange + " -----> coutsTotal de cheminChange" + (k+1) + " : "
+							+ coutsTotalChangeTemp);// for*/
 					// test
-					System.out.println("chemin [ " + cheminsChange.get(i)
-							+ ", " + cheminsChange.get(i + 1) + "] existe pas");
+					/*System.out.println("chemin [ " + cheminsChange.get(i)
+							+ ", " + cheminsChange.get(i + 1) + "] existe pas");*/
 					coutsTotalChangeTemp = Double.MAX_VALUE;
 					break;
 				}
-				coutsTotalChangeTemp += couts[cheminsChange.get(i)][cheminsChange
-						.get(i + 1)];
+				if(couts[cheminsChange.get(i)][cheminsChange.get(i + 1)]>0)
+				{
+					coutsTotalChangeTemp += couts[cheminsChange.get(i)][cheminsChange
+					                            						.get(i + 1)];
+				}
+				
 			}
 			if (coutsTotalChangeTemp != Double.MAX_VALUE) {
-				System.out.println("cheminChange" + (k+1) + " : " + cheminsChange + " -----> coutsTotal de cheminChange" + (k+1) + " : "
-						+ coutsTotalChangeTemp);// for
+				/*System.out.println("cheminChange" + (k+1) + " : " + cheminsChange + " -----> coutsTotal de cheminChange" + (k+1) + " : "
+						+ coutsTotalChangeTemp);// for*/
 				// test
 			}
 			if (coutsTotalChangeTemp < coutsTotalChange) {
@@ -264,10 +268,10 @@ public class VNS {
 		
 		/* comparer coutsTotalChange et coutsTotalInitial */
 		if(coutsTotalChange < coutsTotalInitial){
-			System.out.println("=====> on change cheminsInitial a cheminsChange : " + listCheminsChange.get(positionCheminsChange));//for test
+			//System.out.println("=====> on change cheminsInitial a cheminsChange : " + listCheminsChange.get(positionCheminsChange));//for test
 			return listCheminsChange.get(positionCheminsChange);
 		}
-		System.out.println("=====> on change pas de chemin");//for test
+		//System.out.println("=====> on change pas de chemin");//for test
 		
 		return cheminsInitial;
 		
@@ -334,17 +338,19 @@ public class VNS {
 			 * On ne prend que les arretes stochastiques
 			 */
 			
-			System.out.println("1) "+s.getSolution()+"\n");
+			//System.out.println("1) "+s.getSolution()+"\n");
 			
 			Graph solutionScenarioGloutonClone = (Graph) s.getSolution().clone();
 			
-			System.out.println("2) "+solutionScenarioGloutonClone.getCouts());
-			
+			//System.out.println("2) "+solutionScenarioGloutonClone.getCouts());
+			//System.out.println("------a------");
 			for(PaireVertex paire : solutionScenarioGloutonClone.getCouts().keySet())
 			{			
 				if(!s.getGeneral().getDeterminists().contains(paire))
 					stochastiques.add(paire);
 			}
+			
+			//System.out.println("------b------"+stochastiques.size()+" ===== "+solutionScenarioGloutonClone.getCouts().keySet().size());
 			
 			/*
 			 * --------------------------------------------------
@@ -367,10 +373,14 @@ public class VNS {
 			{
 				//Random entre [0,stochastiques.size()-1)
 				//FIXME : mettre un try catch de java.lang.IllegalArgumentException
-				PaireVertex choisi = stochastiques.get(Maths.randInt(0, stochastiques.size()-1));
+				int rand = Maths.randInt(0, stochastiques.size()-1);
+				PaireVertex choisi = stochastiques.get(rand);
+				//System.out.println("------b-RANDOM------"+rand);
 				if(!pioche.contains(choisi) && !vertexDejaPioche(choisi.getFirst(), pioche) && !vertexDejaPioche(choisi.getSecond(), pioche))
 					pioche.add(choisi);
 			}
+			
+			//System.out.println("------c------");
 			
 			System.out.println("La pioche : "+pioche);
 			
@@ -397,20 +407,22 @@ public class VNS {
 				
 				if(i+1==pioche.size())
 				{
-					System.out.println("2) Je lie : "+pioche.get(i).getFirst()+" avec " + pioche.get(0).getSecond());
+					//System.out.println("2) Je lie : "+pioche.get(i).getFirst()+" avec " + pioche.get(0).getSecond());
 					nouveau.add(lie(pioche.get(i).getFirst(), pioche.get(0).getSecond()));
 				}
 				else
 				{
-					System.out.println("3) Je lie : "+pioche.get(i).getFirst()+" avec " + pioche.get(i+1).getSecond());
+					//System.out.println("3) Je lie : "+pioche.get(i).getFirst()+" avec " + pioche.get(i+1).getSecond());
 					nouveau.add(lie(pioche.get(i).getFirst(), pioche.get(i+1).getSecond()));
 				}
-				
+				//System.out.println("1----");
 				PaireVertex tmp = nouveau.get(nouveau.size()-1);
+				//System.out.println("2-----");
 				visite.put(tmp.getFirst(),true);
+				//System.out.println("3-----");
 				visite.put(tmp.getSecond(), true);
-					
-				System.out.println("Visite ?? "+visite);
+				//System.out.println("4------");
+				//System.out.println("Visite ?? "+visite);
 					
 				i = i + 1;
 			}
@@ -420,10 +432,10 @@ public class VNS {
 			//TODO Cf (FIXME Note 1 au dessus) : on utilisera la meme methode pour cette fois remettre dans l'ordre
 			update(solutionScenarioGloutonClone, pioche, nouveau, s);
 			
-			System.out.println("Stochastique"+stochastiques);
-			System.out.println("Pioche "+pioche);
-			System.out.println("Nouveau : "+nouveau);
-			System.out.println("Solutionlone : "+solutionScenarioGloutonClone);
+			//System.out.println("Stochastique"+stochastiques);
+			//System.out.println("Pioche "+pioche);
+			//System.out.println("Nouveau : "+nouveau);
+			//System.out.println("Solutionlone : "+solutionScenarioGloutonClone);
 			
 			s.setEtat(etat.FINISHED);
 			
@@ -511,19 +523,30 @@ public class VNS {
 	
 	private boolean isBetterSolution(Graph old, Graph actual)
 	{
+		Double coutActual = actual.coutSolution();
+		if(coutActual<0)
+			return false;
 		return (old.coutSolution()>actual.coutSolution());
 	}
 
 	public void findBestSolution(Scenario s) throws CloneNotSupportedException {
 	
 		int kopt = 2;
+		
+		GraphOpt gopt = new GraphOpt();
+		
 		while(kopt <= TSP.n_opt)
 		{
 			Graph newSolution = algoVNSNopt(s,kopt);
-			System.out.println("Graphe actuel : "+newSolution);
+			//System.out.println("Graphe actuel : "+newSolution);
 			if(isBetterSolution(s.getSolution(), newSolution))
 			{
 				s.setSolution(newSolution);
+				setChanged();
+				//FIXME rendre Paire<newSolution,Scenario s>
+				//gopt.setCheminVNS(newSolution.getCouts());
+				//gopt.setCout(newSolution.coutSolution());
+				//notifyObservers(gopt);
 				kopt = 2;
 			}
 			else
