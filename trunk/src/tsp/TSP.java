@@ -12,6 +12,19 @@ import Math.Maths;
 import mvc.GraphOpt;
 
 public class TSP extends Observable implements Observer{
+
+	
+	/**
+	 * 
+	 * 
+	 * METTRE A FALSE POUR : Pour s'arreter a nbIteration
+	 * METTRE A TRUE POUR : Faire N iteration jusqu'a la fin
+	 * 
+	 */
+	
+	private boolean N_Iteration = false;
+	private int nbIteration = 100;
+	
 	
 	private PL pl;
 	private Graph g;
@@ -20,6 +33,7 @@ public class TSP extends Observable implements Observer{
 	private int scenario = 10;
 	private float pourcentageDeterminist;
 	protected static Integer n_opt = 2;
+
 	//penalite.get(0) => array.get(0) => scenario 0 iteration 0
 	private LinkedHashMap<Integer, ArrayList<HashLambdaRho>> penalite;
 	
@@ -99,8 +113,16 @@ public class TSP extends Observable implements Observer{
 			
 			iteration++;
 			
+			if(!N_Iteration)
+			{
+				if(iteration==nbIteration)
+				{
+					continuer = false;
+				}
+			}
+			
 			System.out.println("\n\n\n-------------------------------NOUVELLE ITERATION +" + iteration + "-------------------------------\n\n\n");
-		}while(!testArret(reference));
+		}while(!testArret(reference) && continuer);
 
 		
 		
