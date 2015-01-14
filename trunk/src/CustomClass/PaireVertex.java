@@ -23,6 +23,10 @@ public class PaireVertex extends Paire<Vertex, Vertex>{
 		return new PaireVertex(new Vertex(first.getNumero()), new Vertex(second.getNumero()));
 	}
 	
+	public PaireVertex inverser()
+	{
+		return new PaireVertex(getSecond(), getFirst());
+	}
 	
 	/*public static void main(String[] args) {
 		Vertex v1 = new Vertex(1);

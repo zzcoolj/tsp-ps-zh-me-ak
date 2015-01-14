@@ -1,5 +1,6 @@
 package tsp;
 
+import java.awt.event.PaintEvent;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Observable;
@@ -31,7 +32,7 @@ public class TSP extends Observable implements Observer{
 	private Graph g;
 	private Parser p;
 	private ArrayList<Scenario> s;
-	private int scenario = 10;
+	private int nbscenario = 10;
 	private float pourcentageDeterminist;
 	protected static Integer n_opt = 2;
 
@@ -54,7 +55,7 @@ public class TSP extends Observable implements Observer{
 		penalite.clear();
 		s.clear();
 		
-		scenario = nbScenario;
+		nbscenario = nbScenario;
 		n_opt = kmax;
 		pourcentageDeterminist = determinist;
 		
@@ -63,9 +64,15 @@ public class TSP extends Observable implements Observer{
 		System.out.println("J'ai choisis comme deterministe : "+g.getDeterminists());
 		
 		System.out.println("initialisation des scenario");
-		pl.initScenario(s, this, scenario);
+		pl.initScenario(s, this, nbscenario);
 		
 		
+		for(Scenario scenario : s)
+		{
+			System.out.println("Scenario "+scenario.getNumero()+"\n"+scenario.getGeneral().getCouts());
+		}
+		
+		System.exit(0);
 		
 		System.out.println("====== "+s);
 		System.out.println("Debut vrai");
