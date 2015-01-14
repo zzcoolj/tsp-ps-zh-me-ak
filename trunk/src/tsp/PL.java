@@ -541,6 +541,8 @@ public class PL {
             if(last!=null)
                     vertexInterditSortant = last.getFirst();
             
+            System.err.println("Last = "+last);
+            
             System.out.println("J'interdit : "+vertexInterditSortant);
 
             PaireVertex tmp = cherche(sortante,paireDansGlouton,g,null,vertexInterditSortant);
@@ -680,14 +682,14 @@ public PaireVertex cherche(Vertex villesSortante,ArrayList<PaireVertex> paireDan
 
         for(Entry<PaireVertex,Double> entry : g.getCouts().entrySet())
         {
-                if(entry.getKey().getFirst().equals(new Vertex(100)) && villesSortante.equals(new Vertex(100)))
+                /*if(entry.getKey().getFirst().equals(new Vertex(100)) && villesSortante.equals(new Vertex(100)))
                 {
                         System.out.println("Je suis au couple = "+entry.getKey());
                         System.out.println("arcExisteDeja = "+arcExisteDeja(entry.getKey().getFirst(), entry.getKey().getSecond(), paireDansGlouton));
                         System.out.println("estdansGlouton = "+paireDansGlouton.contains(entry.getKey()));
                         System.out.println("first = villesortante = "+entry.getKey().getFirst().equals(villesSortante));
                         System.out.println("second = villeinterdi 4 = "+entry.getKey().getSecond().equals(villeInterdit));
-                }
+                }*/
                         
                         if(villeSortantInterdit!=null && !entry.getKey().getSecond().equals(villeSortantInterdit) && !arcExisteDeja(entry.getKey().getFirst(), entry.getKey().getSecond(), paireDansGlouton) && !paireDansGlouton.contains(entry.getKey()) && entry.getKey().getFirst().equals(villesSortante) && villeInterdit!=null && !entry.getKey().getSecond().equals(villeInterdit))
                         {
@@ -708,14 +710,23 @@ public PaireVertex cherche(Vertex villesSortante,ArrayList<PaireVertex> paireDan
                         {
                                 if(villeSortantInterdit!=null && !entry.getKey().getFirst().equals(villeSortantInterdit) && !dejaDansDeterministe(entry.getKey().getFirst(), entry.getKey().getSecond(), g.getDeterminists(),paireDansGlouton))
                                 {
-                                        if(plusprocheVoisin==null)
+                                	//System.err.println("if(!arcExisteDeja(entry.getKey().getSecond(), entry.getKey().getFirst(), paireDansGlouton))"+!arcExisteDeja(entry.getKey().getSecond(), entry.getKey().getFirst(), paireDansGlouton));
+                                    //System.err.println(""+new PaireVertex(entry.getKey().getSecond(), entry.getKey().getFirst())+" paire = "+paireDansGlouton);
+                                	System.out.println("Villes sortante "+villesSortante);
+                                	System.out.println("Condition = !entry..... "+!entry.getKey().getSecond().equals(villeSortantInterdit));
+                                	System.out.println("villeSortantInterdit : "+villeSortantInterdit+ " entry "+ entry.getKey());
+                                    if(!entry.getKey().getSecond().equals(villeSortantInterdit))
+                                    {
+                                    	if(plusprocheVoisin==null)
                                         {
-                                                plusprocheVoisin = entry.getKey();
+                                            plusprocheVoisin = entry.getKey();
                                         }
                                         else if(entry.getValue()<g.getCouts().get(plusprocheVoisin))
                                         {
-                                                plusprocheVoisin = entry.getKey();
+                                        	plusprocheVoisin = entry.getKey();
                                         }
+                                    }
+                                    System.out.println("Plus proche voisin "+plusprocheVoisin);
                                 }
                         }
                 
