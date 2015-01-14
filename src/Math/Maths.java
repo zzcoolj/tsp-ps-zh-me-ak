@@ -1,4 +1,5 @@
 package Math;
+import java.io.ObjectInputStream.GetField;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Map.Entry;
@@ -44,13 +45,15 @@ public class Maths {
 		{
 			throw new ExceptionMaths("Le maximum de l'intervalle choisi est negatif");
 		}
-			
+
+		Random rand = new Random();
 		for(int i = 0; i<nb; i++)
 		{
-			Random rand = new Random();
-			values.add(min + (max - min) * rand.nextDouble());
+			values.add(generateRandomCostsBis(initial, min, max));
+			//rand.setSeed(seed);
 		}
 
+		//System.out.println("Values : "+values);
 		
 		return values;
 	}
@@ -87,11 +90,10 @@ public class Maths {
 	 */
 	private static Double calculVariance(TSP tsp)
 	{
-		int taille = tsp.getG().getNbVilles();
+		int taille = tsp.getG().getCouts().size();
 		double xi[] = new double[taille];
-		float pi[] = new float[taille];
+
 		
-		float ps = 1/(tsp.getS().size());
 		int j=0;
 		
 		for(Entry<PaireVertex, Double> entry : tsp.getG().getCouts().entrySet()) {
@@ -99,15 +101,23 @@ public class Maths {
 		    if(!(tsp.getDeterminists().contains(key)) && !(key.hasSameVertex())){
 		    	Double value = entry.getValue();
 		    	xi[j]= value;
-		    	pi[j]=ps;		
+		    	j++;
 		    }
-		}    
+		}  
+		
+		float ps = (float)1/j;
+		//System.out.println("PS = "+ps);
 
+		/*for(int i = 0 ; i<j; i++)
+		{
+			System.out.println("xi["+i+"]="+xi[i]);
+		}*/
+		
 		Double sum = 0.0;
 		
 		//E(X)
 		Double esperance = 0.0;
-		for(int i=0;i<taille;i++)
+		for(int i=0;i<j;i++)
 		{
 			sum += xi[i];
 		}
@@ -115,7 +125,7 @@ public class Maths {
 		
 		//E(X^2)
 		sum = 0.0;
-		for(int i=0;i<taille;i++)
+		for(int i=0;i<j;i++)
 		{
 			sum += Math.pow(xi[i], 2);
 		}
@@ -125,6 +135,9 @@ public class Maths {
 		Double esperance2 = Math.pow(esperance, 2);
 		
 		//TODO return 3*variance ici ou plus tard ?
+		
+		System.out.println("esperance1 - esperance 2 = "+esperance1+" - "+esperance2+" = "+ (esperance1-esperance2));
+		
 		return esperance1-esperance2;
 	}
 	

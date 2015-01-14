@@ -1,6 +1,5 @@
 package tsp;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -50,54 +49,21 @@ public class PL {
 			s.get(i).getGeneral().setDeterminists(tsp.getG().getDeterminists());
 		}
 		
-		/*for (Scenario scenario : s) {
-			
-			//System.out.println("\t\t\t scenario numero "+scenario.getNumero()+" debut d'init");
-			
-			Graph g = new Graph(tsp.getG().getVilles());
-			LinkedHashMap<PaireVertex, Double> tmp = new LinkedHashMap<>();
-			
-			for(int i=0; i<g.getNbVilles(); i++){
-				for(int j=0; j<g.getNbVilles();j++){
-					PaireVertex p = new PaireVertex(new Vertex(i),new Vertex(j));
-					if(tsp.getDeterminists().contains(p) || p.hasSameVertex()){
-						tmp.put(p, tsp.getG().getCouts().get(p));
-						//FIXME : mettre les arretes deterministe aussi dans le graphe solution du scenario pour ne pas 
-						//avoir a passer par TSP.getG().getDeterminists()
-					}
-					else{
-						Double valeurXml = tsp.getG().getCouts().get(p);
-						Double ecartype = Maths.calculEcartType(tsp);
-						
-						Double min = valeurXml-ecartype;
-						Double max = valeurXml+ecartype;
-						try {
-							Double rand = Maths.generateRandomCostsBis(valeurXml, min, max);
-							////System.out.println("Rand = "+rand);
-							tmp.put(p, rand);	
-						} catch (ExceptionMaths e) {
-							e.printStackTrace();
-						}
-					}
-				}
-			}
-			g.setCouts(tmp);
-			scenario.setSolution(g);
-		}*/
-		
 		Double ecartype = Maths.calculEcartType(tsp);
 		for(PaireVertex p : tsp.getG().getCouts().keySet())
 		{
 			//PaireVertex p = new PaireVertex(new Vertex(i),new Vertex(j));
-			if(tsp.getDeterminists().contains(p) || p.hasSameVertex()){
+			if(tsp.getDeterminists().contains(p) || p.hasSameVertex() || tsp.getDeterminists().contains(p.inverser())){
 				for(Scenario scenario : s)
 				{
 					scenario.getGeneral().getCouts().put(p, tsp.getG().getCouts().get(p));
+					scenario.getGeneral().getCouts().put(p.inverser(), tsp.getG().getCouts().get(p));
 				}
 			}
-			else
+			else if(p.getFirst().getNumero()<p.getSecond().getNumero())
 			{
 				Double valeurXml = tsp.getG().getCouts().get(p);	
+				//System.out.println("3*ecartype"+(3*ecartype));
 				Double min = valeurXml-3*ecartype;
 				Double max = valeurXml+3*ecartype;
 				try {
@@ -108,7 +74,9 @@ public class PL {
 					for(Scenario scenario : s)
 					{
 						scenario.getGeneral().getCouts().put(p, rand.get(cpt));
+						scenario.getGeneral().getCouts().put(p.inverser(), rand.get(cpt));
 						cpt++;
+						
 					}
 				} catch (ExceptionMaths e) {
 					e.printStackTrace();
@@ -547,6 +515,12 @@ public class PL {
             	g.getDeterminists().add(paire);
             }
 
+            System.out.println("G.GetDeterministe "+g.getDeterminists());
+            
+            if(g.getDeterminists().isEmpty())
+            {
+            	g.getDeterminists().add(gr.getDeterminists().get(0));
+            }
             
             Vertex sortante = g.getDeterminists().get(0).getSecond();
             ArrayList<PaireVertex> paireDansGlouton = new ArrayList<PaireVertex>();
@@ -558,11 +532,12 @@ public class PL {
             
             PaireVertex last = null;
             try {
-                    last = recursif(g.getDeterminists(),(PaireVertex)g.getDeterminists().get(0).clone());
+                    last = recursif(g.getDeterminists(),(PaireVertex)g.getDeterminists().get(0).clone(),g.getDeterminists().get(0));
             } catch (CloneNotSupportedException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
             }
+            System.err.println("G.GetDeterministe "+g.getDeterminists());
             if(last!=null)
                     vertexInterditSortant = last.getFirst();
             
@@ -578,6 +553,7 @@ public class PL {
                     if(tmp!=null)
                     {
                             sauvegarde = tmp;
+                            System.out.println("hasSameVertex : "+g.getDeterminists().get(0).hasSameVertex());
                             tmp = cherche(tmp.getSecond(),paireDansGlouton,g,g.getDeterminists().get(0).getFirst(),vertexInterditSortant);
                             System.out.println("Sauvegarde"+sauvegarde);
                             if(tmp!=null)
@@ -629,7 +605,7 @@ public class PL {
             return paireDansGlouton;
     }
 	
-	private PaireVertex recursif(ArrayList<PaireVertex> determinists,PaireVertex paireActuel) {
+	private PaireVertex recursif(ArrayList<PaireVertex> determinists,PaireVertex paireActuel, PaireVertex paireDebut) {
         
         if(paireActuel==null || determinists==null || determinists.size()==0)
                 return null;
@@ -648,8 +624,10 @@ public class PL {
                 
                 if(!trouve)
                         return paireActuel;
+                if(paireDebut.equals(paireActuel))
+                	return paireActuel;
                 
-                return recursif(determinists, paireActuel);
+                return recursif(determinists, paireActuel,paireDebut);
         }
         
         
