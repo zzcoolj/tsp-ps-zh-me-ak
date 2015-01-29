@@ -1,27 +1,4 @@
 package tsp;
-/*
-public class VNS {
-	
-	private Integer kmax;
-	private Integer neighborhood;
-	
-	
-	public Graph solve(Graph g)
-	{
-		return null;
-	}
-	
-	private void neighborhoodChange()
-	{
-		
-	}
-	
-	private void shake()
-	{
-		
-	}
-}
-*/
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -29,8 +6,6 @@ import java.util.LinkedList;
 import java.util.Observable;
 import java.util.TreeSet;
 import java.util.Random;
-
-import javax.swing.text.StyledEditorKit.BoldAction;
 
 import mvc.GraphOpt;
 import tsp.Scenario.etat;
@@ -44,8 +19,19 @@ public class VNS extends Observable{
 	private Double coutDeCheminExistePas = Double.MAX_VALUE;
 	private Double coutsTotalDeCheminExistePas = Double.MAX_VALUE;
 
+	/* change toTab 
+	 * avant		: 	Double[][] couts
+	 * 					couts = s.getGeneral().toTab();
+	 * 					couts[i][j]
+	 * 				
+	 * maintenant	: 	LinkedHashMap<PaireVertex, Double> couts
+	 * 					couts = s.getGeneral().getCouts();
+	 * 					couts.get(new PaireVertex(new Vertex(i), new Vertex(j)))
+	*/
+	
+	
 	// HashMap<Vertex, ArrayList<Double>> couts;
-	Double[][] coutsTest;
+	//Double[][] coutsTest;
 
 	public VNS(int neighborhood) {
 		this.neighborhood = neighborhood;
@@ -192,21 +178,33 @@ public class VNS extends Observable{
 	}
 	
 	
-	/* juger change le chemin ou pas */
+	
+	
+	
+	/* change toTab */
+	/*
+	// juger change le chemin ou pas	
 	private LinkedList<Integer> neighborhoodChange(Double[][] couts, LinkedList<Integer> cheminsInitial) {
-		
-		/* cout de cheminInitial */
+		// cout de cheminInitial
 		Double coutsTotalInitial = couts[cheminsInitial.get(cheminsInitial
 				.size() - 1)][cheminsInitial.get(0)]; 
 		for (int i = 0; i < cheminsInitial.size() - 1; i++) {
 			coutsTotalInitial += couts[cheminsInitial.get(i)][cheminsInitial
 					.get(i + 1)];
 		}
+		*/
+	
+	private LinkedList<Integer> neighborhoodChange(LinkedHashMap<PaireVertex, Double> couts, LinkedList<Integer> cheminsInitial) {
+		Double coutsTotalInitial = couts.get(new PaireVertex(new Vertex(cheminsInitial.get(cheminsInitial
+				.size() - 1)), new Vertex(cheminsInitial.get(0))));
+		for (int i = 0; i< cheminsInitial.size() - 1; i++) {
+			coutsTotalInitial += couts.get(new PaireVertex(new Vertex(cheminsInitial.get(i)), new Vertex(cheminsInitial
+					.get(i + 1))));
+		}
+		
+		
 		/*//System.out.println("cheminInitial" + " : " + cheminsInitial + " -----> coutsTotal de cheminInitial" + " : "
 				+ coutsTotalInitial);*/ 
-		// for
-		// test
-		
 		
 		/* cout de cheminChange */
 		ArrayList<LinkedList<Integer>> listCheminsChange = this
@@ -219,16 +217,20 @@ public class VNS extends Observable{
 		for (int k = 0; k < listCheminsChange.size(); k++) {
 			LinkedList<Integer> cheminsChange = listCheminsChange.get(
 					k);
+			/* change toTab */
+			/*
 			Double coutsTotalChangeTemp = couts[cheminsChange.get(cheminsChange
 					.size() - 1)][cheminsChange.get(0)];
-			/*
-			if (couts[cheminsChange.get(cheminsChange.size() - 1)][cheminsChange.get(0)] > coutDeCheminExistePas) {
-			*/
 			if (couts[cheminsChange.get(cheminsChange.size() - 1)][cheminsChange.get(0)] > coutDeCheminExistePas || couts[cheminsChange.get(cheminsChange.size() - 1)][cheminsChange.get(0)] <= 0) {
 				coutsTotalChangeTemp = Double.MAX_VALUE;
+			*/
+			Double coutsTotalChangeTemp = couts.get(new PaireVertex(new Vertex(cheminsChange.get(cheminsChange
+					.size() - 1)), new Vertex(cheminsChange.get(0))));
+			if (couts.get(new PaireVertex(new Vertex(cheminsChange.get(cheminsChange.size() - 1)), new Vertex(cheminsChange.get(0)))) > coutDeCheminExistePas || couts.get(new PaireVertex(new Vertex(cheminsChange.get(cheminsChange.size() - 1)), new Vertex(cheminsChange.get(0)))) <= 0) {
+					coutsTotalChangeTemp = Double.MAX_VALUE;
+				
 				/*//System.out.println("cheminChange" + (k+1) + " : " + cheminsChange + " -----> coutsTotal de cheminChange" + (k+1) + " : "
-						+ coutsTotalChangeTemp);*/// for
-				// test
+						+ coutsTotalChangeTemp);*/
 				/*//System.out.println("chemin [ "+ cheminsChange.get(cheminsChange.size() - 1) + ", "+ cheminsChange.get(0) + "] existe pas");*/
 				
 				continue;
@@ -238,7 +240,11 @@ public class VNS extends Observable{
 				/*
 				if (couts[cheminsChange.get(i)][cheminsChange.get(i + 1)] > coutDeCheminExistePas) {
 				*/
-				if (couts[cheminsChange.get(i)][cheminsChange.get(i + 1)] > coutDeCheminExistePas || couts[cheminsChange.get(i)][cheminsChange.get(i + 1)] <= 0) {
+				
+				/* change toTab */
+				//if (couts[cheminsChange.get(i)][cheminsChange.get(i + 1)] > coutDeCheminExistePas || couts[cheminsChange.get(i)][cheminsChange.get(i + 1)] <= 0) {
+				if (couts.get(new PaireVertex(new Vertex(cheminsChange.get(i)), new Vertex(cheminsChange.get(i + 1)))) > coutDeCheminExistePas || couts.get(new PaireVertex(new Vertex(cheminsChange.get(i)), new Vertex(cheminsChange.get(i + 1)))) <= 0) {
+					
 					coutsTotalChangeTemp = Double.MAX_VALUE;
 					/*//System.out.println("cheminChange" + (k+1) + " : " + cheminsChange + " -----> coutsTotal de cheminChange" + (k+1) + " : "
 							+ coutsTotalChangeTemp);// for*/
@@ -248,10 +254,19 @@ public class VNS extends Observable{
 					coutsTotalChangeTemp = Double.MAX_VALUE;
 					break;
 				}
+				
+				/* change toTab */
+				/*
 				if(couts[cheminsChange.get(i)][cheminsChange.get(i + 1)]>0)
 				{
 					coutsTotalChangeTemp += couts[cheminsChange.get(i)][cheminsChange
 					                            						.get(i + 1)];
+				}
+				*/
+				if(couts.get(new PaireVertex(new Vertex(cheminsChange.get(i)), new Vertex(cheminsChange.get(i + 1))))>0)
+				{
+					coutsTotalChangeTemp += couts.get(new PaireVertex(new Vertex(cheminsChange.get(i)), new Vertex(cheminsChange
+    						.get(i + 1))));
 				}
 				
 			}
@@ -469,7 +484,10 @@ public class VNS extends Observable{
 		VNS vns = new VNS(opt);
 		s.setEtat(etat.CHANGINGNEIGHBORHOOD);
 		LinkedList<Integer> cheminsOptimal = new LinkedList<Integer>();
-		cheminsOptimal = vns.neighborhoodChange(s.getGeneral().toTab(), cheminsInitial);
+		
+		/* change toTab */
+		cheminsOptimal = vns.neighborhoodChange(s.getGeneral().getCouts(), cheminsInitial);
+		//cheminsOptimal = vns.neighborhoodChange(s.getGeneral().toTab(), cheminsInitial);
 		
 		//[0,1,2,4,5,3]
 		/* cheminOptimal(LinkedList<Integer) ->  Couts optimal(LinkedHashMap) */
