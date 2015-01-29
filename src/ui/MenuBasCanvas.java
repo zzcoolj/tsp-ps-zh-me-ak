@@ -98,7 +98,7 @@ public class MenuBasCanvas extends JPanel{
 		}
 		else
 		{
-			g.drawString("Timer = "+ time + " ms" , 200, 35);
+			g.drawString("Timer = "+ time + " s" , 200, 35);
 		}
 	}
 
