@@ -49,7 +49,7 @@ public class VNS extends Observable{
 		}
 		//for test
 		////System.out.print("arretes choisis pour "+neighborhood+"-opt : ");
-		Iterator<Integer> it = shakeList.iterator();
+		/*Iterator<Integer> it = shakeList.iterator();
 		System.out.println(shakeList);
 		while (it.hasNext()) {
 			int i = it.next();
@@ -61,7 +61,7 @@ public class VNS extends Observable{
 				System.out.print("[ " + i + ", " + "villeDepart ]");
 			}
 		}
-		System.out.println("\n");
+		System.out.println("\n");*/
 	}
 
 	
