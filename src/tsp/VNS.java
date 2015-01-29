@@ -363,7 +363,7 @@ public class VNS extends Observable{
 			////System.out.println("------a------");
 			for(PaireVertex paire : solutionScenarioGloutonClone.getCouts().keySet())
 			{			
-				if(!s.getGeneral().getDeterminists().contains(paire))
+				if(!s.getGeneral().getDeterminists().contains(paire) && !vertexDejaPioche(paire.getFirst(), stochastiques) && !vertexDejaPioche(paire.getSecond(), stochastiques))
 					stochastiques.add(paire);
 			}
 			
@@ -383,19 +383,52 @@ public class VNS extends Observable{
 			 * Pour 3-opt : 3 pioche
 			 * etc ...
 			 */
-			
+			System.out.println("N-opt");
 			s.setEtat(etat.SHAKING);
 			
-			while(pioche.size()<kopt)
+			System.out.println("Les stocka : "+stochastiques);
+			ArrayList<Integer> randA = new ArrayList<Integer>();
+			for(int i = 0;i<stochastiques.size();i++)
+			{
+				randA.add(i);
+			}
+			
+			int maxintervall = stochastiques.size()-1;
+			int erreur = 0;
+			while(pioche.size()<kopt && erreur < 20 && maxintervall>0)
 			{
 				//Random entre [0,stochastiques.size()-1)
 				//FIXME : mettre un try catch de java.lang.IllegalArgumentException
-				int rand = Maths.randInt(0, stochastiques.size()-1);
+				System.out.println("Stocka.size = "+stochastiques.size());
+				System.out.println("randA.size = "+randA.size());
+				System.out.println("Max = "+maxintervall);
+				int positionTab = Maths.randInt(0, maxintervall);
+				int rand = randA.get(positionTab);
+				
+					
+					
 				PaireVertex choisi = stochastiques.get(rand);
-				////System.out.println("------b-RANDOM------"+rand);
+				System.out.println("------b-RANDOM------"+rand+" -> "+choisi);
 				if(!pioche.contains(choisi) && !vertexDejaPioche(choisi.getFirst(), pioche) && !vertexDejaPioche(choisi.getSecond(), pioche))
+				{
+					System.out.println("ajout");
 					pioche.add(choisi);
+					System.err.println("Nouvelle pioche : "+pioche);
+					randA.set(positionTab, randA.get(randA.size()-1));
+					randA.remove(randA.size()-1);
+					
+					randA.add(rand);
+					maxintervall--;
+					erreur = 0;
+				}
+				else
+				{
+					erreur++;
+					System.out.println("echec");
+				}
 			}
+			
+			System.out.println("Shaking end");
 			
 			////System.out.println("------c------");
 			
@@ -453,7 +486,7 @@ public class VNS extends Observable{
 			////System.out.println("Nouveau : "+nouveau);
 			////System.out.println("Solutionlone : "+solutionScenarioGloutonClone);
 			
-			s.setEtat(etat.FINISHED);
+			//s.setEtat(etat.FINISHED);
 			
 			return solutionScenarioGloutonClone;
 		}
@@ -501,7 +534,7 @@ public class VNS extends Observable{
 		coutsOptimal.put(lastPaire, s.getGeneral().getCouts().get(lastPaire));
 		
 		g.setCouts(coutsOptimal);
-		s.setEtat(etat.FINISHED);
+		//s.setEtat(etat.FINISHED);
 		return g;
 	}
 	
@@ -561,7 +594,7 @@ public class VNS extends Observable{
 		{
 			Graph newSolution = algoVNSNopt(s,kopt);
 			////System.out.println("solution courante :"+s.getSolution().coutSolution());
-			
+			System.out.println("Iteration = "+iteration);
 			if(iteration<20){
 				if(isBetterSolution(s.getSolution(), newSolution)   )
 				{
@@ -582,6 +615,8 @@ public class VNS extends Observable{
 			}
 			iteration++;
 		}
+		
+		s.setEtat(etat.FINISHED);
 		
 	}
 	
