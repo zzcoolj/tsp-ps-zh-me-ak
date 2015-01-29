@@ -582,6 +582,9 @@ public class VNS extends Observable{
 		Double coutActual = actual.coutSolution();
 		if(coutActual<0)
 			return false;
+		
+		System.err.println("isBetter : old "+old.coutSolution()+" actual "+actual.coutSolution());
+		
 		return (old.coutSolution()>actual.coutSolution());
 	}
 
@@ -596,7 +599,7 @@ public class VNS extends Observable{
 			////System.out.println("solution courante :"+s.getSolution().coutSolution());
 			System.out.println("Iteration = "+iteration);
 			if(iteration<20){
-				if(isBetterSolution(s.getSolution(), newSolution)   )
+				if(isBetterSolution(s.getSolution(), newSolution))
 				{
 					s.setSolution(newSolution);
 					setChanged();

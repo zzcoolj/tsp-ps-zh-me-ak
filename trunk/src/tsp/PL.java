@@ -528,15 +528,21 @@ public class PL {
             }
 
 //            //System.out.println("G.GetDeterministe "+g.getDeterminists());
-            
+            int rand = Maths.randInt(0, gr.getDeterminists().size()-1);
             if(g.getDeterminists().isEmpty())
             {
-            	g.getDeterminists().add(gr.getDeterminists().get(0));
+            	g.getDeterminists().add(gr.getDeterminists().get(rand));
+            	rand = 0;
             }
-            
-            Vertex sortante = g.getDeterminists().get(0).getSecond();
+            else
+            {
+            	rand = Maths.randInt(0, g.getDeterminists().size()-1);
+            }
+            if(rand<0)
+            	rand = 0;
+            Vertex sortante = g.getDeterminists().get(rand).getSecond();
             ArrayList<PaireVertex> paireDansGlouton = new ArrayList<PaireVertex>();
-            paireDansGlouton.add(g.getDeterminists().get(0));
+            paireDansGlouton.add(g.getDeterminists().get(rand));
             
             Vertex vertexInterditSortant = null;
             
