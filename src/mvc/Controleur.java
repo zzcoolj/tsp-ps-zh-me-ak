@@ -5,10 +5,12 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
+import tsp.Scenario;
 import ui.MenuBasCanvas;
 
 public class Controleur implements MouseListener{
@@ -39,6 +41,8 @@ public class Controleur implements MouseListener{
 				{
 					model.getTsp().addObserver(vue);
 				}
+				vue.scenarioCanvas.miseAjour(new ArrayList<Scenario>());
+				vue.scenarioCanvas.repaint();
 				model.tspSolve((vue.sliderDeterminist.getValue()/100f), Integer.valueOf(vue.kmaxTxtField.getText()), Integer.valueOf(vue.nbscenarioTxtField.getText()));
 			}
 			else
@@ -65,10 +69,11 @@ public class Controleur implements MouseListener{
 			    	{
 			    		System.out.println("Ouverture en cours ... : "+fichier.getAbsolutePath());
 			    		model.changeXML(fichier.getAbsolutePath());
-			    		System.out.println("NbVilles = "+model.getTsp().getG().getNbVilles());
+			    		//System.out.println("NbVilles = "+model.getTsp().getG().getNbVilles());
 			    		vue.bas.setNbVilles(model.getTsp().getG().getNbVilles());
 			    		vue.addJList(model.getTsp().getG().getCouts());
-			    		
+			    		vue.scenarioCanvas.miseAjour(new ArrayList<Scenario>());
+			    		vue.scenarioCanvas.repaint();
 			    		model.launch();
 			    	}
 			    	else
