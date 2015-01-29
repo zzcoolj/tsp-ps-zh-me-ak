@@ -1,7 +1,5 @@
 package tsp;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Observable;
@@ -17,13 +15,13 @@ public class TSP extends Observable implements Observer {
 	/**
 	 * 
 	 * 
-	 * METTRE A FALSE POUR : Pour s'arreter a nbIteration METTRE A TRUE POUR :
-	 * Faire N iteration jusqu'a la fin
+	 * METTRE A FALSE POUR : Pour s'arreter a nbIteration 
+	 * METTRE A TRUE POUR : Faire N iteration jusqu'a la fin
 	 * 
 	 */
 
 	private boolean N_Iteration = false;
-	private int nbIteration = 10;
+	private int nbIteration = 100;
 	
 	
 	private PL pl;
@@ -78,11 +76,6 @@ public class TSP extends Observable implements Observer {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}*/
-		
-		boolean continuer = true;
-		
-		int iteration = 0;
-		
 		ThreadMain tm = new ThreadMain(this,reference);
 		tm.start();
 
@@ -413,7 +406,7 @@ public class TSP extends Observable implements Observer {
 			}while(!testArret(reference, iteration - 1) && continuer);
 			
 			System.out.println("Fini");
-			System.out.println("Cout final = "+reference.coutSolution());
+			//System.out.println("Cout final = "+reference.coutSolution());
 			
 			gopt.setCout(reference.coutSolution());
 			gopt.setCheminVNS(reference.getCouts());
@@ -450,7 +443,7 @@ public class TSP extends Observable implements Observer {
 				System.out.println("\n\n\n");
 			}
 			System.out.println("////////////////////////////////////////////////////////////");
-			System.out.println("********* Cout final "+ reference.getCouts() +" *********");
+			System.out.println("********* Cout final "+ reference.coutSolution() +" *********");
 			System.out.println("////////////////////////////////////////////////////////////");
 		}
 	}
