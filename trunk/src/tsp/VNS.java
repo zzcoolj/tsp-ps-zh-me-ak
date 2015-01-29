@@ -62,12 +62,14 @@ public class VNS extends Observable{
 			shakeList.add(r.nextInt(nbVille));// [0, nbVille-1] !!! 若nbville 后面会爆掉
 		}
 		//for test
-		System.out.print("arretes choisis pour "+neighborhood+"-opt : ");
+		////System.out.print("arretes choisis pour "+neighborhood+"-opt : ");
 		Iterator<Integer> it = shakeList.iterator();
+		System.out.println(shakeList);
 		while (it.hasNext()) {
 			int i = it.next();
 			if(i+1 < nbVille){
 				System.out.print("[ " + i + ", " + (i + 1) + " ]");
+				
 			}
 			else{
 				System.out.print("[ " + i + ", " + "villeDepart ]");
@@ -84,8 +86,8 @@ public class VNS extends Observable{
 		ArrayList<LinkedList<Integer>> listCheminsChange = new ArrayList<LinkedList<Integer>>();
 
 		if (neighborhood < 2) {
-			System.err
-					.println("error : nombre de neighborhood est inferieur de 2");
+			//System.err
+					//.println("error : nombre de neighborhood est inferieur de 2");
 		}
 
 		if (neighborhood == 2) {
@@ -105,7 +107,7 @@ public class VNS extends Observable{
 		
 														// villeDepart
 			listCheminsChange.add(cheminsChange);
-			System.out.println("cheminChange : " + cheminsChange);// test
+//			//System.out.println("cheminChange : " + cheminsChange);// test
 		}
 
 		if (neighborhood == 3) {
@@ -178,10 +180,10 @@ public class VNS extends Observable{
 			listCheminsChange.add(cheminsChange4);
 			
 			/* for test
-			System.out.println("cheminChange1 : " + cheminsChange1);
-			System.out.println("cheminChange2 : " + cheminsChange2);
-			System.out.println("cheminChange3 : " + cheminsChange3);
-			System.out.println("cheminChange4 : " + cheminsChange4);
+			//System.out.println("cheminChange1 : " + cheminsChange1);
+			//System.out.println("cheminChange2 : " + cheminsChange2);
+			//System.out.println("cheminChange3 : " + cheminsChange3);
+			//System.out.println("cheminChange4 : " + cheminsChange4);
 			*/
 		}
 		
@@ -200,7 +202,7 @@ public class VNS extends Observable{
 			coutsTotalInitial += couts[cheminsInitial.get(i)][cheminsInitial
 					.get(i + 1)];
 		}
-		/*System.out.println("cheminInitial" + " : " + cheminsInitial + " -----> coutsTotal de cheminInitial" + " : "
+		/*//System.out.println("cheminInitial" + " : " + cheminsInitial + " -----> coutsTotal de cheminInitial" + " : "
 				+ coutsTotalInitial);*/ 
 		// for
 		// test
@@ -224,10 +226,10 @@ public class VNS extends Observable{
 			*/
 			if (couts[cheminsChange.get(cheminsChange.size() - 1)][cheminsChange.get(0)] > coutDeCheminExistePas || couts[cheminsChange.get(cheminsChange.size() - 1)][cheminsChange.get(0)] <= 0) {
 				coutsTotalChangeTemp = Double.MAX_VALUE;
-				/*System.out.println("cheminChange" + (k+1) + " : " + cheminsChange + " -----> coutsTotal de cheminChange" + (k+1) + " : "
+				/*//System.out.println("cheminChange" + (k+1) + " : " + cheminsChange + " -----> coutsTotal de cheminChange" + (k+1) + " : "
 						+ coutsTotalChangeTemp);*/// for
 				// test
-				/*System.out.println("chemin [ "+ cheminsChange.get(cheminsChange.size() - 1) + ", "+ cheminsChange.get(0) + "] existe pas");*/
+				/*//System.out.println("chemin [ "+ cheminsChange.get(cheminsChange.size() - 1) + ", "+ cheminsChange.get(0) + "] existe pas");*/
 				
 				continue;
 			}
@@ -238,10 +240,10 @@ public class VNS extends Observable{
 				*/
 				if (couts[cheminsChange.get(i)][cheminsChange.get(i + 1)] > coutDeCheminExistePas || couts[cheminsChange.get(i)][cheminsChange.get(i + 1)] <= 0) {
 					coutsTotalChangeTemp = Double.MAX_VALUE;
-					/*System.out.println("cheminChange" + (k+1) + " : " + cheminsChange + " -----> coutsTotal de cheminChange" + (k+1) + " : "
+					/*//System.out.println("cheminChange" + (k+1) + " : " + cheminsChange + " -----> coutsTotal de cheminChange" + (k+1) + " : "
 							+ coutsTotalChangeTemp);// for*/
 					// test
-					/*System.out.println("chemin [ " + cheminsChange.get(i)
+					/*//System.out.println("chemin [ " + cheminsChange.get(i)
 							+ ", " + cheminsChange.get(i + 1) + "] existe pas");*/
 					coutsTotalChangeTemp = Double.MAX_VALUE;
 					break;
@@ -254,7 +256,7 @@ public class VNS extends Observable{
 				
 			}
 			if (coutsTotalChangeTemp != Double.MAX_VALUE) {
-				/*System.out.println("cheminChange" + (k+1) + " : " + cheminsChange + " -----> coutsTotal de cheminChange" + (k+1) + " : "
+				/*//System.out.println("cheminChange" + (k+1) + " : " + cheminsChange + " -----> coutsTotal de cheminChange" + (k+1) + " : "
 						+ coutsTotalChangeTemp);// for*/
 				// test
 			}
@@ -263,15 +265,15 @@ public class VNS extends Observable{
 				positionCheminsChange = k;
 			}
 		}
-		System.out.println("\n");
+		////System.out.println("\n");
 		
 		
 		/* comparer coutsTotalChange et coutsTotalInitial */
 		if(coutsTotalChange < coutsTotalInitial){
-			//System.out.println("=====> on change cheminsInitial a cheminsChange : " + listCheminsChange.get(positionCheminsChange));//for test
+			////System.out.println("=====> on change cheminsInitial a cheminsChange : " + listCheminsChange.get(positionCheminsChange));//for test
 			return listCheminsChange.get(positionCheminsChange);
 		}
-		//System.out.println("=====> on change pas de chemin");//for test
+		////System.out.println("=====> on change pas de chemin");//for test
 		
 		return cheminsInitial;
 		
@@ -338,19 +340,19 @@ public class VNS extends Observable{
 			 * On ne prend que les arretes stochastiques
 			 */
 			
-			//System.out.println("1) "+s.getSolution()+"\n");
+			////System.out.println("1) "+s.getSolution()+"\n");
 			
 			Graph solutionScenarioGloutonClone = (Graph) s.getSolution().clone();
 			
-			//System.out.println("2) "+solutionScenarioGloutonClone.getCouts());
-			//System.out.println("------a------");
+			////System.out.println("2) "+solutionScenarioGloutonClone.getCouts());
+			////System.out.println("------a------");
 			for(PaireVertex paire : solutionScenarioGloutonClone.getCouts().keySet())
 			{			
 				if(!s.getGeneral().getDeterminists().contains(paire))
 					stochastiques.add(paire);
 			}
 			
-			//System.out.println("------b------"+stochastiques.size()+" ===== "+solutionScenarioGloutonClone.getCouts().keySet().size());
+			////System.out.println("------b------"+stochastiques.size()+" ===== "+solutionScenarioGloutonClone.getCouts().keySet().size());
 			
 			/*
 			 * --------------------------------------------------
@@ -375,23 +377,22 @@ public class VNS extends Observable{
 				//FIXME : mettre un try catch de java.lang.IllegalArgumentException
 				int rand = Maths.randInt(0, stochastiques.size()-1);
 				PaireVertex choisi = stochastiques.get(rand);
-				//System.out.println("------b-RANDOM------"+rand);
+				////System.out.println("------b-RANDOM------"+rand);
 				if(!pioche.contains(choisi) && !vertexDejaPioche(choisi.getFirst(), pioche) && !vertexDejaPioche(choisi.getSecond(), pioche))
 					pioche.add(choisi);
 			}
 			
-			//System.out.println("------c------");
+			////System.out.println("------c------");
 			
-			System.out.println("La pioche : "+pioche);
+			////System.out.println("La pioche : "+pioche);
 			
 			/*
 			 * --------------------------------------------------
 			 * 					ALGO : Le saut de pas que l'on fait : CF Image rapport pour N-opt
 			 * --------------------------------------------------
 			 */
-			
 			s.setEtat(etat.CHANGINGNEIGHBORHOOD);
-			
+
 			LinkedHashMap<Vertex, Boolean> visite = new LinkedHashMap<Vertex, Boolean>();
 			for(PaireVertex p : pioche)
 			{
@@ -407,22 +408,22 @@ public class VNS extends Observable{
 				
 				if(i+1==pioche.size())
 				{
-					//System.out.println("2) Je lie : "+pioche.get(i).getFirst()+" avec " + pioche.get(0).getSecond());
+					////System.out.println("2) Je lie : "+pioche.get(i).getFirst()+" avec " + pioche.get(0).getSecond());
 					nouveau.add(lie(pioche.get(i).getFirst(), pioche.get(0).getSecond()));
 				}
 				else
 				{
-					//System.out.println("3) Je lie : "+pioche.get(i).getFirst()+" avec " + pioche.get(i+1).getSecond());
+					////System.out.println("3) Je lie : "+pioche.get(i).getFirst()+" avec " + pioche.get(i+1).getSecond());
 					nouveau.add(lie(pioche.get(i).getFirst(), pioche.get(i+1).getSecond()));
 				}
-				//System.out.println("1----");
+				////System.out.println("1----");
 				PaireVertex tmp = nouveau.get(nouveau.size()-1);
-				//System.out.println("2-----");
+				////System.out.println("2-----");
 				visite.put(tmp.getFirst(),true);
-				//System.out.println("3-----");
+				////System.out.println("3-----");
 				visite.put(tmp.getSecond(), true);
-				//System.out.println("4------");
-				//System.out.println("Visite ?? "+visite);
+				////System.out.println("4------");
+				////System.out.println("Visite ?? "+visite);
 					
 				i = i + 1;
 			}
@@ -432,10 +433,10 @@ public class VNS extends Observable{
 			//TODO Cf (FIXME Note 1 au dessus) : on utilisera la meme methode pour cette fois remettre dans l'ordre
 			update(solutionScenarioGloutonClone, pioche, nouveau, s);
 			
-			//System.out.println("Stochastique"+stochastiques);
-			//System.out.println("Pioche "+pioche);
-			//System.out.println("Nouveau : "+nouveau);
-			//System.out.println("Solutionlone : "+solutionScenarioGloutonClone);
+			////System.out.println("Stochastique"+stochastiques);
+			////System.out.println("Pioche "+pioche);
+			////System.out.println("Nouveau : "+nouveau);
+			////System.out.println("Solutionlone : "+solutionScenarioGloutonClone);
 			
 			s.setEtat(etat.FINISHED);
 			
@@ -475,7 +476,7 @@ public class VNS extends Observable{
 		LinkedHashMap<PaireVertex, Double> coutsOptimal = new LinkedHashMap<PaireVertex, Double>();
 		for(int i=0;i<cheminsOptimal.size()-1;i++){
 			PaireVertex pV = new PaireVertex(new Vertex(cheminsOptimal.get(i)),new Vertex(cheminsOptimal.get(i+1)));
-			//System.out.println("Ca "+s.getGeneral().toTab()[cheminsOptimal.get(i)][cheminsOptimal.get(i+1)]+" est egale a ca : "+s.getGeneral().getCouts().get(pV));
+			////System.out.println("Ca "+s.getGeneral().toTab()[cheminsOptimal.get(i)][cheminsOptimal.get(i+1)]+" est egale a ca : "+s.getGeneral().getCouts().get(pV));
 			coutsOptimal.put(pV, s.getGeneral().getCouts().get(pV));
 		}
 		PaireVertex lastPaire = new PaireVertex(new Vertex(cheminsOptimal.get(cheminsOptimal.size()-1)),new Vertex(cheminsOptimal.get(0)));
@@ -525,6 +526,8 @@ public class VNS extends Observable{
 	
 	private boolean isBetterSolution(Graph old, Graph actual)
 	{
+		////System.out.println("Cout old :"+ old.coutSolution());
+		////System.out.println("cout actuel :"+ actual.coutSolution());
 		Double coutActual = actual.coutSolution();
 		if(coutActual<0)
 			return false;
@@ -532,29 +535,34 @@ public class VNS extends Observable{
 	}
 
 	public void findBestSolution(Scenario s) throws CloneNotSupportedException {
-	
 		int kopt = 2;
 		
 		GraphOpt gopt = new GraphOpt();
-		
+		int iteration =0;
 		while(kopt <= TSP.n_opt)
 		{
 			Graph newSolution = algoVNSNopt(s,kopt);
-			//System.out.println("Graphe actuel : "+newSolution);
-			if(isBetterSolution(s.getSolution(), newSolution))
-			{
-				s.setSolution(newSolution);
-				setChanged();
-				//FIXME rendre Paire<newSolution,Scenario s>
-				//gopt.setCheminVNS(newSolution.getCouts());
-				//gopt.setCout(newSolution.coutSolution());
-				//notifyObservers(gopt);
-				kopt = 2;
+			////System.out.println("solution courante :"+s.getSolution().coutSolution());
+			
+			if(iteration<20){
+				if(isBetterSolution(s.getSolution(), newSolution)   )
+				{
+					s.setSolution(newSolution);
+					setChanged();
+					//FIXME rendre Paire<newSolution,Scenario s>
+					//gopt.setCheminVNS(newSolution.getCouts());
+					//gopt.setCout(newSolution.coutSolution());
+					//notifyObservers(gopt);
+					kopt = 2;
+					iteration=0;
+				}
 			}
 			else
 			{
 				kopt = kopt+1;
+				iteration=0;
 			}
+			iteration++;
 		}
 		
 	}
