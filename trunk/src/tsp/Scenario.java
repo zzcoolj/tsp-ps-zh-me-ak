@@ -1,11 +1,7 @@
 package tsp;
 
-import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
-
-import CustomClass.HashLambdaRho;
-import tsp.Scenario.etat;
 
 public class Scenario extends Observable implements Observer{
 	
