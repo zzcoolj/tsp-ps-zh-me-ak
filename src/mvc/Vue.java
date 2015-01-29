@@ -77,11 +77,11 @@ public class Vue extends JFrame implements Observer {
 		//Droite
 		noeudetScenario = new JPanel();
 		noeudetScenario.setLayout(new BorderLayout());
-		noeudetScenario.setPreferredSize(new Dimension(sizeOfNoeud*2, getHeight()-180));
+		noeudetScenario.setPreferredSize(new Dimension(sizeOfNoeud*2, getHeight()-200));
 			
 			//Noeud
 		noeud = new JPanel(); noeud.setBackground(Color.decode("#27ae60"));
-		noeud.setPreferredSize(new Dimension(sizeOfNoeud, getHeight()-180));
+		noeud.setPreferredSize(new Dimension(sizeOfNoeud, getHeight()-230));
 		
 		scenarioCanvas = new ScenarioCanvas();
 		scenarioCanvas.setBackground(Color.decode("#34495e"));

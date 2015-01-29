@@ -21,7 +21,7 @@ public class TSP extends Observable implements Observer {
 	 */
 
 	private boolean N_Iteration = false;
-	private int nbIteration = 100;
+	private int nbIteration = 50;
 	
 	
 	private PL pl;
@@ -67,6 +67,7 @@ public class TSP extends Observable implements Observer {
 		}
 
 		reference = fusion(reference);
+		
 		
 		/////
 		
@@ -178,8 +179,12 @@ public class TSP extends Observable implements Observer {
 			}
 		}
 
-		// //System.out.println("PaireDisponible : "+paireDisponible);
-
+		System.out.println("paireReference : "+paireReferenceXij);
+		try {
+		    Thread.sleep(0);                 //1000 milliseconds is one second.
+		} catch(InterruptedException ex) {
+		    Thread.currentThread().interrupt();
+		}
 		// //System.out.println("Reference  AVANT ?? "+paireReferenceXij);
 
 		/*
@@ -223,7 +228,7 @@ public class TSP extends Observable implements Observer {
 		Graph dernier = new Graph(g.getVilles());
 		dernier.setCouts(cheminReferenceFinalCout);
 		dernier.setDeterminists(g.getDeterminists());
-
+		
 		return dernier;
 	}
 
@@ -371,10 +376,10 @@ public class TSP extends Observable implements Observer {
 			
 			do{ 
 				
-				tsp.pl.algoPenalite(iteration, penalite, reference, g, s);
+				tsp.pl.algoPenalite(iteration, tsp.penalite, reference, tsp.g, tsp.s);
 				
-				tsp.pl.fonctionObjectiveLocalResultat(s, penalite, reference);
-				for (Scenario scenario : s) {
+				tsp.pl.fonctionObjectiveLocalResultat(tsp.s, tsp.penalite, reference);
+				for (Scenario scenario : tsp.s) {
 					try {
 						scenario.getVns().findBestSolution(scenario);
 					} catch (CloneNotSupportedException e) {
@@ -384,14 +389,20 @@ public class TSP extends Observable implements Observer {
 				}
 				
 				//System.out.println("Cout actuel : "+pl.fonctionObjectiveLocalResultat(s, penalite, reference));
-				
+				//System.out.println("Reference Avant"+reference.coutSolution());
 				reference = fusion(reference);
+				//System.out.println("Reference Apres"+reference.coutSolution());
+				/*try {
+				    Thread.sleep(7000);                 //1000 milliseconds is one second.
+				} catch(InterruptedException ex) {
+				    Thread.currentThread().interrupt();
+				}*/
 				iteration++;
 				
-				setChanged();
+				tsp.setChanged();
 				gopt.setCout(reference.coutSolution());
 				gopt.setCheminVNS(reference.getCouts());
-				notifyObservers(gopt);
+				tsp.notifyObservers(gopt);
 				
 				
 				if(!N_Iteration)
@@ -435,8 +446,8 @@ public class TSP extends Observable implements Observer {
 			long stopTime = System.currentTimeMillis();
 			System.out.println("timer = "+(stopTime - startTime)/1000);
 			result.setTime((stopTime - startTime));*/
-			setChanged();
-			notifyObservers(gopt);
+			tsp.setChanged();
+			tsp.notifyObservers(gopt);
 			
 			for(int i = 0;i<10;i++)
 			{
