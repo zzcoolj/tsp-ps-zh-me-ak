@@ -88,6 +88,8 @@ public class Vue extends JFrame implements Observer {
 		scenarioCanvas.setPreferredSize(new Dimension(sizeOfNoeud, getHeight()-180));
 		scrollScenarios.setViewportView(scenarioCanvas);
 		
+		ControlleurScenario scenario = new ControlleurScenario(scenarioCanvas,grapheInterface);
+		
 		scrollScenarios.setPreferredSize(new Dimension(sizeOfNoeud, getHeight()-180));
 		
 		noeudetScenario.add(scrollScenarios, BorderLayout.CENTER);
