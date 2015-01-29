@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 
 import CustomClass.PaireVertex;
 import tsp.Scenario;
+import tsp.Scenario.etat;
 
 public class ScenarioCanvas extends JPanel{
 	
@@ -45,16 +46,8 @@ public class ScenarioCanvas extends JPanel{
 	public void miseAjour(Scenario s)
 	{
 
-		for(ScenarioComponent scenario : listeScenario)
-		{
-			if(scenario.getS().equals(s))
-			{
-				scenario.getS().updateEtat(s.getEtat());
-				scenario.update();
-				repaint();
-				break;
-			}
-		}
+		ThreadScenario thread = new ThreadScenario(this,s);
+		thread.start();
 
 	}
 	
@@ -72,7 +65,7 @@ public class ScenarioCanvas extends JPanel{
 			listeScenario.add(new ScenarioComponent(s, new Point(x, y), width, height, Color.RED, Color.RED));
 			y+=height;
 		}
-		repaint();
+		//repaint();
 	}
 	
 	@Override
@@ -123,6 +116,32 @@ public class ScenarioCanvas extends JPanel{
 
 	public ArrayList<ScenarioComponent> getScenarios() {
 		return listeScenario;
+	}
+	
+	protected class ThreadScenario extends Thread
+	{
+		private ScenarioCanvas canvas;
+		private Scenario s;
+		public ThreadScenario(ScenarioCanvas canvas, Scenario s)
+		{
+			this.canvas = canvas;
+			this.s = s;
+		}
+		
+		@Override
+		public void run() {
+			for(ScenarioComponent scenario : listeScenario)
+			{
+				if(scenario.getS().equals(s))
+				{
+					scenario.getS().updateEtat(s.getEtat());
+					scenario.update();
+					canvas.repaint();
+					break;
+				}
+			}
+
+		}
 	}
 
 }

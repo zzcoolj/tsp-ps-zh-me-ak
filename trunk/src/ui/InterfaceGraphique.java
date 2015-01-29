@@ -123,7 +123,8 @@ public class InterfaceGraphique extends JPanel {
 							/*
 							if (!(couts[i][j].equals(couts[j][i]))) {
 							*/
-							if (!(couts.get(new PaireVertex(new Vertex(i), new Vertex(j))).equals(couts.get(new PaireVertex(new Vertex(j), new Vertex(i)))))) {
+							System.out.println("cout "+couts);
+							if (couts.containsKey(new PaireVertex(new Vertex(i), new Vertex(j))) && couts.containsKey(new PaireVertex(new Vertex(j), new Vertex(i))) && !(couts.get(new PaireVertex(new Vertex(i), new Vertex(j))).equals(couts.get(new PaireVertex(new Vertex(j), new Vertex(i)))))) {
 								/*
 								edgesRetour[num] = graph
 										.insertEdge(parent, null, couts[i][j],
