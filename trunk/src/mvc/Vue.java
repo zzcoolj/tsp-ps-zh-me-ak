@@ -223,6 +223,8 @@ public class Vue extends JFrame implements Observer {
 			ArrayList<Scenario> lScenario = new ArrayList<Scenario>();
 			lScenario.addAll((ArrayList<Scenario>) arg);
 			
+			//System.exit(0);
+			
 			//scenario.setBackground(Color.BLUE);
 			scenarioCanvas.miseAjour(lScenario);
 			scenarioCanvas.setPreferredSize(new Dimension(sizeOfNoeud, getHeight()*lScenario.size()/7-200));
@@ -238,7 +240,7 @@ public class Vue extends JFrame implements Observer {
 			
 			Scenario scenario = (Scenario)arg;
 			scenarioCanvas.miseAjour(scenario);
-			
+			//System.exit(0);
 			
 			return;
 			
