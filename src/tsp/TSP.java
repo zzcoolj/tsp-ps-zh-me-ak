@@ -24,7 +24,8 @@ public class TSP extends Observable implements Observer {
 
 	private boolean N_Iteration = false;
 	private int nbIteration = 10;
-
+	
+	
 	private PL pl;
 	private Graph g;
 	private Parser p;
@@ -57,7 +58,7 @@ public class TSP extends Observable implements Observer {
 		pl.initDeterminist(g, pourcentageDeterminist);
 
 		pl.initScenario(s, this, nbscenario);
-
+		setChanged();
 		notifyObservers(this.s);
 
 		Graph reference = new Graph(); // pl.glouton(g);
@@ -67,98 +68,28 @@ public class TSP extends Observable implements Observer {
 			sc.setSolution(pl.glouton(sc.getGeneral()));
 		}
 
-		int iteration = 0;
-		boolean continuer = true;
-
-		// pl.algoPenalite(iteration, penalite, g, g, s);
 		reference = fusion(reference);
+		
+		/////
+		
+		/*try {
+			s.get(0).getVns().algoVNSNopt(s.get(0),n_opt);
+		} catch (CloneNotSupportedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
+		
+		boolean continuer = true;
+		
+		int iteration = 0;
+		
+		ThreadMain tm = new ThreadMain(this,reference);
+		tm.start();
 
-		/*
-		 * while(!testArret(reference, iteration) && continuer){
-		 * 
-		 * iteration++; pl.algoPenalite(iteration, penalite, reference, g, s);
-		 * pl.fonctionObjectiveLocalResultat(s, penalite, reference);
-		 * ////System.out.println(penalite);
-		 * 
-		 * 
-		 * 
-		 * reference = fusion(reference); testArret(reference, iteration);
-		 * 
-		 * //System.out.println(
-		 * "\n\n\n-------------------------------NOUVELLE ITERATION +" +
-		 * iteration + "-------------------------------\n\n\n"); }
-		 */
-		String s1 = "";
-		do {
-
-			pl.algoPenalite(iteration, penalite, reference, g, s);
-			
-			s1 += "Penalite iteration  " + iteration + " "
-					+ penalite.get(iteration).get(0);
-			
-			
-			/*final String chemin = "tmp.txt";
-	        final File fichier =new File(chemin); 
-	        try {
-	            // Creation du fichier
-	            fichier .createNewFile();
-	            // creation d'un writer (un écrivain)
-	            final FileWriter writer = new FileWriter(fichier);
-	            try {
-	                writer.write(s1);
-	                //writer.write("encore et encore");
-	            } finally {
-	                // quoiqu'il arrive, on ferme le fichier
-	                writer.close();
-	            }
-	        } catch (Exception e) {
-	            System.out.println("Impossible de creer le fichier");
-	        }
-	        */
-			pl.fonctionObjectiveLocalResultat(s, penalite, reference);
-			for (Scenario scenario : s) {
-				try {
-					scenario.getVns().findBestSolution(scenario);
-				} catch (CloneNotSupportedException e) {
-					// System.err.println("CloneNotSupported dans classe TSP");
-					e.printStackTrace();
-				}
-			}
-			reference = fusion(reference);
-			iteration++;
-
-			if (!N_Iteration) {
-				if (iteration == nbIteration) {
-					continuer = false;
-				}
-			}
-		} while (!testArret(reference, iteration - 1) && continuer);
-
-		System.out.println(g.getDeterminists());
-
-		GraphOpt gopt = new GraphOpt();
-		gopt.setCout(reference.coutSolution());
-		gopt.setCheminVNS(reference.getCouts());
-
-		/*
-		 * //System.out.println("Glouton en cours"); long startTime =
-		 * //System.nanoTime(); pl.glouton(g); long endTime =
-		 * //System.nanoTime();
-		 * 
-		 * long duration = (endTime - startTime)/1000000; //divide by 1000000 to
-		 * get milliseconds.
-		 * //System.out.println("timer glouton : "+duration+" ms");
-		 */
-
-		/*
-		 * long startTime = //System.currentTimeMillis(); GraphOpt result =
-		 * pl.solve(); long stopTime = //System.currentTimeMillis();
-		 * //System.out.println("timer = "+(stopTime - startTime)/1000);
-		 * result.setTime((stopTime - startTime));
-		 */
-		setChanged();
-		notifyObservers(gopt);
-		return gopt;
+		
+		
+		
+		return null;
 
 	}
 
@@ -423,5 +354,106 @@ public class TSP extends Observable implements Observer {
 		}
 
 	}
+
+	
+	public class ThreadMain extends Thread
+	{
+		private TSP tsp;
+		private Graph reference;
+		public ThreadMain(TSP tsp, Graph reference) {
+			this.tsp = tsp;
+			this.reference = reference;
+		}
+
+		@Override
+		public void run() {
+			
+			long startTime = System.nanoTime();
+			
+			int iteration = 0;
+			boolean continuer = true;
+			
+			GraphOpt gopt = new GraphOpt();
+			
+			
+			do{ 
+				
+				tsp.pl.algoPenalite(iteration, penalite, reference, g, s);
+				
+				tsp.pl.fonctionObjectiveLocalResultat(s, penalite, reference);
+				for (Scenario scenario : s) {
+					try {
+						scenario.getVns().findBestSolution(scenario);
+					} catch (CloneNotSupportedException e) {
+						// System.err.println("CloneNotSupported dans classe TSP");
+						e.printStackTrace();
+					}
+				}
+				
+				//System.out.println("Cout actuel : "+pl.fonctionObjectiveLocalResultat(s, penalite, reference));
+				
+				reference = fusion(reference);
+				iteration++;
+				
+				setChanged();
+				gopt.setCout(reference.coutSolution());
+				gopt.setCheminVNS(reference.getCouts());
+				notifyObservers(gopt);
+				
+				
+				if(!N_Iteration)
+				{
+					if(iteration==nbIteration)
+					{
+						continuer = false;
+					}
+				}
+				
+				System.out.println("\n\n\n-------------------------------NOUVELLE ITERATION +" + iteration + "-------------------------------\n\n\n");
+			}while(!testArret(reference, iteration - 1) && continuer);
+			
+			System.out.println("Fini");
+			System.out.println("Cout final = "+reference.coutSolution());
+			
+			gopt.setCout(reference.coutSolution());
+			gopt.setCheminVNS(reference.getCouts());
+			
+			
+			
+			long endTime = System.nanoTime();
+			long time = (endTime - startTime)/1000000000;
+			if(time==0)
+			{
+				time = 1;
+			}
+			gopt.setTime(time);
+			
+			/*System.out.println("Glouton en cours");
+			long startTime = System.nanoTime();
+			pl.glouton(g);
+			long endTime = System.nanoTime();
+
+			long duration = (endTime - startTime)/1000000;  //divide by 1000000 to get milliseconds.
+			System.out.println("timer glouton : "+duration+" ms");*/
+			
+			
+			/*long startTime = System.currentTimeMillis();
+			GraphOpt result = pl.solve();
+			long stopTime = System.currentTimeMillis();
+			System.out.println("timer = "+(stopTime - startTime)/1000);
+			result.setTime((stopTime - startTime));*/
+			setChanged();
+			notifyObservers(gopt);
+			
+			for(int i = 0;i<10;i++)
+			{
+				System.out.println("\n\n\n");
+			}
+			System.out.println("////////////////////////////////////////////////////////////");
+			System.out.println("********* Cout final "+ reference.getCouts() +" *********");
+			System.out.println("////////////////////////////////////////////////////////////");
+		}
+	}
+
 
 }
