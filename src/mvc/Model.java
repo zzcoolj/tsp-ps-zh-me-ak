@@ -42,6 +42,7 @@ public class Model extends Observable{
 		notifyObservers(tsp);
 	}
 	
+	
 	public TSP getTsp() {
 		return tsp;
 	}
