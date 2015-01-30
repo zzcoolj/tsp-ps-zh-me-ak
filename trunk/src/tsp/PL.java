@@ -527,6 +527,20 @@ public class PL {
             	g.getDeterminists().add(paire);
             	
             }
+            
+            if((!g.getDeterminists().isEmpty()) && g.getDeterminists().size()>=1 && g.getDeterminists().get(0).inverser().equals(g.getDeterminists().get(1)))
+            {
+            	g.getDeterminists().remove(1);
+            }
+            
+            for(PaireVertex paire : g.getDeterminists())
+            {
+            	if(paire.hasSameVertex())
+            	{
+            		g.getDeterminists().remove(paire);
+            	}
+            	
+            }
            
             //System.out.println("G.GetDeterministe "+g.getDeterminists());
             int rand = Maths.randInt(0, gr.getDeterminists().size()-1);
