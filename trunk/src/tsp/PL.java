@@ -704,7 +704,7 @@ public PaireVertex cherche(Vertex villesSortante,ArrayList<PaireVertex> paireDan
         for(PaireVertex det : g.getDeterminists())
         {
                 //Par exemple on trouve une paire (2,8) bah c'est okay
-                if(det.getFirst().equals(villesSortante) && !paireDansGlouton.contains(det) && !det.getSecond().equals(villeInterdit))
+                if(det.getFirst().equals(villesSortante) && !paireDansGlouton.contains(det) && !det.getSecond().equals(villeInterdit) && !det.hasSameVertex())
                 {
                        // //System.out.println("Det : "+det);
                         return det;
@@ -724,7 +724,7 @@ public PaireVertex cherche(Vertex villesSortante,ArrayList<PaireVertex> paireDan
                         //System.out.println("second = villeinterdi 4 = "+entry.getKey().getSecond().equals(villeInterdit));
                 }*/
                         
-                        if(villeSortantInterdit!=null && !entry.getKey().getSecond().equals(villeSortantInterdit) && !arcExisteDeja(entry.getKey().getFirst(), entry.getKey().getSecond(), paireDansGlouton) && !paireDansGlouton.contains(entry.getKey()) && entry.getKey().getFirst().equals(villesSortante) && villeInterdit!=null && !entry.getKey().getSecond().equals(villeInterdit))
+                        if(!entry.getKey().hasSameVertex() && villeSortantInterdit!=null && !entry.getKey().getSecond().equals(villeSortantInterdit) && !arcExisteDeja(entry.getKey().getFirst(), entry.getKey().getSecond(), paireDansGlouton) && !paireDansGlouton.contains(entry.getKey()) && entry.getKey().getFirst().equals(villesSortante) && villeInterdit!=null && !entry.getKey().getSecond().equals(villeInterdit))
                         {
                                 ////System.out.println("Affiche = "+dejaDansDeterministe(entry.getKey().getFirst(), entry.getKey().getSecond(), g.getDeterminists(),paireDansGlouton));
                                 if(!dejaDansDeterministe(entry.getKey().getFirst(), entry.getKey().getSecond(), g.getDeterminists(),paireDansGlouton))
@@ -739,7 +739,7 @@ public PaireVertex cherche(Vertex villesSortante,ArrayList<PaireVertex> paireDan
                                         }
                                 }
                         }
-                        else if(villeInterdit==null && entry.getKey().getFirst().equals(villesSortante))
+                        else if(!entry.getKey().hasSameVertex() && villeInterdit==null && entry.getKey().getFirst().equals(villesSortante))
                         {
                                 if(villeSortantInterdit!=null && !entry.getKey().getFirst().equals(villeSortantInterdit) && !dejaDansDeterministe(entry.getKey().getFirst(), entry.getKey().getSecond(), g.getDeterminists(),paireDansGlouton))
                                 {
