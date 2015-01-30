@@ -21,7 +21,7 @@ public class TSP extends Observable implements Observer {
 	 */
 
 	private boolean N_Iteration = false;
-	private int nbIteration = 50;
+	private int nbIteration = 10;
 	public Graph refPourGraphique = null;
 	
 	private PL pl;
@@ -31,13 +31,12 @@ public class TSP extends Observable implements Observer {
 	private int nbscenario = 10;
 	private float pourcentageDeterminist;
 	protected static Integer n_opt = 2;
-
+	long startTime; 
 	// penalite.get(0) => array.get(0) => scenario 0 iteration 0
 	private LinkedHashMap<Integer, ArrayList<HashLambdaRho>> penalite;
 
 	public TSP(String nameXml) {
 		p = new Parser(nameXml, "");
-		// g = new Graph(null);
 		g = new Graph();
 		p.parse(g);
 		s = new ArrayList<Scenario>();
@@ -52,10 +51,12 @@ public class TSP extends Observable implements Observer {
 		nbscenario = nbScenario;
 		n_opt = kmax;
 		pourcentageDeterminist = determinist;
-
+		startTime = System.nanoTime();
+		System.out.println("début determ");
 		pl.initDeterminist(g, pourcentageDeterminist);
-
+		System.out.println("début scénario");
 		pl.initScenario(s, this, nbscenario);
+		System.out.println("Finis scénario");
 		setChanged();
 		notifyObservers(this.s);
 
@@ -110,7 +111,7 @@ public class TSP extends Observable implements Observer {
 	}
 
 	public boolean testArret(Graph reference, int iteration) {
-
+     
 		ArrayList<Integer> sum = new ArrayList<Integer>();
 		int presenceSum = 0;
 		boolean zeroD = false;
@@ -131,11 +132,14 @@ public class TSP extends Observable implements Observer {
 				presenceSum++;
 			}
 		}
+		double finale = 0;
+		for (Integer i : sum) {
+			finale += i;
+		}
+		
+		if(finale==0) return true;
 		if (zeroD) {
-			double finale = 0;
-			for (Integer i : sum) {
-				finale += i;
-			}
+			
 			finale = (double) finale / (s.size() * presenceSum);
 			if (finale >= 0.9) {
 				return true;
@@ -171,7 +175,7 @@ public class TSP extends Observable implements Observer {
 				}
 
 				xij = ((float) xij) / s.size();
-				if (xij > 0.9) {
+				if (xij > 0.5) {
 					// x->y on a pas le droit d'avoir z->y
 					PaireVertex tmp = pl.recursif(paireReferenceXij, paire, 0,
 							paire);
@@ -385,8 +389,6 @@ public class TSP extends Observable implements Observer {
 		@Override
 		public void run() {
 			
-			long startTime = System.nanoTime();
-			
 			int iteration = 0;
 			boolean continuer = true;
 			
@@ -394,7 +396,7 @@ public class TSP extends Observable implements Observer {
 			
 			
 			do{ 
-				
+				System.out.println("Je fais l'algo en générale");
 				tsp.pl.algoPenalite(iteration, tsp.penalite, reference, tsp.g, tsp.s);
 				
 				tsp.pl.fonctionObjectiveLocalResultat(tsp.s, tsp.penalite, reference);
