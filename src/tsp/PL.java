@@ -525,9 +525,10 @@ public class PL {
             for(PaireVertex paire : paireReferenceXij)
             {
             	g.getDeterminists().add(paire);
+            	
             }
-
-//            //System.out.println("G.GetDeterministe "+g.getDeterminists());
+           
+            //System.out.println("G.GetDeterministe "+g.getDeterminists());
             int rand = Maths.randInt(0, gr.getDeterminists().size()-1);
             if(g.getDeterminists().isEmpty())
             {
