@@ -169,27 +169,30 @@ public class InterfaceGraphique extends JPanel {
 			 * Object[] { v1, v2, v3 });
 			 */			
 		} finally {
+			graph.setCellsMovable(false);
+			graph.setAllowDanglingEdges(false);
+			mxGraphComponent graphComponent = new mxGraphComponent(graph);
+			graphComponent.setPreferredSize(new Dimension(width, height));
+			graphComponent.repaint();
+			this.removeAll();
+			this.add(graphComponent);
 			graph.getModel().endUpdate();
 		}
 		
 		// graph.setEnabled(false);
-		graph.setCellsMovable(false);
-		graph.setAllowDanglingEdges(false);
-		mxGraphComponent graphComponent = new mxGraphComponent(graph);
-		graphComponent.setPreferredSize(new Dimension(width, height));
-		this.removeAll();
-		this.add(graphComponent);
-		graph.getModel().endUpdate();
+		
+		//graph.getModel().endUpdate();
 	}
 	
 	
 	public void showSoulutionOptimale(LinkedList<Integer> cheminsOptimals) {
+		//graph.getModel().
 		graph.getModel().beginUpdate();
 		try {
 			
-			if(nbV>50){
+			if(true){
 				
-			}else{
+			
 				//supprimer tous les chemins
 				Object[][] edgesRemove = new Object[nbV * (nbV - 1)][nbV - 1];
 				int k = 0;
@@ -201,10 +204,11 @@ public class InterfaceGraphique extends JPanel {
 								edgesRemove[k] = graph.getEdgesBetween(
 										vertexsRetour[i], vertexsRetour[j]);
 										*/
-							if ((i > j) && (!(couts.get(new PaireVertex(new Vertex(i), new Vertex(j))).equals(couts.get(new PaireVertex(new Vertex(j), new Vertex(i))))))) {
+							if ((i > j) && (couts.containsKey(new PaireVertex(new Vertex(i), new Vertex(j))) && couts.containsKey(new PaireVertex(new Vertex(j), new Vertex(i))) && !(couts.get(new PaireVertex(new Vertex(i), new Vertex(j))).equals(couts.get(new PaireVertex(new Vertex(j), new Vertex(i))))))) {
 								edgesRemove[k] = graph.getEdgesBetween(
 										vertexsRetour[i], vertexsRetour[j]);
-							} else {
+							}
+							else {
 								edgesRemove[k] = graph.getEdgesBetween(
 										vertexsAller[i], vertexsAller[j]);
 							}
@@ -231,14 +235,28 @@ public class InterfaceGraphique extends JPanel {
 					vertexsAller[cheminsOptimals.get(0)], "strokeColor=#34495e");
 			
 		} finally {
+			mxGraphComponent graphComponent = new mxGraphComponent(graph);
+			graphComponent.setPreferredSize(new Dimension(width, height));
+			this.removeAll();
+			this.add(graphComponent);
+			graphComponent.repaint();
+			//System.out.println("validate ?");
+			validate();
 			graph.getModel().endUpdate();
 		}
-		/*mxGraphComponent graphComponent = new mxGraphComponent(graph);
-		graphComponent.setPreferredSize(new Dimension(width, height));
-		this.removeAll();
-		this.add(graphComponent);
-		System.out.println("validate ?");
-		validate();
-		System.out.println("j'ai valider");*/
+		
+		//graph.getModel().endUpdate();
+		//System.out.println("j'ai valider");
+		
+		/*graph.setCellsMovable(false);
+			graph.setAllowDanglingEdges(false);
+			mxGraphComponent graphComponent = new mxGraphComponent(graph);
+			graphComponent.setPreferredSize(new Dimension(width, height));
+			graphComponent.repaint();
+			this.removeAll();
+			this.add(graphComponent);
+			graph.getModel().endUpdate();
+		 
+			validate();*/
 	}
 }
