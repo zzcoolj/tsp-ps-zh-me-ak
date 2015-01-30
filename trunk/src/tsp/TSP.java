@@ -175,7 +175,7 @@ public class TSP extends Observable implements Observer {
 				}
 
 				xij = ((float) xij) / s.size();
-				if (xij > 0.5) {
+				if (xij > 0.7) {
 					// x->y on a pas le droit d'avoir z->y
 					PaireVertex tmp = pl.recursif(paireReferenceXij, paire, 0,
 							paire);
