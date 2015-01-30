@@ -12,6 +12,7 @@ import java.util.Map.Entry;
 import java.util.Observable;
 import java.util.Observer;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -63,6 +64,7 @@ public class Vue extends JFrame implements Observer {
 	}
 	int sizeOfNoeud = 150;
 	private JPanel noeudetScenario;
+	private ControlleurScenario scenarioC;
 	private void init()
 	{
 		
@@ -88,7 +90,7 @@ public class Vue extends JFrame implements Observer {
 		scenarioCanvas.setPreferredSize(new Dimension(sizeOfNoeud, getHeight()-180));
 		scrollScenarios.setViewportView(scenarioCanvas);
 		
-		ControlleurScenario scenario = new ControlleurScenario(scenarioCanvas,grapheInterface);
+		scenarioC = new ControlleurScenario(scenarioCanvas,grapheInterface,this);
 		
 		scrollScenarios.setPreferredSize(new Dimension(sizeOfNoeud, getHeight()-180));
 		
@@ -117,7 +119,7 @@ public class Vue extends JFrame implements Observer {
 		
 		add(principal);
 	}
-	
+	JButton revert;
 	public void initMenu()
 	{
 		//Bas
@@ -130,7 +132,8 @@ public class Vue extends JFrame implements Observer {
 		newmenu.setPreferredSize(new Dimension(getWidth(), 60));
 		newmenu.setLayout(new GridLayout(1, 3));
 		
-		JPanel gaucheMenu = new JPanel(); gaucheMenu.setBackground(Color.decode("#bdc3c7")); 
+		JPanel gaucheMenu = new JPanel(); gaucheMenu.setBackground(Color.decode("#bdc3c7"));
+		
 		sliderDeterminist = new JSlider(0, 100);
 		sliderDeterminist.setPreferredSize(new Dimension(320, 20));
 		sliderDeterminist.setValue(0);
@@ -138,7 +141,8 @@ public class Vue extends JFrame implements Observer {
 		JLabel labelDeterminist = new JLabel("0% deterministes");
 		gaucheMenu.add(sliderDeterminist);
 		gaucheMenu.add(labelDeterminist);
-		
+		revert = new JButton("ref");
+		gaucheMenu.add(revert);
 		JPanel milieuMenu = new JPanel();milieuMenu.setBackground(Color.decode("#bdc3c7")); 
 		JLabel labelKmax = new JLabel("kmax");
 		kmaxTxtField = new JTextField(3);
@@ -154,6 +158,7 @@ public class Vue extends JFrame implements Observer {
 		droitMenu.add(nbscenarioTxtField);
 		
 		ControllerSwing swingController = new ControllerSwing(sliderDeterminist, labelDeterminist, kmaxTxtField, nbscenarioTxtField);
+		
 		sliderDeterminist.addChangeListener(swingController);
 		kmaxTxtField.addActionListener(swingController);
 		nbscenarioTxtField.addActionListener(swingController);
@@ -206,10 +211,13 @@ public class Vue extends JFrame implements Observer {
 	
 	public void addControler(Controleur c)
 	{
+		c.setGrapheInterface(grapheInterface);
 		principal.addMouseListener(c);
 		grapheInterface.addMouseListener(c);
 		noeud.addMouseListener(c);
 		bas.addMouseListener(c);
+		revert.addActionListener(c);
+		scenarioC.setC(c);
 	}
 
 	@SuppressWarnings("unchecked")

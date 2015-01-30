@@ -1,6 +1,8 @@
 package mvc;
 
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
@@ -11,13 +13,15 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 import tsp.Scenario;
+import ui.InterfaceGraphique;
 import ui.MenuBasCanvas;
 
-public class Controleur implements MouseListener{
+public class Controleur implements MouseListener, ActionListener{
 
 	Model model;
 	Vue vue;
 	MenuBasCanvas menu;
+	private InterfaceGraphique grapheInterface;
 	
 	public Controleur(Model m, Vue v) {
 		// TODO Auto-generated constructor stub
@@ -177,6 +181,24 @@ public class Controleur implements MouseListener{
 			    alert,
 			    "Parametre(s) incomplet(s)/incorrect(s)",
 			    JOptionPane.WARNING_MESSAGE);
+	}
+	
+	public void setGrapheInterface(InterfaceGraphique inter)
+	{
+		this.grapheInterface = inter;
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if(model.getTsp().refPourGraphique!=null)
+		{
+			GraphOpt gr = new GraphOpt();
+			gr.setCheminVNS(model.getTsp().refPourGraphique.getCouts());
+			double cout = model.getTsp().refPourGraphique.coutSolution();
+			gr.setCout(cout);
+			grapheInterface.showSoulutionOptimale(gr.getChemin());
+			vue.bas.setCout(cout);
+		}
 	}
 
 }

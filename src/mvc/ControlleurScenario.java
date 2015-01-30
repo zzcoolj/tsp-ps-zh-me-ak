@@ -6,15 +6,18 @@ import java.awt.event.MouseListener;
 
 import tsp.TSP;
 import ui.InterfaceGraphique;
+import ui.MenuBasCanvas;
 import ui.ScenarioCanvas;
 import ui.ScenarioComponent;
 
 public class ControlleurScenario implements MouseListener{
 	
-	
+	private Vue vue;
 	private ScenarioCanvas canvas;
 	private InterfaceGraphique grapheInterface;
-	public ControlleurScenario(ScenarioCanvas canvas, InterfaceGraphique grapheInterface) {
+	private Controleur c = null;
+	public ControlleurScenario(ScenarioCanvas canvas, InterfaceGraphique grapheInterface,Vue vue) {
+		this.vue = vue;
 		this.canvas = canvas;
 		canvas.addMouseListener(this);
 		this.grapheInterface = grapheInterface;
@@ -31,9 +34,20 @@ public class ControlleurScenario implements MouseListener{
 			{
 				if(component.getR().r.contains(new Point(e.getX(), e.getY())))
 				{
-					//System.out.println("Component : "+component.getS().getSolution());
-					System.out.println("Clique sur le scenario "+i);
-					grapheInterface.draw(component.getS().getSolution());
+					if(c!=null)
+					{
+						//System.out.println("Component : "+component.getS().getSolution());
+						//System.out.println("Clique sur le scenario "+i);
+						if(!c.model.getTsp().getS().isEmpty())
+						{
+							GraphOpt gr = new GraphOpt();
+							gr.setCheminVNS(c.model.getTsp().getS().get(i).getSolution().getCouts());
+							double cout = c.model.getTsp().getS().get(i).getSolution().coutSolution();
+							gr.setCout(cout);
+							grapheInterface.showSoulutionOptimale(gr.getChemin());
+							vue.bas.setCout(cout);
+						}
+					}
 					break;
 				}
 				i++;
@@ -62,6 +76,12 @@ public class ControlleurScenario implements MouseListener{
 	@Override
 	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
+		
+	}
+
+
+	public void setC(Controleur c) {
+		this.c  = c;
 		
 	}
 
